@@ -485,6 +485,7 @@ input UpdateClientInput {
   # Indicates whether a Client is active or inactive
   isActive: Boolean
 }
+# An Access is a set of credentials and configuration in order to access the system of a Supplier.
 type Access implements Node{
   code: ID!
   accessData: AccessData
@@ -534,6 +535,7 @@ type AccessEdge {
   node: Access
 } 
 
+# Client identifies who is making the request and holds the configuration assigned to it.
 type Client implements Node{
   code: ID!
   clientData: ClientData
@@ -652,6 +654,7 @@ type ServiceOperation {
   # Service Operation Travel Operation ID (1: avail) (2: reservation) (3: batch) (4: batchLongRun)
   travelOperation: Int!
 }
+# A Supplier is a Partner who is connected to TravelgateX on the supply side in order to sell their product to connected Buyers
 type Supplier implements Node{
   code: ID!
   supplierData: SupplierData
@@ -750,10 +753,15 @@ enum OrganizationTemplate {
 }
 
 enum RoleType {
+  # Allows a User to make Queries of resources, but not change any resource data
   VIEWER
+  # Allows a User to make Mutations (changes) to the resource data
   EDITOR
+  # Allows a User to make All (changes) to the resource
   ADMIN
+  # Allows a User to make use of reources only for extecutations queries.
   EXECUTOR
+  # Allows a User to make othen kind of operation with the resource. Defined by API.
   SPECIFIC
 }
 
@@ -828,9 +836,12 @@ interface GroupCommonData{
 
 type API implements Node{
   code: ID!
-  error: [Error!]
   apiData: APIData
+  # Errors that abort services
+  error: [Error!]
+  # Date created
   createdAt: DateTime!
+  # Date updated
   updatedAt: DateTime!
 }
 
@@ -839,13 +850,21 @@ type APIConnection{
   pageInfo: PageInfo!
 }
 
+#
 type APIData{
-  id: ID!
+  # API Code
   code: ID!
+  # API ID
+  id: ID!
+  # Is API Editable or not.
   isEditable: Boolean!
+  # API label
   label: String
+  # which groups are asigned this API?
   groups(codes:[ID!],type: GroupType,first: Int, last: Int, before: String, after:String) : GroupConnection
+  # which resources are asigned this API?
   resources(codes: [ID!], first: Int, last: Int, before: String, after:String): ResourceConnection
+  # which operations are asigned this API?
   operations(codes: [ID!],type: OperationType, first: Int, last: Int, before: String, after:String): OperationConnection
 }
 
@@ -854,11 +873,15 @@ type APIEdge {
   node: API
 }
 
+# Groups are organized hierarchically.
 type Group implements Node{
   code: ID!
-  error: [Error!]
   groupData: GroupData
+  # Errors that abort services
+  error: [Error!]
+  # Date created
   createdAt: DateTime!
+  # Date updated
   updatedAt: DateTime!
 }
 
@@ -874,18 +897,27 @@ type GroupData implements GroupCommonData{
   type: GroupType!
   info: String
   parent: Group
+  # Only responses children.(non-hierarchically)
   children(codes: [ID!],type:GroupType, first: Int, last: Int, before: String, after:String): GroupConnection
   owner: Member
   isEditable: Boolean!
   productId: Int
   resourceId: Int
+  # Only responses members in this group
   members(codes:[ID!],type: MemberType,first: Int, last: Int, before: String, after:String) : MemberConnection
+  #APIs assigned to this group. Products have APIs.
   apis(codes: [ID!], first: Int, last: Int, before: String, after:String): APIConnection
+  # Responses all groups in its group's childrens (hierarchically),
   managedGroups(codes: [ID!],type:GroupType, first: Int, last: Int, before: String, after:String): GroupConnection
+  # Response all members in this group's childrens (hierarchically),
   allMembers(codes:[ID!],type: MemberType,first: Int, last: Int, before: String, after:String) : MemberConnection
+  # Access resources in a group
   accesses(codes:[ID!], first: Int, last: Int, before: String, after:String): AccessConnection
+  # Supplier resources in a group
   suppliers(codes:[ID!], accessID:[ID!], first: Int, last: Int, before: String, after:String): SupplierConnection
+  # Clients resources in a group
   clients(codes:[ID!],name:[ID!],isActive:Boolean, first: Int, last: Int, before: String, after:String): ClientConnection
+  # You can grant roles to members, which define the roles catalog for a group.
   roles(codes:[ID!], type:RoleType, first: Int, last: Int, before: String, after:String): RoleConnection
 }
 
@@ -894,12 +926,18 @@ type GroupEdge {
   node: Group
 }
 
+# You grant access to members which can be either:
+# Users: A developer, administrator or any other person from your Organization who interacts with the TravelgateX Platform. An email address can be used as the identity of a User.
+# Service Accounts: An application (Client) instead of an individual User. If you prefer, you can create as many Service Accounts as needed to represent different logical components of your application.
 type Member implements Node{
   code: ID!
   memberData: MemberData
-  error:   [Error!]
+  # Errors that abort services
   isActive: Boolean!
+  error:   [Error!]
+  # Date created
   createdAt: DateTime!
+  # Date updated
   updatedAt: DateTime!
 }
 
@@ -912,8 +950,11 @@ type MemberData {
   id: ID!
   code: ID!
   label: String
+  # Member Type
   type: MemberType!
+  # which groups the member is in?
   groups(codes:[ID!],type: GroupType,first: Int, last: Int, before: String, after:String) : GroupConnection
+  # which roles the member has in?
   roles(codes: [ID!], type:RoleType, first: Int, last: Int, before: String, after:String): RoleConnection
 }
 
@@ -924,9 +965,12 @@ type MemberEdge {
 
 type Operation implements Node{
   code: ID!
-  error: [Error!]
   operationData: OperationData
+  # Errors that abort services
+  error: [Error!]
+  # Date created
   createdAt: DateTime!
+  # Date updated
   updatedAt: DateTime!
 }
 
@@ -948,11 +992,15 @@ type OperationEdge {
   node: Operation
 }
 
+# Organization node is the root node in the hierarachy, the folders are the children of the organization and the products are the children of the folders.
 type Organization implements Node {
   code: ID!
   organizationData: OrganizationData
+  # Errors that abort services
   error: [Error!]
+  # Date created
   createdAt: DateTime!
+  # Date updated
   updatedAt: DateTime!
 }
 
@@ -967,15 +1015,22 @@ type OrganizationData implements GroupCommonData {
   label: String
   type: GroupType!
   info: String
+  # Only responses folders.(non-hierarchically)
   children(codes: [ID!], first: Int, last: Int, before: String, after:String): GroupConnection
   owner: Member
   isEditable: Boolean!
   members(codes:[ID!],type: MemberType,first: Int, last: Int, before: String, after:String) : MemberConnection
+  #APIs assigned to this group. Products have APIs.
   apis(codes: [ID!], first: Int, last: Int, before: String, after:String): APIConnection
+  # Products asign to a organization
   products(codes: [ID!], first: Int, last: Int, before: String, after:String): ProductConnection
+  # Response all members in this group's childrens (hierarchically)
   allMembers(codes:[ID!],type: MemberType,first: Int, last: Int, before: String, after:String) : MemberConnection
+  # Access resources in a organization
   accesses(codes:[ID!], first: Int, last: Int, before: String, after:String): AccessConnection
+  # Supplier resources in a organization
   suppliers(codes:[ID!], accessID:[ID!], first: Int, last: Int, before: String, after:String): SupplierConnection
+  # Clients resources in a organization
   clients(codes:[ID!],name:[ID!],isActive:Boolean, first: Int, last: Int, before: String, after:String): ClientConnection
 }
 
@@ -984,11 +1039,15 @@ type OrganizationEdge {
   node: Organization
 }
 
+# An APIs collection.
 type Product implements Node{
   code: ID!
   productData: ProductData!
+  # Errors that abort services
   error: [Error!]
+  # Date created
   createdAt: DateTime!
+  # Date updated
   updatedAt: DateTime!
 }
 
@@ -1001,6 +1060,7 @@ type ProductData{
   id: ID!
   code: ID!
   label: String
+  # A Product has many APIs
   apis(codes: [ID!], first: Int, last: Int, before: String, after:String): APIConnection
 }
 
@@ -1009,11 +1069,15 @@ type ProductEdge {
   node: Product
 }
 
+# Resources are those used in APIs and Products.
 type Resource implements Node{
   code: ID!
-  error: [Error!]
   resourceData: ResourceData
+  # Errors that abort services
+  error: [Error!]
+  # Date created
   createdAt: DateTime!
+  # Date updated
   updatedAt: DateTime!
 }
 
@@ -1027,7 +1091,9 @@ type ResourceData{
   code: ID!
   isEditable: Boolean!
   label: String
+  # which API have asigned this resource?
   apis(codes: [ID!],first: Int, last: Int, before: String, after:String): APIConnection
+  # which roles are asigned or are possibles in this resource?
   roles(codes: [ID!], type:RoleType, first: Int, last: Int, before: String, after:String): RoleConnection
 }
 
@@ -1036,11 +1102,15 @@ type ResourceEdge {
   node: Resource
 }
 
+# Permissions determine what operations are allowed on a resource
 type Role implements Node{
   code: ID!
-  error: [Error!]
   roleData: RoleData
+  # Errors that abort services
+  error: [Error!]
+  # Date created
   createdAt: DateTime!
+  # Date updated
   updatedAt: DateTime!
 }
 
@@ -1055,14 +1125,23 @@ type RoleData{
   type: RoleType!
   isEditable: Boolean!
   label: String
+  # Has resource Create permission?
   isCreate: Boolean!
+  # Has resource Create permission?
   isRead: Boolean!
+  # Has resource Update permission?
   isUpdate: Boolean!
+  # Has resource Delete permission?
   isDelete: Boolean!
+  # Is role enabled or not?
   isEnable: Boolean!
+  # Has resource Executable permission?
   isExecutable: Boolean!
+  # Has any other non-basic permission/s?
   isSpecial: Boolean!
+  # Special permission
   special: String
+  # Resources used
   resources(codes:[ID!],first: Int, last: Int, before: String, after:String): ResourceConnection
 }
 
@@ -3545,7 +3624,7 @@ type Ratios {
 # The service used to access the stats of every connection that uses the HUB
 type Stats implements Node {
   code: ID! #GUID
-  #
+  # The data returned by a `Stats` query.
   statsData: StatsData
   # Errors that will lead the service to abort
   error: [Error!]

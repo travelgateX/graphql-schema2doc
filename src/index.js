@@ -1,9 +1,18 @@
-const fs = require('fs'),
+const fs = require('fs-extra'),
   glob = require('glob'),
   async = require('async'),
   faker = require(__dirname + '/../graph_faker/gr_faker').main,
   extendables = require(__dirname + '/extendables').extendables,
   fetchSchemaJSON = require(__dirname + '/fetchSchemaJSON');
+
+const mds = {
+  default: '',
+  enums: '',
+  interfaces: '',
+  objects: '',
+  reference: '',
+  scalars: ''
+};
 
 glob(
   __dirname + '/../graphql-schema/**/*.graphql',
@@ -32,13 +41,16 @@ glob(
             }`;
         }
       }
-      var stream = fs.createWriteStream(__dirname + '/merged_schema.graphql');
-      stream.once('open', function(fd) {
-        stream.write(data.join('\n'));
-        stream.end();
-        stream.on('finish', _ => fakeSchema());
-        stream.on('error', _ => console.log(errorMsg));
-      });
+
+      fs.writeFile(
+        __dirname + '/merged_schema.graphql',
+        data.join('\n'),
+        function(err) {
+          if (err) return console.log(err);
+          console.log('******* CREATED QUERY *******');
+          fakeSchema();
+        }
+      );
     });
   }
 );
@@ -51,15 +63,15 @@ function fakeSchema() {
   faker(__dirname + '/merged_schema.graphql', () => {}, '9002');
 
   fetchSchemaJSON().then(res => {
-    const introspection = fs.createWriteStream(
-      __dirname + '/introspection.json'
+    fs.writeFile(
+      __dirname + '/introspection.json',
+      JSON.stringify(res),
+      function(err) {
+        if (err) return console.log(err);
+        console.log('******* CREATED INTROSPECTION JSON *******');
+        readMDs();
+      }
     );
-    introspection.once('open', function(fd) {
-      introspection.write(JSON.stringify(res));
-      introspection.end();
-      introspection.on('finish', _ => console.log('done'));
-      introspection.on('error', _ => console.log(errorMsg));
-    });
   });
 }
 
@@ -81,4 +93,42 @@ function findExtendables(file, info) {
   });
 
   return result;
+}
+
+function readMDs() {
+  glob(__dirname + '/../graphql-schema/_skel/*.md', {}, function(er, files) {
+    const filteredFiles = files.filter(f => !f.includes('README.md'));
+
+    const results = async.map(filteredFiles, readAsync, function(err, results) {
+      for (const result of results) {
+        const lowerCaseResult = result.toLowerCase();
+        Object.keys(mds).map(k => {
+          if (lowerCaseResult.includes(String.raw`: "${k}"`)) {
+            mds[k] = result;
+          } else if (lowerCaseResult.includes('% graphql-schema-type %')) {
+            mds['default'] = result;
+          }
+        });
+      }
+      writeMdJSON(mds);
+    });
+  });
+}
+
+function writeMdJSON(mds) {
+  fs.writeFile(__dirname + '/md-data.json', JSON.stringify(mds), function(err) {
+    if (err) return console.log(err);
+    console.log('******* CREATED MD DATA JSON *******');
+  });
+
+  // const mdData = fs.createWriteStream(__dirname + '/md-data.json');
+  // mdData.once('open', _ => {
+  //   mdData.write(JSON.stringify(r));
+  //   mdData.end();
+  //   mdData.on('finish', _ => {
+  //     console.log('******* CREATED MD DATA JSON *******');
+  //     // readMDs();
+  //   });
+  //   mdData.on('error', _ => console.log(errorMsg));
+  // });
 }
