@@ -6,7 +6,7 @@ const fsex = require("fs.extra");
 
 function init() {
   fs.readFile(
-    __dirname + '/../../../graphql-schema2doc/src/md-data.json',
+    __dirname + '/md-data.json',
     (err, data) => {
       if (err) throw err;
       config.mdData = JSON.parse(data);
@@ -34,9 +34,18 @@ function init() {
     } catch (e) {
       throw e;
     }
-    loadSchemaJSON(config.URL, config.BODY).then(json => {
+
+    fs.readFile(
+      __dirname + '/introspection.json',
+      (err, data) => {
+        if (err) throw err;
+        const json = JSON.parse(data);
         renderToHugo(json);
-    });
+      }
+    );
+    // loadSchemaJSON(config.URL, config.BODY).then(json => {
+    //     renderToHugo(json);
+    // });
   });
 }
 
