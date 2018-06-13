@@ -3,7 +3,8 @@ const fs = require('fs-extra'),
   async = require('async'),
   faker = require(__dirname + '/../graph_faker/gr_faker').main,
   extendables = require(__dirname + '/extendables').extendables,
-  fetchSchemaJSON = require(__dirname + '/fetchSchemaJSON');
+  fetchSchemaJSON = require(__dirname + '/fetchSchemaJSON'),
+  toMD = require("./graphqlToMD");
 
 const mds = {
   default: '',
@@ -119,6 +120,7 @@ function writeMdJSON(mds) {
   fs.writeFile(__dirname + '/md-data.json', JSON.stringify(mds), function(err) {
     if (err) return console.log(err);
     console.log('******* CREATED MD DATA JSON *******');
+    toMD.init();
   });
 
   // const mdData = fs.createWriteStream(__dirname + '/md-data.json');
