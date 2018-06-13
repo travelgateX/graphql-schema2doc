@@ -271,6 +271,16 @@ enum RateRulesType {
   NON_REFUNDABLE
 }
 
+# Parameters Input.
+input ParameterInput {  
+  # Contains the keyword/Id to identify a parameter.
+  # This information is mandatory.
+  key: String!
+  # Contains the parameter values.
+  # This information is mandatory.
+  value: String!
+}
+
 input RelayInput {
   first: Int
   last: Int
@@ -453,15 +463,11 @@ input GroupInput {
   groups: [ID]
 }
 
-# Parameters Input.
-input ParameterInput {  
-  # Contains the keyword/Id to identify a parameter.
-  # This information is mandatory.
-  key: String!
-  # Contains the parameter values.
-  # This information is mandatory.
-  value: String!
+input PointOfSaleFilter {
+  code: [ID]
+  groupID: [ID]
 }
+
 
 input ServiceApiFilter {
  ApiName: String
