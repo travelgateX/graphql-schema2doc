@@ -1,4 +1,3 @@
-const loadSchemaJSON = require("./loadSchemaJSON");
 const renderToHugo = require("./renderSchemaToHugo");
 const config = require("./config");
 const fs = require("fs");
@@ -6,7 +5,7 @@ const fsex = require("fs.extra");
 
 function init() {
   fs.readFile(
-    __dirname + '/md-data.json',
+    __dirname + '/../md-data.json',
     (err, data) => {
       if (err) throw err;
       config.mdData = JSON.parse(data);
@@ -35,8 +34,9 @@ function init() {
       throw e;
     }
 
+    console.log(config.LOCATION)
     fs.readFile(
-      __dirname + '/introspection.json',
+      __dirname + '/../introspection.json',
       (err, data) => {
         if (err) throw err;
         const json = JSON.parse(data);

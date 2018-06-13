@@ -24,7 +24,7 @@ function main(schemaPath, callback, port, extend) {
   promptExec.stdout.on('data', function(data) {
     // promptExec.kill('SIGHUP');
     console.log('____data____');
-    setTimeout(_=>promptExec.kill(), 2000);
+    setTimeout(_=>promptExec.kill(), 5000);
   });
 
   promptExec.on('close', function(code) {

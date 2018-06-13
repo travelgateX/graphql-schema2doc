@@ -12,7 +12,9 @@ const mds = {
   interfaces: '',
   objects: '',
   reference: '',
-  scalars: ''
+  scalars: '',
+  schema: '',
+  inputobjects: ''
 };
 
 glob(
@@ -99,38 +101,26 @@ function findExtendables(file, info) {
 function readMDs() {
   glob(__dirname + '/../graphql-schema/_skel/*.md', {}, function(er, files) {
     const filteredFiles = files.filter(f => !f.includes('README.md'));
-
-    const results = async.map(filteredFiles, readAsync, function(err, results) {
+    async.map(filteredFiles, readAsync, function(err, results) {
       for (const result of results) {
-        const lowerCaseResult = result.toLowerCase();
+        const lowerCaseResult = result.split(' ').join('').toLowerCase();
         Object.keys(mds).map(k => {
-          if (lowerCaseResult.includes(String.raw`: "${k}"`)) {
+          if (lowerCaseResult.includes(String.raw`"title":"${k}"`)) {
             mds[k] = result;
           } else if (lowerCaseResult.includes('% graphql-schema-type %')) {
             mds['default'] = result;
           }
         });
       }
-      writeMdJSON(mds);
+      writeMdJSON();
     });
   });
 }
 
-function writeMdJSON(mds) {
+function writeMdJSON() {
   fs.writeFile(__dirname + '/md-data.json', JSON.stringify(mds), function(err) {
     if (err) return console.log(err);
     console.log('******* CREATED MD DATA JSON *******');
     toMD.init();
   });
-
-  // const mdData = fs.createWriteStream(__dirname + '/md-data.json');
-  // mdData.once('open', _ => {
-  //   mdData.write(JSON.stringify(r));
-  //   mdData.end();
-  //   mdData.on('finish', _ => {
-  //     console.log('******* CREATED MD DATA JSON *******');
-  //     // readMDs();
-  //   });
-  //   mdData.on('error', _ => console.log(errorMsg));
-  // });
 }

@@ -128,25 +128,19 @@ function getTypeURL(type) {
   switch (type.kind) {
     case 'INPUT_OBJECT':
       return url + '/inputobjects/' + name;
-      break;
     case 'OBJECT':
       if (name === 'mutation' || name === 'query') {
         return url + '/schema/' + name;
       }
       return url + '/objects/' + name;
-      break;
     case 'SCALAR':
       return url + '/scalars/' + name;
-      break;
     case 'ENUM':
       return url + '/enums/' + name;
-      break;
     case 'INTERFACE':
       return url + '/interfaces/' + name;
-      break;
     default:
       return '#';
-      break;
   }
 }
 
