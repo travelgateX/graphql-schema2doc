@@ -34,7 +34,6 @@ function init() {
       throw e;
     }
 
-    console.log(config.LOCATION)
     fs.readFile(
       __dirname + '/../introspection.json',
       (err, data) => {
@@ -43,9 +42,6 @@ function init() {
         renderToHugo(json);
       }
     );
-    // loadSchemaJSON(config.URL, config.BODY).then(json => {
-    //     renderToHugo(json);
-    // });
   });
 }
 

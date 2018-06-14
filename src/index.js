@@ -107,7 +107,7 @@ function readMDs() {
         Object.keys(mds).map(k => {
           if (lowerCaseResult.includes(String.raw`"title":"${k}"`)) {
             mds[k] = result;
-          } else if (lowerCaseResult.includes('% graphql-schema-type %')) {
+          } else if (lowerCaseResult.includes('%graphql-schema-type%')) {
             mds['default'] = result;
           }
         });

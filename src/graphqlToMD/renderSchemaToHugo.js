@@ -296,7 +296,6 @@ function saveFile(l, path) {
     } else if(pathArray.length === 2 && config.mdData[pathArray[0]]){
       lines = config.mdData[pathArray[0]];
     }else{
-      console.log(1);
       console.log(path)
     }
   }

@@ -19,3 +19,4 @@ These packages should be listed in the package.json. Running ```npm i``` shoyld 
 
 ```npm i httpcheck```
 
+Once installed, just run the index.js script inside src. It will generate a folder called "reference".
