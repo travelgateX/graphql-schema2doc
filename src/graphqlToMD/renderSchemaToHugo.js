@@ -292,7 +292,7 @@ function saveFile(l, path) {
   if (path.includes('_index')) {
     const pathArray = path.split('/');
     if (pathArray.length === 1) {
-      lines = lines + config.mdData['default'];
+      lines = config.mdData['reference'];
     } else if(pathArray.length === 2 && config.mdData[pathArray[0]]){
       lines = config.mdData[pathArray[0]];
     }else{
