@@ -195,10 +195,10 @@ function renderSchema(schema) {
   const interfaces = types.filter(type => type.kind === 'INTERFACE');
   render(interfaces, types, 'interfaces', 'type', 'interface');
 
-  if (config.frontmatters.CHANGELOG && LOG.length) {
+  if (config.frontmatters.DEPRECATED && LOG.length) {
     const lines = [];
-    renderChangelog(lines, config.frontmatters.CHANGELOG, 'changelog');
-    saveFile(lines.join('\n'), `changelog`);
+    renderDeprecatedNotes(lines, config.frontmatters.DEPRECATED, 'deprecated_notes');
+    saveFile(lines.join('\n'), `deprecated_notes`);
   }
 }
 
@@ -254,21 +254,21 @@ function renderObject(lines, type, types, template, operator = template) {
   }
 }
 
-function renderChangelog(lines, frontMatter, template) {
+function renderDeprecatedNotes(lines, frontMatter, template) {
   frontMatter = JSON.parse(frontMatter);
-  const changelog = [];
+  const deprecatedNotes = [];
   const sortedLog = removeDuplicates(LOG, 'name');
 
-  const changelogDates = Array.from(new Set(sortedLog.map(cl => cl.date)));
+  const deprecatedNotesDates = Array.from(new Set(sortedLog.map(cl => cl.date)));
 
-  for (const date of changelogDates) {
-    changelog.push({
+  for (const date of deprecatedNotesDates) {
+    deprecatedNotes.push({
       date: date,
       information: sortedLog.filter(sl => sl.date === date)
     });
   }
 
-  frontMatter.log = changelog;
+  frontMatter.log = deprecatedNotes;
   lines.push(JSON.stringify(frontMatter));
 
   printer(lines, `## Deprecations`);
