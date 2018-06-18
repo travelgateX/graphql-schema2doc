@@ -1,0 +1,3 @@
+[submodule "graphql-schema"]
+	path = graphql-schema
+	url = git://github.com/travelgateX/graphql-schema.git
