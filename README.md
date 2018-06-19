@@ -19,4 +19,6 @@ These packages should be listed in the package.json. Running ```npm i``` shoyld 
 
 ```npm i httpcheck```
 
-Once installed, just run the index.js script inside src. It will generate a folder called "reference".
+The `graphql-schema` repo is necessary to run the script. Make sure to pull from it when you first clone this repo, otherwise the script will not work. Also, port 9002 must be free in order to set up a temporary endpoint to fetch the data.
+
+Once everything is ready, just run the index.js script inside src. It will generate a folder called "reference".

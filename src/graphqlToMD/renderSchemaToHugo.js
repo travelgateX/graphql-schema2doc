@@ -92,21 +92,28 @@ function parseFields(type, addToDeprecated) {
         args.push(newArgField(arg));
       });
     }
-    let newfield = newArgField(field);
-    newfield.args = args;
+    let newField = newArgField(field);
+    newField.args = args;
 
-    if (addToDeprecated && newfield.isDeprecated) {
+    if (addToDeprecated && newField.isDeprecated) {
       if (field.deprecationReason) {
-        newfield.deprecationReason = field.deprecationReason;
+        newField.deprecationReason = field.deprecationReason;
       }
       if (descriptionSplitted) {
-        newfield.descriptionSplitted = descriptionSplitted;
+        newField.descriptionSplitted = descriptionSplitted;
       }
-      fieldsList.push(newfield);
-    } else if (!addToDeprecated && !newfield.isDeprecated) {
+      fieldsList.push(newField);
+    } else if (!addToDeprecated && !newField.isDeprecated) {
       if (!invalid) {
-        fieldsList.push(newfield);
+        fieldsList.push(newField);
       }
+    }
+    if (!LOG.find(l => l.name === newField.name && l.date !== 'Others')) {
+      LOG.push({
+        info: newField.description,
+        date: 'Others',
+        name: newField.name
+      });
     }
   });
   return fieldsList.length ? fieldsList : null;
@@ -197,7 +204,11 @@ function renderSchema(schema) {
 
   if (config.frontmatters.DEPRECATED && LOG.length) {
     const lines = [];
-    renderDeprecatedNotes(lines, config.frontmatters.DEPRECATED, 'deprecated_notes');
+    renderDeprecatedNotes(
+      lines,
+      config.frontmatters.DEPRECATED,
+      'deprecated_notes'
+    );
     saveFile(lines.join('\n'), `deprecated_notes`);
   }
 }
@@ -259,7 +270,9 @@ function renderDeprecatedNotes(lines, frontMatter, template) {
   const deprecatedNotes = [];
   const sortedLog = removeDuplicates(LOG, 'name');
 
-  const deprecatedNotesDates = Array.from(new Set(sortedLog.map(cl => cl.date)));
+  const deprecatedNotesDates = Array.from(
+    new Set(sortedLog.map(cl => cl.date))
+  );
 
   for (const date of deprecatedNotesDates) {
     deprecatedNotes.push({
@@ -276,15 +289,23 @@ function renderDeprecatedNotes(lines, frontMatter, template) {
 }
 
 function removeDuplicates(myArr, prop) {
-  const arr = myArr.filter((obj, pos, arr) => {
+  const others = myArr
+    .filter(a => a.date === 'Others')
+    .filter((obj, pos, arr) => {
+      return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos;
+    });
+
+  const arr = myArr.filter(a => a.date !== 'Others').filter((obj, pos, arr) => {
     return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos;
   });
 
-  return arr.sort((a, b) => {
+  const orderedArray = arr.sort((a, b) => {
     if (new Date(a.date) < new Date(b.date)) return 1;
     if (new Date(b.date) < new Date(a.date)) return -1;
     return 0;
   });
+
+  return orderedArray.concat(others);
 }
 
 function saveFile(l, path) {
@@ -293,10 +314,10 @@ function saveFile(l, path) {
     const pathArray = path.split('/');
     if (pathArray.length === 1) {
       lines = config.mdData['reference'];
-    } else if(pathArray.length === 2 && config.mdData[pathArray[0]]){
+    } else if (pathArray.length === 2 && config.mdData[pathArray[0]]) {
       lines = config.mdData[pathArray[0]];
-    }else{
-      console.log(path)
+    } else {
+      console.log(path);
     }
   }
 
