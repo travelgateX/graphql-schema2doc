@@ -61,3 +61,7 @@ typings/
 .next
 
 src/reference/*
+src/introspection.json
+src/md-data.json
+package-lock.json
+src/merged_schema.graphql
