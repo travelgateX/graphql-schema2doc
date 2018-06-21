@@ -28,17 +28,18 @@ function renderType(type, ret) {
 
 function newArgField(fieldOrArg) {
   let ret = {};
-  return {
+  const field = {
     typeString: renderType(fieldOrArg.type, ret),
     name: fieldOrArg.name,
     url: ret.url,
     description: fieldOrArg.description,
     isDeprecated: fieldOrArg.isDeprecated
   };
+
+  return field;
 }
 
-function parseFields(type, addToDeprecated) {
-  let invalid = false;
+function parseFields(type) {
   let fields = [];
   if (type.fields) {
     fields = type.fields;
@@ -48,12 +49,19 @@ function parseFields(type, addToDeprecated) {
   var fieldsList = [];
   fields.forEach(field => {
     var args = null;
-    let descriptionSplitted = null;
 
-    // Looks for a date inside the description, which would indicate deprecation.
-    // Description is splitted so it can be put inside an anchor for reference
-    if (/(\d{4})([\/-])(\d{1,2})\2(\d{1,2})/.test(field.description)) {
-      const splittedDescription = field.description.split(' ');
+    // Looks for a date inside the deprecationReason. Also looks for a date inside the description, which would indicate deprecation too.
+    // The property is splitted so it can be put inside an anchor for reference
+    const baseProperty =
+      field.deprecationReason &&
+      /(\d{4})([\/-])(\d{1,2})\2(\d{1,2})/.test(field.deprecationReason)
+        ? 'deprecationReason'
+        : /(\d{4})([\/-])(\d{1,2})\2(\d{1,2})/.test(field.description)
+          ? 'description'
+          : false;
+
+    if (baseProperty) {
+      const splittedDescription = field[baseProperty].split(' ');
 
       let index = splittedDescription.findIndex(d => {
         if (d.match(/(\d{4})([\/-])(\d{1,2})\2(\d{1,2})/)) return true;
@@ -68,21 +76,21 @@ function parseFields(type, addToDeprecated) {
       const secondPartDescription = splittedDescription
         .slice(index + 1, splittedDescription.length)
         .join(' ');
-      descriptionSplitted = {
+
+      field['isDeprecated'] = true;
+      field['deprecationDate'] = date;
+      field['descriptionSplitted'] = {
         date: date,
         first: firstPartDescription,
         second: secondPartDescription
       };
-      LOG.push({ info: field.description, date: date, name: field.name });
     }
 
     // Looks for '@deprecated' substring inside the description
-    if (field.description.indexOf('@deprecated') !== -1) {
-      if (!addToDeprecated) {
-        invalid = true;
-      } else {
-        field.isDeprecated = true;
-        field.deprecationReason = /\"(.*?)\"/.exec(field.description)[1];
+    if (field.description.includes('@deprecated')) {
+      field['isDeprecated'] = true;
+      if (!field['deprecationReason']) {
+        field['deprecationReason'] = /\"(.*?)\"/.exec(field.description)[1];
       }
     }
 
@@ -95,26 +103,21 @@ function parseFields(type, addToDeprecated) {
     let newField = newArgField(field);
     newField.args = args;
 
-    if (addToDeprecated && newField.isDeprecated) {
-      if (field.deprecationReason) {
-        newField.deprecationReason = field.deprecationReason;
-      }
-      if (descriptionSplitted) {
-        newField.descriptionSplitted = descriptionSplitted;
-      }
-      fieldsList.push(newField);
-    } else if (!addToDeprecated && !newField.isDeprecated) {
-      if (!invalid) {
-        fieldsList.push(newField);
-      }
+    if (field['deprecationReason']) {
+      newField['deprecationReason'] = field['deprecationReason'];
     }
-    if (!LOG.find(l => l.name === newField.name && l.date !== 'Others')) {
-      LOG.push({
-        info: newField.description,
-        date: 'Others',
-        name: newField.name
-      });
+    if (field['descriptionSplitted']) {
+      newField['descriptionSplitted'] = field['descriptionSplitted'];
     }
+    if (field['deprecationDate']) {
+      newField['deprecationDate'] = field['deprecationDate'];
+    }
+
+    if (newField.isDeprecated && newField.deprecationReason) {
+      LOG.push(newField);
+    }
+
+    fieldsList.push(newField);
   });
   return fieldsList.length ? fieldsList : null;
 }
@@ -237,8 +240,7 @@ function renderObject(lines, type, types, template, operator = template) {
     title: type.name,
     description: '',
     weight: 1,
-    fields: parseFields(type, false),
-    deprecatedFields: parseFields(type, true),
+    fields: parseFields(type),
     requireby: parseRequiredBy(types, type.name),
     enumValues: type.enumValues,
     operator: operator,
@@ -267,45 +269,31 @@ function renderObject(lines, type, types, template, operator = template) {
 
 function renderDeprecatedNotes(lines, frontMatter, template) {
   frontMatter = JSON.parse(frontMatter);
-  const deprecatedNotes = [];
-  const sortedLog = removeDuplicates(LOG, 'name');
 
-  const deprecatedNotesDates = Array.from(
-    new Set(sortedLog.map(cl => cl.date))
-  );
+  const deprecatedFields = LOG.map(l => {
+    return {
+      args: l.args,
+      deprecationReason: l.deprecationReason,
+      description: l.description,
+      name: l.name,
+      url: l.url,
+      deprecationDate: l.deprecationDate
+    };
+  });
 
-  for (const date of deprecatedNotesDates) {
-    deprecatedNotes.push({
-      date: date,
-      information: sortedLog.filter(sl => sl.date === date)
-    });
+  const objectLog = {};
+  const dates = Array.from(new Set(LOG.map(l => l.deprecationDate)));
+
+  for (const date of dates) {
+    const property = date || 'Unkonwn';
+    objectLog[property] = deprecatedFields.filter(df => df.deprecationDate === date);
   }
 
-  frontMatter.log = deprecatedNotes;
+  frontMatter.log = objectLog;
   lines.push(JSON.stringify(frontMatter));
 
   printer(lines, `## Deprecations`);
   printer(lines, `{{% ${template} %}}\n`);
-}
-
-function removeDuplicates(myArr, prop) {
-  const others = myArr
-    .filter(a => a.date === 'Others')
-    .filter((obj, pos, arr) => {
-      return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos;
-    });
-
-  const arr = myArr.filter(a => a.date !== 'Others').filter((obj, pos, arr) => {
-    return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos;
-  });
-
-  const orderedArray = arr.sort((a, b) => {
-    if (new Date(a.date) < new Date(b.date)) return 1;
-    if (new Date(b.date) < new Date(a.date)) return -1;
-    return 0;
-  });
-
-  return orderedArray.concat(others);
 }
 
 function saveFile(l, path) {
