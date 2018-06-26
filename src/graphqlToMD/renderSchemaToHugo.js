@@ -244,7 +244,8 @@ function renderObject(lines, type, types, template, operator = template) {
     requireby: parseRequiredBy(types, type.name),
     enumValues: type.enumValues,
     operator: operator,
-    typename: type.name
+    typename: type.name,
+    hideGithubLink: true
   };
 
   lines.push(JSON.stringify(frontMatter, null, 2));
