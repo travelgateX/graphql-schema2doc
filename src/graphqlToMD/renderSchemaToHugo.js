@@ -302,9 +302,13 @@ function saveFile(l, path) {
   if (path.includes('_index')) {
     const pathArray = path.split('/');
     if (pathArray.length === 1) {
-      lines = config.mdData['reference'];
+      const position = config.mdData['reference'].indexOf("pagetitle");
+      const str = config.mdData['reference'];
+      lines = [str.slice(0, position - 1), `"hideGithubLink": true,\n\t`, str.slice(position - 1)].join('');
     } else if (pathArray.length === 2 && config.mdData[pathArray[0]]) {
-      lines = config.mdData[pathArray[0]];
+      const position = config.mdData[pathArray[0]].indexOf("pagetitle");
+      const str = config.mdData[pathArray[0]];
+      lines =  [str.slice(0, position - 1), `"hideGithubLink": true,\n\t`, str.slice(position - 1)].join('');
     } else {
       console.log(path);
     }
