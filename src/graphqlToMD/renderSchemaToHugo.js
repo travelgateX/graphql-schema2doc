@@ -114,6 +114,8 @@ function parseFields(type) {
     }
 
     if (newField.isDeprecated && newField.deprecationReason) {
+      // newField.type = type;
+      newField.typeName = type.name;
       LOG.push(newField);
     }
 
@@ -269,16 +271,52 @@ function renderObject(lines, type, types, template, operator = template) {
 }
 
 function renderDeprecatedNotes(lines, frontMatter, template) {
+  const orderedLog = LOG.map(l => {
+    l.dateMilliseconds = new Date(l.deprecationDate || '2100-01-01').getTime();
+    return l;
+  }).sort((a, b) => {
+    if (a.dateMilliseconds < b.dateMilliseconds) return -1;
+    if (a.dateMilliseconds > b.dateMilliseconds) return 1;
+    return 0;
+  });
+
   frontMatter = JSON.parse(frontMatter);
 
-  const deprecatedFields = LOG.map(l => {
+  const table = `|Deprecation date|Deletion date|Days left|Name|Location|Deprecation Reason|\n`;
+  const tableLayout = `|:--|:--|:--|:--|:--|:--|\n`;
+  let tableContent = ``;
+
+  const deprecatedFields = orderedLog.map(l => {
+    let deletionDate = 'unknown';
+    let daysRemaining = 'unknown';
+    if (l.deprecationDate) {
+      const date = new Date(new Date(l.deprecationDate) + 7776000000);
+
+      const day = ('' + date.getDate()).padStart(2, '0');
+      const month = ('' + (date.getMonth() + 1)).padStart(2, '0');
+      const year = date.getFullYear();
+
+      deletionDate = `${year}-${month}-${day}`;
+
+      daysRemaining = new Date(deletionDate).getTime() - new Date().getTime();
+      if (daysRemaining >= 0) {
+        daysRemaining = Math.floor(daysRemaining / 86400000);
+      } else {
+        daysRemaining = 'Already passed';
+      }
+    }
+
+    tableContent += `|${l.deprecationDate ||
+      'unknown'}|${deletionDate}|${daysRemaining}|${l.name}|${l.typeName}|${l.deprecationReason}|\n`;
     return {
       args: l.args,
       deprecationReason: l.deprecationReason,
       description: l.description,
       name: l.name,
       url: l.url,
-      deprecationDate: l.deprecationDate
+      deprecationDate: l.deprecationDate,
+      typeString: l.typeString,
+      typeName: l.typeName
     };
   });
 
@@ -287,12 +325,16 @@ function renderDeprecatedNotes(lines, frontMatter, template) {
 
   for (const date of dates) {
     const property = date || 'Unkonwn';
-    objectLog[property] = deprecatedFields.filter(df => df.deprecationDate === date);
+    objectLog[property] = deprecatedFields.filter(
+      df => df.deprecationDate === date
+    );
   }
 
-  frontMatter.log = objectLog;
+  // Fix not to send the log to the md
+  frontMatter.log = {} || objectLog;
   lines.push(JSON.stringify(frontMatter));
 
+  printer(lines, table + tableLayout + tableContent);
   printer(lines, `## Deprecations`);
   printer(lines, `{{% ${template} %}}\n`);
 }
@@ -302,13 +344,21 @@ function saveFile(l, path) {
   if (path.includes('_index')) {
     const pathArray = path.split('/');
     if (pathArray.length === 1) {
-      const position = config.mdData['reference'].indexOf("pagetitle");
+      const position = config.mdData['reference'].indexOf('pagetitle');
       const str = config.mdData['reference'];
-      lines = [str.slice(0, position - 1), `"hideGithubLink": true,\n\t`, str.slice(position - 1)].join('');
+      lines = [
+        str.slice(0, position - 1),
+        `"hideGithubLink": true,\n\t`,
+        str.slice(position - 1)
+      ].join('');
     } else if (pathArray.length === 2 && config.mdData[pathArray[0]]) {
-      const position = config.mdData[pathArray[0]].indexOf("pagetitle");
+      const position = config.mdData[pathArray[0]].indexOf('pagetitle');
       const str = config.mdData[pathArray[0]];
-      lines =  [str.slice(0, position - 1), `"hideGithubLink": true,\n\t`, str.slice(position - 1)].join('');
+      lines = [
+        str.slice(0, position - 1),
+        `"hideGithubLink": true,\n\t`,
+        str.slice(position - 1)
+      ].join('');
     } else {
       console.log(path);
     }
