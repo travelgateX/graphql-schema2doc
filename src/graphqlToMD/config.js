@@ -6,13 +6,7 @@ var URL = 'https://api.travelgatex.com';
 var DIRNAME = 'reference';
 var PATH = '/travelgatex/';
 var relURL = PATH + DIRNAME;
-var LOCATION = __dirname + '/../reference';
-"./.."
-var BODY = {
-  operationName: 'IntrospectionQuery',
-  query: require('./query').query,
-  variable: null
-};
+var LOCATION = __dirname + '/../output/reference';
 
 var mdData = {};
 
@@ -57,7 +51,6 @@ module.exports = {
   LOCATION,
   DIRNAME,
   relURL,
-  BODY,
   frontmatters: {
     frontMatter,
     INDEX,

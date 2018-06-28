@@ -2,7 +2,7 @@ const fs = require('fs-extra'),
   glob = require('glob'),
   async = require('async'),
   faker = require(__dirname + '/../graph_faker/gr_faker').main,
-  extendables = require(__dirname + '/extendables').extendables,
+  extendables = require(__dirname + '/resources/extendables').extendables,
   fetchSchemaJSON = require(__dirname + '/fetchSchemaJSON'),
   toMD = require("./graphqlToMD");
 
@@ -19,7 +19,7 @@ const mds = {
 
 glob(
   __dirname + '/../graphql-schema/**/*.graphql',
-  { ignore: ['merged_schema.graphql', 'node_modules/**', 'graph_faker/**'] },
+  { ignore: ['tmp/**', 'node_modules/**', 'graph_faker/**'] },
   function(er, files) {
     const results = async.map(files, readAsync, function(err, results) {
       const extendableTypesInfo = {};
@@ -46,7 +46,7 @@ glob(
       }
 
       fs.writeFile(
-        __dirname + '/merged_schema.graphql',
+        __dirname + '/tmp/merged_schema.graphql',
         data.join('\n'),
         function(err) {
           if (err) return console.log(err);
@@ -63,11 +63,11 @@ function readAsync(file, callback) {
 }
 
 function fakeSchema() {
-  faker(__dirname + '/merged_schema.graphql', () => {}, '9002');
+  faker(__dirname + '/tmp/merged_schema.graphql', () => {}, '9002');
 
   fetchSchemaJSON().then(res => {
     fs.writeFile(
-      __dirname + '/introspection.json',
+      __dirname + '/tmp/introspection.json',
       JSON.stringify(res),
       function(err) {
         if (err) return console.log(err);
@@ -118,7 +118,7 @@ function readMDs() {
 }
 
 function writeMdJSON() {
-  fs.writeFile(__dirname + '/md-data.json', JSON.stringify(mds), function(err) {
+  fs.writeFile(__dirname + '/tmp/md-data.json', JSON.stringify(mds), function(err) {
     if (err) return console.log(err);
     console.log('******* CREATED MD DATA JSON *******');
     toMD.init();

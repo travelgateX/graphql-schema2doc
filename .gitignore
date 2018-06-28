@@ -60,8 +60,6 @@ typings/
 # next.js build output
 .next
 
-src/reference/*
-src/introspection.json
-src/md-data.json
+src/output/*
+src/tmp/*
 package-lock.json
-src/merged_schema.graphql

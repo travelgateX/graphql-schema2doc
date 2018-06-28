@@ -1,5 +1,5 @@
 const fetch = require('node-fetch'),
-  query = require(__dirname + '/query').query,
+  query = require(__dirname + '/resources/query').query,
   check = require('httpcheck');
 
 function main() {

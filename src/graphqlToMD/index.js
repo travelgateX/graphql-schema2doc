@@ -5,7 +5,7 @@ const fsex = require("fs.extra");
 
 function init() {
   fs.readFile(
-    __dirname + '/../md-data.json',
+    __dirname + '/../tmp/md-data.json',
     (err, data) => {
       if (err) throw err;
       config.mdData = JSON.parse(data);
@@ -35,7 +35,7 @@ function init() {
     }
 
     fs.readFile(
-      __dirname + '/../introspection.json',
+      __dirname + '/../tmp/introspection.json',
       (err, data) => {
         if (err) throw err;
         const json = JSON.parse(data);
