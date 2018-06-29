@@ -292,7 +292,7 @@ function renderDeprecatedNotes(lines, frontMatter, template) {
     let deletionDate = 'unknown';
     let daysRemaining = 'unknown';
     if (l.deprecationDate) {
-      const date = new Date(new Date(l.deprecationDate) + 7776000000);
+      const date = new Date(new Date(l.deprecationDate).getTime() + 7776000000);
 
       const day = ('' + date.getDate()).padStart(2, '0');
       const month = ('' + (date.getMonth() + 1)).padStart(2, '0');

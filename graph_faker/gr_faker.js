@@ -23,7 +23,6 @@ function main(schemaPath, callback, port, extend) {
   const promptExec = prompt(command, function(err, stdout, stderr) {});
 
   promptExec.stdout.on('data', function(data) {
-    // promptExec.kill('SIGHUP');
     bar.tick();
     bar.interrupt('[Faker data ready]');
     setTimeout(_ => promptExec.kill(), 0);
