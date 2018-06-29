@@ -23,4 +23,4 @@ The `graphql-schema` repo is necessary to run the script. Make sure to pull from
 
 ## Running the scripts
 
-Once everything is ready, just run the index.js script inside src. If everything is fine, it will generate a folder called "reference", which must be moved to `documentation-site`, inside `travelgateX`.
+Once everything is ready, just run the index.js script inside src. If everything is fine, it will generate a folder called "reference" inside "output", which must be moved to `documentation-site`, inside `travelgateX`.
