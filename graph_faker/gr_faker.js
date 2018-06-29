@@ -2,9 +2,10 @@ module.exports = {
   main: main
 };
 
-const prompt = require('child_process').exec;
-const { printMockerHelp } = require('./help');
-const fs = require('fs');
+const prompt = require('child_process').exec,
+  { printMockerHelp } = require('./help'),
+  fs = require('fs'),
+  bar = require(__dirname + '/../progressBar/bar');
 
 function main(schemaPath, callback, port, extend) {
   //If --h/--help, show help and exit
@@ -23,12 +24,14 @@ function main(schemaPath, callback, port, extend) {
 
   promptExec.stdout.on('data', function(data) {
     // promptExec.kill('SIGHUP');
-    console.log('____data____');
-    setTimeout(_=>promptExec.kill(), 2000);
+    bar.tick();
+    bar.interrupt('[Faker data ready]');
+    setTimeout(_ => promptExec.kill(), 0);
   });
 
   promptExec.on('close', function(code) {
-    console.log('____close____');
+    bar.tick();
+    bar.interrupt('[Faker connection ended]');
   });
 
   promptExec.on('error', function(code) {

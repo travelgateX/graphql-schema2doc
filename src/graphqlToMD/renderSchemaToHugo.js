@@ -1,6 +1,7 @@
 'use strict';
 var fs = require('fs');
 var config = require('./config');
+var bar = require(__dirname + '/../../progressBar/bar');
 
 const LOG = [];
 
@@ -206,7 +207,7 @@ function renderSchema(schema) {
 
   const interfaces = types.filter(type => type.kind === 'INTERFACE');
   render(interfaces, types, 'interfaces', 'type', 'interface');
-
+  bar.tick();
   if (config.frontmatters.DEPRECATED && LOG.length) {
     const lines = [];
     renderDeprecatedNotes(
@@ -215,6 +216,7 @@ function renderSchema(schema) {
       'deprecated_notes'
     );
     saveFile(lines.join('\n'), `deprecated_notes`);
+    bar.tick();
   }
 }
 

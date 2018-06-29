@@ -1,6 +1,7 @@
 const fetch = require('node-fetch'),
-  query = require(__dirname + '/resources/query').query,
-  check = require('httpcheck');
+  query = require(__dirname + '/query').query,
+  check = require('httpcheck'),
+  bar = require(__dirname + '/../../progressBar/bar');
 
 function main() {
   const body = {
@@ -26,10 +27,11 @@ function main() {
       },
       function(err) {
         if (err) {
-          console.log('HTTP check for example.com failed!');
+          bar.interrupt('[HTTP check for example.com failed!]');
           throw err;
         }
-        console.log('HTTP check for example.com has passed');
+        bar.tick();
+        bar.interrupt('[HTTP check for example.com has passed]');
       }
     );
   });

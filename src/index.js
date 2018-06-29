@@ -3,8 +3,9 @@ const fs = require('fs-extra'),
   async = require('async'),
   faker = require(__dirname + '/../graph_faker/gr_faker').main,
   extendables = require(__dirname + '/resources/extendables').extendables,
-  fetchSchemaJSON = require(__dirname + '/fetchSchemaJSON'),
-  toMD = require("./graphqlToMD");
+  fetchSchemaJSON = require(__dirname + '/resources/fetchSchemaJSON'),
+  toMD = require(__dirname + '/graphqlToMD'),
+  bar = require(__dirname + '/../progressBar/bar')
 
 const mds = {
   default: '',
@@ -17,46 +18,68 @@ const mds = {
   inputobjects: ''
 };
 
-glob(
-  __dirname + '/../graphql-schema/**/*.graphql',
-  { ignore: ['tmp/**', 'node_modules/**', 'graph_faker/**'] },
-  function(er, files) {
-    const results = async.map(files, readAsync, function(err, results) {
-      const extendableTypesInfo = {};
-      const data = [''];
-      extendables.map(e => (extendableTypesInfo[e] = {}));
-      results.map(file => {
-        const res = findExtendables(file, extendableTypesInfo);
-        if (res.includes('placeholder')) {
-          data.push(res);
-        } else if (res === 'default') {
-          data.push(file);
-        }
-      });
+// Starting function
+initScript();
 
-      for (const ext of extendables) {
-        const index = data.findIndex(d => d.includes('placeholder' + ext));
 
-        if (index && extendableTypesInfo[ext].type) {
-          data[index] = `
+function initScript(){
+
+
+  fs.emptyDir(__dirname + '/tmp/', err => {
+    if (err) return console.error(err)
+
+    bar.tick({'token1': "Hello"});
+    createQuery();
+  });
+}
+
+
+
+
+function createQuery() {
+  glob(
+    __dirname + '/../graphql-schema/**/*.graphql',
+    { ignore: ['tmp/**', 'node_modules/**', 'graph_faker/**'] },
+    function(er, files) {
+      const results = async.map(files, readAsync, function(err, results) {
+        bar.tick();
+        const extendableTypesInfo = {};
+        const data = [''];
+        extendables.map(e => (extendableTypesInfo[e] = {}));
+        results.map(file => {
+          const res = findExtendables(file, extendableTypesInfo);
+          if (res.includes('placeholder')) {
+            data.push(res);
+          } else if (res === 'default') {
+            data.push(file);
+          }
+        });
+
+        for (const ext of extendables) {
+          const index = data.findIndex(d => d.includes('placeholder' + ext));
+
+          if (index && extendableTypesInfo[ext].type) {
+            data[index] = `
             ${extendableTypesInfo[ext].type} 
             ${extendableTypesInfo[ext].extend} 
             }`;
+          }
         }
-      }
 
-      fs.writeFile(
-        __dirname + '/tmp/merged_schema.graphql',
-        data.join('\n'),
-        function(err) {
-          if (err) return console.log(err);
-          console.log('******* CREATED QUERY *******');
-          fakeSchema();
-        }
-      );
-    });
-  }
-);
+        fs.writeFile(
+          __dirname + '/tmp/merged_schema.graphql',
+          data.join('\n'),
+          function(err) {
+            if (err) return console.log(err);
+            bar.tick();
+            bar.interrupt('[Created Schema]');
+            fakeSchema();
+          }
+        );
+      });
+    }
+  );
+}
 
 function readAsync(file, callback) {
   fs.readFile(file, 'utf8', callback);
@@ -71,7 +94,8 @@ function fakeSchema() {
       JSON.stringify(res),
       function(err) {
         if (err) return console.log(err);
-        console.log('******* CREATED INTROSPECTION JSON *******');
+        bar.tick();
+        bar.interrupt('[Created introspection JSON]');
         readMDs();
       }
     );
@@ -103,7 +127,10 @@ function readMDs() {
     const filteredFiles = files.filter(f => !f.includes('README.md'));
     async.map(filteredFiles, readAsync, function(err, results) {
       for (const result of results) {
-        const lowerCaseResult = result.split(' ').join('').toLowerCase();
+        const lowerCaseResult = result
+          .split(' ')
+          .join('')
+          .toLowerCase();
         Object.keys(mds).map(k => {
           if (lowerCaseResult.includes(String.raw`"title":"${k}"`)) {
             mds[k] = result;
@@ -118,9 +145,13 @@ function readMDs() {
 }
 
 function writeMdJSON() {
-  fs.writeFile(__dirname + '/tmp/md-data.json', JSON.stringify(mds), function(err) {
+  fs.writeFile(__dirname + '/tmp/md-data.json', JSON.stringify(mds), function(
+    err
+  ) {
     if (err) return console.log(err);
-    console.log('******* CREATED MD DATA JSON *******');
+    bar.tick();
+    bar.interrupt('[Created MD data JSON]');
     toMD.init();
   });
 }
+
