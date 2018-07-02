@@ -308,8 +308,17 @@ function renderDeprecatedNotes(lines, frontMatter, template) {
       }
     }
 
+    //Formatting deprecation reason
+    if (l.deprecationReason.includes('deprecated from ')) {
+      const index =
+        l.deprecationReason.search(/(\d{4})([\/-])(\d{1,2})\2(\d{1,2})/) + 12;
+      l.deprecationReason = l.deprecationReason.slice(index);
+    }
+
     tableContent += `|${l.deprecationDate ||
-      'unknown'}|${deletionDate}|${daysRemaining}|${l.name}|${l.typeName}|${l.deprecationReason}|\n`;
+      'unknown'}|${deletionDate}|${daysRemaining}|[${l.name}](${l.url})|${
+      l.typeName
+    }|${l.deprecationReason}|\n`;
     return {
       args: l.args,
       deprecationReason: l.deprecationReason,
@@ -332,8 +341,9 @@ function renderDeprecatedNotes(lines, frontMatter, template) {
     );
   }
 
-  // Fix not to send the log to the md
+  // Fix to avoid sending the entire log to the md
   frontMatter.log = {} || objectLog;
+  frontMatter.hideGithubLink = true;
   lines.push(JSON.stringify(frontMatter));
 
   printer(lines, table + tableLayout + tableContent);
