@@ -38,6 +38,7 @@ var INDEXINTERFACES = frontMatter('Interfaces', null, '', 4, null);
 var INDEXINPUTOBJECTS = frontMatter('Input objects', null, '', 5, null);
 var INDEXENUMS = frontMatter('Enums', null, '', 6, null);
 var DEPRECATED = frontMatter('Deprecated notes', null, '', 7, null);
+var DELETED = frontMatter('Deleted notes', null, '', 8, null);
 
 var QUERY = frontMatter('Query', null, '', 1, null);
 var MUTATION = frontMatter('Mutation', null, '', 2, null);
@@ -62,7 +63,8 @@ module.exports = {
     INDEXENUMS,
     QUERY,
     MUTATION,
-    DEPRECATED
+    DEPRECATED,
+    DELETED
   },
   SECTION1,
   SECTION2,
