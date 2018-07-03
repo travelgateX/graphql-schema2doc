@@ -63,4 +63,3 @@ typings/
 src/output/*
 src/tmp/*
 package-lock.json
-src/deprecated-storage/*
