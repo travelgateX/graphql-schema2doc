@@ -9,7 +9,9 @@ var deprecationManagement = require('./deprecation-management.js');
 
 // MAIN FUNCTION
 
-function renderSchema(schema) {
+function renderSchema(s) {
+  const schema = s.__schema;
+
   if (globalConfig.USER_CHOICES.filter !== 'Everything') {
     let aux;
     let coreItem;
@@ -18,15 +20,12 @@ function renderSchema(schema) {
     if (globalConfig.USER_CHOICES.filter.includes('HotelX')) {
       aux = 'HotelXQuery';
     }
-    const type = schema.__schema.types.filter(t => t.name === aux);
+    const type = schema.types.filter(t => t.name === aux);
     if((type || []).length){
-      coreItem = schema.__schema.types.filter(t => t.name === aux)[0];
-      const finalItem = functions.findSharedTypes(coreItem, schema.__schema.types);
+      coreItem = schema.types.filter(t => t.name === aux)[0];
+      // schema.fields = [coreItem]
+      const finalItem = functions.findSharedTypes(coreItem, schema.types);
     }
-  }
-
-  if (schema.__schema) {
-    schema = schema.__schema;
   }
 
   saveFile(config.frontmatters.INDEX, `_index`);

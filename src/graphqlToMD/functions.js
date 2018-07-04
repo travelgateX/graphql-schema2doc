@@ -171,10 +171,15 @@ const functions = {
     });
     return filter.length ? filter : null;
   },
-  findSharedTypes: (coreItem, fields) =>{
-      console.log('\nINSIDE FUNCTION\n');
-      console.log(JSON.stringify(coreItem));
-      return 'In development';
+  findSharedTypes: (coreItem, fields) => {
+    console.log('\nINSIDE FUNCTION\n');
+    // console.log(JSON.stringify(coreItem));
+    const deeper = () => {};
+    // Loop through the fields inside coreItem
+    for (const field of coreItem.fields) {
+    //   console.log(field);
+    }
+    return 'In development';
   }
 };
 
