@@ -5,7 +5,8 @@ const fs = require('fs-extra'),
   extendables = require(__dirname + '/resources/extendables').extendables,
   fetchSchemaJSON = require(__dirname + '/resources/fetchSchemaJSON'),
   toMD = require(__dirname + '/graphqlToMD'),
-  bar = require(__dirname + '/../progressBar/bar')
+  bar = require(__dirname + '/../progressBar/bar'),
+  inquirer = require('inquirer');
 
 const mds = {
   default: '',
@@ -18,23 +19,28 @@ const mds = {
   inputobjects: ''
 };
 
+const questions = [
+  {
+    type: 'list',
+    name: 'xtg',
+    message: 'Do you like TravelgateX',
+    choices: ['Yes', 'Of course', 'Yeah!']
+  }
+];
+
 // Starting function
 initScript();
 
-
-function initScript(){
-
-
+function initScript() {
   fs.emptyDir(__dirname + '/tmp/', err => {
-    if (err) return console.error(err)
-
-    bar.tick({'token1': "Hello"});
-    createQuery();
+    if (err) return console.error(err);
+    inquirer.prompt(questions).then(function(answers) {
+      console.log(`You answered [${answers.xtg}]. Awesome!\n`);
+      bar.tick();
+      createQuery();
+    });   
   });
 }
-
-
-
 
 function createQuery() {
   glob(
@@ -111,7 +117,13 @@ function findExtendables(file, info) {
         file.lastIndexOf('{') + 1,
         file.lastIndexOf('}')
       );
-      info[e].extend = extend;
+      if (info[e].extend) {
+        info[
+          e
+        ].extend += `\n# Extend ${e} separator -----------------------------------\n ${extend}`;
+      } else {
+        info[e].extend = extend;
+      }
     } else if (file.includes('type ' + e)) {
       result = `placeholder${e}`;
       const type = file.substring(0, file.lastIndexOf('}'));
@@ -154,4 +166,3 @@ function writeMdJSON() {
     toMD.init();
   });
 }
-
