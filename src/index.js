@@ -6,7 +6,8 @@ const fs = require('fs-extra'),
   fetchSchemaJSON = require(__dirname + '/resources/fetchSchemaJSON'),
   toMD = require(__dirname + '/graphqlToMD'),
   bar = require(__dirname + '/../progressBar/bar'),
-  inquirer = require('inquirer');
+  inquirer = require('inquirer'),
+  config = require(__dirname + '/config.js');
 
 const mds = {
   default: '',
@@ -22,9 +23,9 @@ const mds = {
 const questions = [
   {
     type: 'list',
-    name: 'xtg',
-    message: 'Do you like TravelgateX',
-    choices: ['Yes', 'Of course', 'Yeah!']
+    name: 'filter',
+    message: 'What do you want to generate?',
+    choices: config.USER_OPTIONS
   }
 ];
 
@@ -35,7 +36,8 @@ function initScript() {
   fs.emptyDir(__dirname + '/tmp/', err => {
     if (err) return console.error(err);
     inquirer.prompt(questions).then(function(answers) {
-      console.log(`You answered [${answers.xtg}]. Awesome!\n`);
+      config.USER_CHOICES.filter = answers.filter;
+      console.log('\n');
       bar.tick();
       createQuery();
     });   

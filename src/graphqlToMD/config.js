@@ -8,7 +8,10 @@ var PATH = '/travelgatex/';
 var relURL = PATH + DIRNAME;
 var LOCATION = __dirname + '/../output/reference';
 
-var mdData = {};
+const LOG = [];
+const CURRENT_DATE = new Date();
+
+let MD_DATA = {};
 
 var frontMatter = (title, pagetitle, description, weight, icon) =>
   JSON.stringify(
@@ -49,6 +52,9 @@ var SECTION3 = 'Required by';
 
 module.exports = {
   URL,
+  LOG,
+  CURRENT_DATE,
+  MD_DATA,
   LOCATION,
   DIRNAME,
   relURL,
