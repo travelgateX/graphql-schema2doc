@@ -62,4 +62,5 @@ typings/
 
 src/output/*
 src/tmp/*
+src/testing.js
 package-lock.json
