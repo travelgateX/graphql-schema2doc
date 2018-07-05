@@ -1,4 +1,4 @@
-const renderToHugo = require('./renderSchemaToHugo'),
+const renderToHugo = require('./render-schema-to-hugo'),
   config = require('./config'),
   fs = require('fs'),
   fsex = require('fs.extra'),
@@ -8,7 +8,7 @@ const renderToHugo = require('./renderSchemaToHugo'),
 function init() {
   fs.readFile(__dirname + '/../tmp/md-data.json', (err, data) => {
     if (err) throw err;
-    config.mdData = JSON.parse(data);
+    config.MD_DATA = JSON.parse(data);
   });
   var removeDir = new Promise((resolve, reject) =>
     fsex.rmrf(config.LOCATION, function(err) {
@@ -34,9 +34,9 @@ function init() {
 
     fs.readFile(__dirname + '/../tmp/introspection.json', (err, data) => {
       if (err) throw err;
-      const json = JSON.parse(data);
+      const parsedData = JSON.parse(data);
       bar.tick();
-      renderToHugo(json);
+      renderToHugo(parsedData);
     });
   });
 }
