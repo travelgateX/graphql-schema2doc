@@ -69,7 +69,7 @@ function createQuery() {
           if (index && extendableTypesInfo[ext].type) {
             data[index] = `
             ${extendableTypesInfo[ext].type} 
-            ${extendableTypesInfo[ext].extend} 
+            ${extendableTypesInfo[ext].extend || ''} 
             }`;
           }
         }
