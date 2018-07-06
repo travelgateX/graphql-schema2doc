@@ -1,11 +1,18 @@
 const renderToHugo = require('./render-schema-to-hugo'),
   config = require('./config'),
+  globalConfig = require('./../config'),
   fs = require('fs'),
   fsex = require('fs.extra'),
   bar = require(__dirname + '/../../progressBar/bar');
 
-
 function init() {
+  if (globalConfig.USER_CHOICES.filter !== 'Everything') {
+    config.PATH = '/hotelx/';
+    config.relURL = config.PATH + config.DIRNAME;
+    config.LOCATION += '-hotelX';
+  }else{
+    
+  }
   fs.readFile(__dirname + '/../tmp/md-data.json', (err, data) => {
     if (err) throw err;
     config.MD_DATA = JSON.parse(data);

@@ -4,6 +4,7 @@
 
 var URL = 'https://api.travelgatex.com';
 var DIRNAME = 'reference';
+// Default
 var PATH = '/travelgatex/';
 var relURL = PATH + DIRNAME;
 var LOCATION = __dirname + '/../output/reference';
@@ -58,6 +59,7 @@ module.exports = {
   LOCATION,
   DIRNAME,
   relURL,
+  PATH,
   frontmatters: {
     frontMatter,
     INDEX,

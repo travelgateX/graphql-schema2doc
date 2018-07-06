@@ -77,7 +77,7 @@ function renderDeprecatedNotes(lines, frontMatter, template) {
 
 function checkDeprecatedDeletions(currentlyDeprecated) {
   fs.readFile(
-    __dirname + '/../deprecated-storage/deleted-notes.json',
+    __dirname + `/../deprecated-storage${config.PATH}deleted-notes.json`,
     'utf8',
     (err, dn) => {
       let deletedNotes = {};
@@ -86,7 +86,7 @@ function checkDeprecatedDeletions(currentlyDeprecated) {
       }
       // The name
       fs.readFile(
-        __dirname + '/../deprecated-storage/stored-deprecated.json',
+        __dirname + `/../deprecated-storage${config.PATH}stored-deprecated.json`,
         'utf8',
         (err, stored) => {
           let storedData;
@@ -229,7 +229,7 @@ function checkDeprecatedDeletions(currentlyDeprecated) {
 
 function saveDeprecatedNotesSnapshot(currentlyDeprecated, deletedNotes) {
   fs.writeFile(
-    __dirname + '/../deprecated-storage/stored-deprecated.json',
+    __dirname + `/../deprecated-storage${config.PATH}stored-deprecated.json`,
     JSON.stringify(currentlyDeprecated),
     function(err) {
       if (err) return console.log(err);
@@ -240,7 +240,7 @@ function saveDeprecatedNotesSnapshot(currentlyDeprecated, deletedNotes) {
 
   // console.log(deletedNotes);
   fs.writeFile(
-    __dirname + '/../deprecated-storage/deleted-notes.json',
+    __dirname + `/../deprecated-storage${config.PATH}deleted-notes.json`,
     JSON.stringify(deletedNotes),
     function(err) {
       if (err) return console.log(err);

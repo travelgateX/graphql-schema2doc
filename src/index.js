@@ -40,7 +40,7 @@ function initScript() {
       console.log('\n');
       bar.tick();
       createQuery();
-    });   
+    });
   });
 }
 

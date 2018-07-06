@@ -1,4 +1,5 @@
 'use strict';
+var fs = require('fs');
 var config = require('./config');
 var globalConfig = require('./../config');
 var bar = require(__dirname + '/../../progressBar/bar');
@@ -8,8 +9,7 @@ var utils = require('./utils.js');
 var deprecationManagement = require('./deprecation-management.js');
 
 // MAIN FUNCTION
-
-function renderSchema(s) {
+function evaluateFields(s) {
   const schema = s.__schema;
 
   if (globalConfig.USER_CHOICES.filter !== 'Everything') {
@@ -21,13 +21,49 @@ function renderSchema(s) {
       aux = 'HotelXQuery';
     }
     const type = schema.types.filter(t => t.name === aux);
-    if((type || []).length){
+    if ((type || []).length) {
       coreItem = schema.types.filter(t => t.name === aux)[0];
-      // schema.fields = [coreItem]
-      const finalItem = functions.findSharedTypes(coreItem, schema.types);
-    }
-  }
+      functions.findSharedTypes(coreItem, schema.types).then(types => {
+        console.log();
+        // schema.types = types;
+        console.log();
+        fs.writeFile(
+          __dirname + `/output/newtypes.json`,
+          JSON.stringify(types),
+          function(err) {
+            if (err) {
+              return console.log(err);
+            }
+          }
+        );
+        fs.writeFile(
+          __dirname + `/output/oldtypes.json`,
+          JSON.stringify(schema.types),
+          function(err) {
+            if (err) {
+              return console.log(err);
+            }
+          }
+        );
+        renderSchema(schema);
+      });
+      // const finalItem = functions.findSharedTypes(coreItem, schema.types);
+      // console.log('\n\n\n');
+      // console.log(JSON.stringify(finalItem));
+      // console.log('\n\n\n');
 
+      bar.tick();
+      bar.interrupt(`[Built object tree]`);
+    } else {
+      bar.tick();
+    }
+  } else {
+    // In case we select 'Everything'
+    renderSchema(schema);
+  }
+}
+
+function renderSchema(schema) {
   saveFile(config.frontmatters.INDEX, `_index`);
 
   const types = schema.types.filter(type => !type.name.startsWith('__'));
@@ -76,17 +112,17 @@ function renderSchema(s) {
   bar.tick();
   if (config.frontmatters.DEPRECATED && config.LOG.length) {
     const lines = [];
+    // disabled deprecation stuff unless all selected
     deprecationManagement(
       lines,
       config.frontmatters.DEPRECATED,
       'deprecated_notes'
     );
     saveFile(lines.join('\n'), `deprecated_notes`);
+
     bar.tick();
   }
 }
-
-
 
 function render(objects, types, dirname, template, operator = template) {
   if (objects.length) {
@@ -136,5 +172,4 @@ function renderObject(lines, type, types, template, operator = template) {
   }
 }
 
-
-module.exports = renderSchema;
+module.exports = evaluateFields;
