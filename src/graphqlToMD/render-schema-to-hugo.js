@@ -24,33 +24,9 @@ function evaluateFields(s) {
     if ((type || []).length) {
       coreItem = schema.types.filter(t => t.name === aux)[0];
       functions.findSharedTypes(coreItem, schema.types).then(types => {
-        console.log();
-        // schema.types = types;
-        console.log();
-        fs.writeFile(
-          __dirname + `/output/newtypes.json`,
-          JSON.stringify(types),
-          function(err) {
-            if (err) {
-              return console.log(err);
-            }
-          }
-        );
-        fs.writeFile(
-          __dirname + `/output/oldtypes.json`,
-          JSON.stringify(schema.types),
-          function(err) {
-            if (err) {
-              return console.log(err);
-            }
-          }
-        );
+       
         renderSchema(schema);
       });
-      // const finalItem = functions.findSharedTypes(coreItem, schema.types);
-      // console.log('\n\n\n');
-      // console.log(JSON.stringify(finalItem));
-      // console.log('\n\n\n');
 
       bar.tick();
       bar.interrupt(`[Built object tree]`);
