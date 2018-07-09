@@ -28,7 +28,7 @@ function renderDeprecatedNotes(lines, frontMatter, template) {
     if (l.deprecationDate) {
       const date = new Date(new Date(l.deprecationDate).getTime() + 7776000000);
 
-      deletionDate = utils.formatDate(config.CURRENT_DATE);
+      deletionDate = utils.formatDate(date);
 
       daysRemaining = new Date(deletionDate).getTime() - new Date().getTime();
       if (daysRemaining >= 0) {

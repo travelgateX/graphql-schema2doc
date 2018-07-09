@@ -10,8 +10,7 @@ function init() {
     config.PATH = '/hotelx/';
     config.relURL = config.PATH + config.DIRNAME;
     config.LOCATION += '-hotelX';
-  }else{
-    
+  } else {
   }
   fs.readFile(__dirname + '/../tmp/md-data.json', (err, data) => {
     if (err) throw err;
@@ -40,12 +39,16 @@ function init() {
     }
 
     // Patch
-    try {
-      fsex.mkdirpSync(__dirname + '/../deprecated-storage');
-      fsex.mkdirpSync(__dirname + '/../deprecated-storage/travelgatex');
-      fsex.mkdirpSync(__dirname + '/../deprecated-storage/hotelx');
-    } catch (e) {
-      throw e;
+    const deprecated_storage = __dirname + '/../deprecated-storage';
+console.log(deprecated_storage);
+    if (!fs.existsSync(deprecated_storage)) {
+      fs.mkdirSync(deprecated_storage);
+    }
+    if (!fs.existsSync(deprecated_storage + '/travelgatex')) {
+      fs.mkdirSync(deprecated_storage + '/travelgatex');
+    }
+    if (!fs.existsSync(deprecated_storage + '/hotelx')) {
+      fs.mkdirSync(deprecated_storage + '/hotelx');
     }
     // - Patch
 
