@@ -46,7 +46,7 @@ var DEPRECATED = frontMatter(
   'Deprecated Schema Notes',
   'Deprecated schema notes',
   'Changes that can break existing queries to the GraphQL API. For example, removing a field would be a breaking change',
-  7,
+  4,
   'fa-exclamation-triangle',
   ["deprecated-notes"]
 );
@@ -54,7 +54,7 @@ var DELETED = frontMatter(
   'Deleted Schema Notes',
   'Deleted schema notes',
   'Changes history of deprecated notes previously announced',
-  8,
+  5,
   'fa-eraser',
   ['deleted-notes']
 );

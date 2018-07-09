@@ -39,6 +39,16 @@ function init() {
       throw e;
     }
 
+    // Patch
+    try {
+      fsex.mkdirpSync(__dirname + '/../deprecated-storage');
+      fsex.mkdirpSync(__dirname + '/../deprecated-storage/travelgatex');
+      fsex.mkdirpSync(__dirname + '/../deprecated-storage/hotelx');
+    } catch (e) {
+      throw e;
+    }
+    // - Patch
+
     fs.readFile(__dirname + '/../tmp/introspection.json', (err, data) => {
       if (err) throw err;
       const parsedData = JSON.parse(data);

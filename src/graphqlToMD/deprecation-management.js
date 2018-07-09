@@ -67,7 +67,8 @@ function renderDeprecatedNotes(lines, frontMatter, template) {
   // Fix to avoid sending the entire log to the md
   frontMatter.log = {} || objectLog;
   frontMatter.hideGithubLink = true;
-  lines.push(JSON.stringify(frontMatter));
+  lines.push(JSON.stringify(frontMatter, null, '\t'));
+  lines.push('\n{{% alert theme="info" %}}Changes that can break existing queries to the GraphQL API. For example, removing a field would be a breaking change{{% /alert %}}\n');
   utils.printer(lines, table + tableLayout + tableContent);
   utils.printer(lines, `## Deprecations`);
   utils.printer(lines, `{{% ${template} %}}\n`);
@@ -261,7 +262,8 @@ function renderDeletedNotes(lines, deletedNotes, frontMatter) {
 
   frontMatter = JSON.parse(frontMatter);
   frontMatter.hideGithubLink = true;
-  lines.push(JSON.stringify(frontMatter));
+  lines.push(JSON.stringify(frontMatter, null, '\t'));
+  lines.push('\n{{% alert theme="info" %}}Changes history of deprecated notes previously announced{{% /alert %}}\n');
   utils.printer(lines, `## Deletions`);
 
   if (deletedNotes && Object.keys(deletedNotes).length) {
