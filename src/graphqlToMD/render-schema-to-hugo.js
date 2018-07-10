@@ -24,7 +24,6 @@ function evaluateFields(s) {
     if ((type || []).length) {
       coreItem = schema.types.filter(t => t.name === aux)[0];
       functions.findSharedTypes(coreItem, schema.types).then(types => {
-       
         renderSchema(schema);
       });
 
@@ -105,6 +104,7 @@ function render(objects, types, dirname, template, operator = template) {
     utils.sortBy(objects, 'name');
     objects.forEach(type => {
       var lines = [];
+     
       renderObject(lines, type, types, template, operator);
       saveFile(lines.join('\n'), `${dirname}/${type.name}`);
     });

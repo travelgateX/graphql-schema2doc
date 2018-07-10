@@ -50,6 +50,13 @@ function newArgField(fieldOrArg) {
 
 const functions = {
   parseFields: type => {
+    
+    // if (type.name === 'HotelXQuery') {
+    //   console.log('\n\n\n');
+    //   console.log(JSON.stringify(type));
+      
+    //   console.log('\n\n\n');
+    // }
     let fields = [];
     if (type.fields) {
       fields = type.fields;
@@ -139,6 +146,7 @@ const functions = {
 
       fieldsList.push(newField);
     });
+    
     return fieldsList.length ? fieldsList : null;
   },
   parseRequiredBy: (types, name) => {
