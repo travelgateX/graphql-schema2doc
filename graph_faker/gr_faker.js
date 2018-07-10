@@ -25,7 +25,7 @@ function main(schemaPath, callback, port, extend) {
   promptExec.stdout.on('data', function(data) {
     bar.tick();
     bar.interrupt('[Faker data ready]');
-    setTimeout(_ => promptExec.kill(), 0);
+    setTimeout(_ => promptExec.kill(), 5000);
   });
 
   promptExec.on('close', function(code) {
