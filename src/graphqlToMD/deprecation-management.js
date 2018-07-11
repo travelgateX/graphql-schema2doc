@@ -68,7 +68,9 @@ function renderDeprecatedNotes(lines, frontMatter, template) {
   frontMatter.log = {} || objectLog;
   frontMatter.hideGithubLink = true;
   lines.push(JSON.stringify(frontMatter, null, '\t'));
-  lines.push('\n{{% alert theme="info" %}}Changes that can break existing queries to the GraphQL API. For example, removing a field would be a breaking change{{% /alert %}}\n');
+  lines.push(
+    '\n{{% alert theme="info" %}}Changes that can break existing queries to the GraphQL API. For example, removing a field would be a breaking change{{% /alert %}}\n'
+  );
   utils.printer(lines, table + tableLayout + tableContent);
   utils.printer(lines, `## Deprecations`);
   utils.printer(lines, `{{% ${template} %}}\n`);
@@ -87,7 +89,8 @@ function checkDeprecatedDeletions(currentlyDeprecated) {
       }
       // The name
       fs.readFile(
-        __dirname + `/../deprecated-storage${config.PATH}stored-deprecated.json`,
+        __dirname +
+          `/../deprecated-storage${config.PATH}stored-deprecated.json`,
         'utf8',
         (err, stored) => {
           let storedData;
@@ -258,38 +261,82 @@ function saveDeprecatedNotesSnapshot(currentlyDeprecated, deletedNotes) {
 }
 
 function renderDeletedNotes(lines, deletedNotes, frontMatter) {
-  let deletedNotesArray = [];
-
   frontMatter = JSON.parse(frontMatter);
   frontMatter.hideGithubLink = true;
   lines.push(JSON.stringify(frontMatter, null, '\t'));
-  lines.push('\n{{% alert theme="info" %}}Changes history of deprecated notes previously announced{{% /alert %}}\n');
+  lines.push(
+    '\n{{% alert theme="info" %}}Changes history of deprecated notes previously announced{{% /alert %}}\n'
+  );
   utils.printer(lines, `## Deletions`);
 
   if (deletedNotes && Object.keys(deletedNotes).length) {
+    const newDeletedNotesObj = [];
+    // In the future, the array of items should contain sub arrays of different types of changes
     for (const key of Object.keys(deletedNotes)) {
-      deletedNotes[key].map(dn => {
-        dn.deletionDateMilliseconds = new Date(dn.trueDeletionDate).getTime();
-      });
-      deletedNotesArray = deletedNotesArray.concat(deletedNotes[key]);
+      for (const item of deletedNotes[key]) {
+        const foundDate = newDeletedNotesObj.find(
+          ndn => ndn.key === item.trueDeletionDate
+        );
+        if (!foundDate) {
+          // For now, the types is static
+          newDeletedNotesObj.push({
+            key: item.trueDeletionDate,
+            value: [{ type: 'D', value: [item] }]
+          });
+        } else {
+          // Date register exists, but we still don't know if list type [d,c,u...] exists inside
+          const foundType = foundDate.value.find(v => v.type === 'D');
+          if (foundType) {
+            // Push another value inside array of TYPES
+            foundType.value.push(item);
+          } else {
+            // Push NEW type inside date
+            foundDate.value.push({ type: 'D', value: [item] });
+          }
+        }
+      }
     }
 
-    const orderedDeletedNotes = deletedNotesArray.sort((a, b) => {
+    console.log(JSON.stringify(newDeletedNotesObj));
+
+    for (const entry of newDeletedNotesObj) {
+      entry.deletionDateMilliseconds = new Date(entry.key).getTime();
+    }
+
+    const orderedDeletedNotes = newDeletedNotesObj.sort((a, b) => {
       if (a.deletionDateMilliseconds < b.deletionDateMilliseconds) return -1;
       if (a.deletionDateMilliseconds > b.deletionDateMilliseconds) return 1;
       return 0;
     });
 
-    const table = `|Deletion date|Name|Old location|Deprecation Reason|\n`;
-    const tableLayout = `|:--|:--|:--|:--|\n`;
-    let tableContent = ``;
+    // Loop through all deleted notes creating a call to the shortcode
+    for (const date of newDeletedNotesObj) {
+      utils.printer(lines, `### ${date.key}`);
+      for (const changeType of date.value) {
+        const shorcode = `{{% release-notes-container type="${
+          changeType.type
+        }"%}}`;
+        utils.printer(lines, shorcode);
 
-    for (const deletedNote of orderedDeletedNotes) {
-      tableContent += `|${deletedNote.trueDeletionDate}|[${deletedNote.name}](${
-        deletedNote.url
-      })|${deletedNote.typeName}|${deletedNote.deprecationReason}|\n`;
+        for (const change of changeType.value) {
+          utils.printer(
+            lines,
+            `<li>Removed <code>${change.name}</code> from <code>${
+              change.typeName
+            }</code>. Reason: ${
+              change.deprecationReason
+            }. Deprecated on ${change.deprecationDate}</li>`
+          );
+        }
+
+        utils.printer(lines, `{{% / release-notes-container %}}`);
+      }
     }
-    utils.printer(lines, table + tableLayout + tableContent);
+
+    // const shorcode = `{{ % release-notes data="${JSON.stringify(
+    //   orderedDeletedNotes
+    // )}"% }}`;
+    // utils.printer(lines, shorcode);
   } else {
     utils.printer(lines, `### No deletions to date`);
   }
