@@ -297,8 +297,6 @@ function renderDeletedNotes(lines, deletedNotes, frontMatter) {
       }
     }
 
-    console.log(JSON.stringify(newDeletedNotesObj));
-
     for (const entry of newDeletedNotesObj) {
       entry.deletionDateMilliseconds = new Date(entry.key).getTime();
     }
@@ -321,22 +319,18 @@ function renderDeletedNotes(lines, deletedNotes, frontMatter) {
         for (const change of changeType.value) {
           utils.printer(
             lines,
-            `<li>Removed <code>${change.name}</code> from <code>${
+            `- Removed \`${change.name}\` from \`${
               change.typeName
-            }</code>. Reason: ${
+            }\`. Reason: ${
               change.deprecationReason
-            }. Deprecated on ${change.deprecationDate}</li>`
+            }. Deprecated on ${change.deprecationDate}`
           );
         }
 
         utils.printer(lines, `{{% / release-notes-container %}}`);
       }
     }
-
-    // const shorcode = `{{ % release-notes data="${JSON.stringify(
-    //   orderedDeletedNotes
-    // )}"% }}`;
-    // utils.printer(lines, shorcode);
+    
   } else {
     utils.printer(lines, `### No deletions to date`);
   }
