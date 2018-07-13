@@ -23,35 +23,26 @@ function renderDeprecatedNotes(lines, frontMatter, template) {
   let tableContent = ``;
 
   const deprecatedFields = orderedLog.map(l => {
-    let deletionDate = 'unknown';
-    let daysRemaining = 'unknown';
+    l.deletionDate = 'unknown';
+    l.daysRemaining = 'unknown';
     if (l.deprecationDate) {
       const date = new Date(new Date(l.deprecationDate).getTime() + 7776000000);
 
-      deletionDate = utils.formatDate(date);
+      l.deletionDate = utils.formatDate(date);
 
-      daysRemaining = new Date(deletionDate).getTime() - new Date().getTime();
-      if (daysRemaining >= 0) {
-        daysRemaining = Math.floor(daysRemaining / 86400000);
+      l.daysRemaining =
+        new Date(l.deletionDate).getTime() - new Date().getTime();
+      if (l.daysRemaining >= 0) {
+        l.daysRemaining = Math.floor(l.daysRemaining / 86400000);
       } else {
-        daysRemaining = 'Already passed';
+        l.daysRemaining = 'Already passed';
       }
     }
 
-    tableContent += `|${l.deprecationDate ||
-      'unknown'}|${deletionDate}|${daysRemaining}|[${l.name}](${l.url})|${
-      l.typeName
-    }|${l.deprecationReason}|\n`;
-    return {
-      args: l.args,
-      deprecationReason: l.deprecationReason,
-      description: l.description,
-      name: l.name,
-      url: l.url,
-      deprecationDate: l.deprecationDate,
-      typeString: l.typeString,
-      typeName: l.typeName
-    };
+    tableContent += `|${l.deprecationDate || 'unknown'}|${l.deletionDate}|${
+      l.daysRemaining
+    }|[${l.name}](${l.url})|${l.typeName}|${l.deprecationReason}|\n`;
+    return l;
   });
 
   const objectLog = {};
@@ -255,60 +246,89 @@ function saveDeprecatedNotesSnapshot(currentlyDeprecated, deletedNotes) {
 
   if (config.frontmatters.DELETED) {
     const lines = [];
-    renderDeletedNotes(lines, deletedNotes, config.frontmatters.DELETED);
-    saveFile(lines.join('\n'), `deleted_notes`);
+    renderDeletedNotes(
+      lines,
+      deletedNotes,
+      config.frontmatters.DELETED,
+      JSON.parse(JSON.stringify(currentlyDeprecated))
+    );
+    saveFile(lines.join('\n'), `breaking-changes`);
   }
 }
 
-function renderDeletedNotes(lines, deletedNotes, frontMatter) {
+function renderDeletedNotes(
+  lines,
+  deletedNotes,
+  frontMatter,
+  currentlyDeprecated
+) {
   frontMatter = JSON.parse(frontMatter);
   frontMatter.hideGithubLink = true;
   lines.push(JSON.stringify(frontMatter, null, '\t'));
   lines.push(
     '\n{{% alert theme="info" %}}Changes history of deprecated notes previously announced{{% /alert %}}\n'
   );
-  utils.printer(lines, `## Deletions`);
 
   if (deletedNotes && Object.keys(deletedNotes).length) {
-    const newDeletedNotesObj = [];
+    let newDeletedNotesArr = [];
     // In the future, the array of items should contain sub arrays of different types of changes
     for (const key of Object.keys(deletedNotes)) {
       for (const item of deletedNotes[key]) {
-        const foundDate = newDeletedNotesObj.find(
+        const foundDate = newDeletedNotesArr.find(
           ndn => ndn.key === item.trueDeletionDate
         );
         if (!foundDate) {
-          // For now, the types is static
-          newDeletedNotesObj.push({
+          newDeletedNotesArr.push({
             key: item.trueDeletionDate,
-            value: [{ type: 'D', value: [item] }]
+            value: [{ type: 'r', value: [item] }]
           });
         } else {
           // Date register exists, but we still don't know if list type [d,c,u...] exists inside
-          const foundType = foundDate.value.find(v => v.type === 'D');
+          const foundType = foundDate.value.find(v => v.type === 'r');
           if (foundType) {
             // Push another value inside array of TYPES
             foundType.value.push(item);
           } else {
             // Push NEW type inside date
-            foundDate.value.push({ type: 'D', value: [item] });
+            foundDate.value.push({ type: 'r', value: [item] });
           }
         }
       }
     }
 
-    for (const entry of newDeletedNotesObj) {
-      entry.deletionDateMilliseconds = new Date(entry.key).getTime();
+    // 12/07/2018 Recreate deleted as deprecated, so there can be seen properly on the timeline.
+    const deletedAsDeprecated = [];
+    recreateArrayAsType(deletedAsDeprecated, newDeletedNotesArr, 'd');
+    fuseEqualArrays(newDeletedNotesArr, deletedAsDeprecated);
+
+    // 12/07/2018 Deprecated are added to the same page
+    newDeletedNotesArr = formatDeprecatedNotes(
+      currentlyDeprecated,
+      newDeletedNotesArr
+    );
+    
+    for (const entry of newDeletedNotesArr) {
+      const time = isNaN(Date.parse(entry.key)) ? 999999999999999 : entry.key;
+      entry.deletionDateMilliseconds = new Date(time).getTime();
     }
 
-    const orderedDeletedNotes = newDeletedNotesObj.sort((a, b) => {
-      if (a.deletionDateMilliseconds < b.deletionDateMilliseconds) return -1;
-      if (a.deletionDateMilliseconds > b.deletionDateMilliseconds) return 1;
+    const orderedDeletedNotes = newDeletedNotesArr.sort((a, b) => {
+      if (a.deletionDateMilliseconds < b.deletionDateMilliseconds) return 1;
+      if (a.deletionDateMilliseconds > b.deletionDateMilliseconds) return -1;
       return 0;
     });
 
+    // console.log(JSON.stringify(orderedDeletedNotes));
+
+    // FAKE unreleased
+    utils.printer(lines, `### Unreleased`);
+    utils.printer(
+      lines,
+      `{{% release-notes-container type="u" %}} - Unreleased placeholder {{% / release-notes-container %}}`
+    );
+    
     // Loop through all deleted notes creating a call to the shortcode
-    for (const date of newDeletedNotesObj) {
+    for (const date of orderedDeletedNotes) {
       utils.printer(lines, `### ${date.key}`);
       for (const changeType of date.value) {
         const shorcode = `{{% release-notes-container type="${
@@ -317,22 +337,137 @@ function renderDeletedNotes(lines, deletedNotes, frontMatter) {
         utils.printer(lines, shorcode);
 
         for (const change of changeType.value) {
-          utils.printer(
-            lines,
-            `- Removed \`${change.name}\` from \`${
-              change.typeName
-            }\`. Reason: ${
-              change.deprecationReason
-            }. Deprecated on ${change.deprecationDate}`
-          );
+          utils.printer(lines, createRegister(change, changeType.type));
         }
 
         utils.printer(lines, `{{% / release-notes-container %}}`);
       }
     }
-    
   } else {
     utils.printer(lines, `### No deletions to date`);
+  }
+}
+
+function createRegister(change, type) {
+  let keyword = '';
+  let dateInfo = '';
+  let additionalInfo = '';
+
+  switch (type) {
+    case 'a':
+      keyword = 'Added';
+      break;
+    case 'c':
+      keyword = 'Changed';
+      break;
+    case 'd':
+      keyword = 'Deprecated';
+      if (change.trueDeletionDate) {
+        dateInfo = `Finally removed on ${change.trueDeletionDate}`;
+      } else {
+        dateInfo = `Expected deprecation on ${change.deprecationDate}`;
+        additionalInfo = change.daysRemaining
+          ? change.daysRemaining === 'Already passed'
+            ? '(Item will be removed on the next update)'
+            : `(Days left: ${change.daysRemaining})`
+          : '';
+      }
+      break;
+    case 'r':
+      keyword = 'Removed';
+      dateInfo = `Deprecated on ${change.deprecationDate}`;
+      break;
+    case 'f':
+      keyword = 'Fixed';
+      break;
+    case 's':
+      keyword = 'Security';
+      break;
+    case 'u':
+      keyword = 'Unreleased';
+      break;
+  }
+
+  return `- ${keyword} \`${change.name}\` from \`${
+    change.typeName
+  }\`. Reason: ${change.deprecationReason}. ${dateInfo} ${additionalInfo}.`;
+}
+
+// this might replace the function of deprecation
+function formatDeprecatedNotes(currentlyDeprecated, newDeletedNotesArr) {
+  for (const key of Object.keys(currentlyDeprecated)) {
+    const foundDate = newDeletedNotesArr.find(a => a.key === key);
+    if (foundDate) {
+      
+      const foundType = foundDate.value.find(f => f.type === 'd');
+      if (foundType) {
+        foundType.value.push(currentlyDeprecated[key]);
+      } else {
+        foundDate.value.push({ type: 'd', value: currentlyDeprecated[key] });
+      }
+    } else {
+      newDeletedNotesArr.push({
+        key: key,
+        value: [{ type: 'd', value: currentlyDeprecated[key] }]
+      });
+    }
+  }
+
+  return newDeletedNotesArr;
+}
+
+// Creates new array...
+function recreateArrayAsType(target, arr, typeChange) {
+  const newArray = JSON.parse(JSON.stringify(arr));
+  for (const date of newArray) {
+    for (const type of date.value) {
+      for (const entry of type.value) {
+        const targetDate = target.find(t=>t.key === entry.deprecationDate)
+        if(targetDate){
+          targetDate.value[0].value.push(entry);
+        }else{
+          target.push({key: entry.deprecationDate, value:[{type: typeChange, value:[entry]}]});
+        }
+      }
+    }
+  }
+}
+
+// Used to join equally structured arrays. Can change type if passed type name. Also can change dates
+function fuseEqualArrays(target, arr, typeChange = false) {
+  const newArray = JSON.parse(JSON.stringify(arr));
+  for (const date of newArray) {
+    const dateTarget = target.find(t => t.key === date.key);
+    if (dateTarget) {
+      for (const type of date.value) {
+        const typeTarget = dateTarget.value.find(dt => dt.type === type.type);
+        if (typeTarget) {
+          for (const entry of type.value) {
+            const targetEntry = typeTarget.value.find(
+              tt =>
+                tt.name === entry.name &&
+                tt.url === entry.url &&
+                tt.typeName === entry.typeName
+            );
+            if (!targetEntry) {
+              typeTarget.value.push(entry);
+            }
+          }
+        } else {
+          dateTarget.value.push({
+            type: typeChange || type.type,
+            value: type.value
+          });
+        }
+      }
+    } else {
+      if (typeChange) {
+        for (const type of date.value) {
+          type.type = typeChange;
+        }
+      }
+      target.push({ key: date.key, value: date.value });
+    }
   }
 }
 

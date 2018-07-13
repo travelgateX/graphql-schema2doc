@@ -51,12 +51,12 @@ var DEPRECATED = frontMatter(
   ["deprecated-notes"]
 );
 var DELETED = frontMatter(
-  'Deleted Schema Notes',
-  'Deleted schema notes',
+  'GraphQL Schema breaking changes',
+  'GraphQL Schema breaking changes',
   'Changes history of deprecated notes previously announced',
   5,
   'fa-eraser',
-  ['deleted-notes']
+  ['reaking-changes']
 );
 
 var QUERY = frontMatter('Query', null, '', 1, null);
