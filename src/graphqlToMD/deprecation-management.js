@@ -250,11 +250,26 @@ function saveDeprecatedNotesSnapshot(currentlyDeprecated, deletedNotes) {
       lines,
       deletedNotes,
       config.frontmatters.DELETED,
-      JSON.parse(JSON.stringify(currentlyDeprecated))
+      utils.copy(currentlyDeprecated)
     );
     saveFile(lines.join('\n'), `breaking-changes`);
   }
 }
+
+/**
+ * Format that is encouraged
+ * {
+ * key: date(string),
+ * value: [
+ *    {
+ *      type: letter(string),
+ *      value: [
+ *         entry item(object)
+ *      ]
+ *    }
+ * ]
+ * }
+ */
 
 function renderDeletedNotes(
   lines,
@@ -296,19 +311,27 @@ function renderDeletedNotes(
       }
     }
 
+    const formattedDeprecatedUnreleased = formatDeprecatedUnreleasedNotes(
+      currentlyDeprecated
+    );
+
+    utils.log('formattedDeprecatedUnreleased', formattedDeprecatedUnreleased);
+
     // 12/07/2018 Recreate deleted as deprecated, so there can be seen properly on the timeline.
     const deletedAsDeprecated = [];
     recreateArrayAsType(deletedAsDeprecated, newDeletedNotesArr, 'd');
     fuseEqualArrays(newDeletedNotesArr, deletedAsDeprecated);
+    fuseEqualArrays(newDeletedNotesArr, formattedDeprecatedUnreleased);
 
     // 12/07/2018 Deprecated are added to the same page
     newDeletedNotesArr = formatDeprecatedNotes(
       currentlyDeprecated,
       newDeletedNotesArr
     );
-    
+
     for (const entry of newDeletedNotesArr) {
-      const time = isNaN(Date.parse(entry.key)) ? 999999999999999 : entry.key;
+      const time =
+        isNaN(entry.key) && isNaN(Date.parse(entry.key)) ? 0 : entry.key;
       entry.deletionDateMilliseconds = new Date(time).getTime();
     }
 
@@ -318,18 +341,13 @@ function renderDeletedNotes(
       return 0;
     });
 
-    // console.log(JSON.stringify(orderedDeletedNotes));
-
-    // FAKE unreleased
-    utils.printer(lines, `### Unreleased`);
-    utils.printer(
-      lines,
-      `{{% release-notes-container type="u" %}} - Unreleased placeholder {{% / release-notes-container %}}`
-    );
-    
     // Loop through all deleted notes creating a call to the shortcode
     for (const date of orderedDeletedNotes) {
-      utils.printer(lines, `### ${date.key}`);
+      if(date.key !== 99999999999999){
+        utils.printer(lines, `### ${date.key}`);
+      }else{
+        utils.printer(lines, `### Unreleased`);
+      }
       for (const changeType of date.value) {
         const shorcode = `{{% release-notes-container type="${
           changeType.type
@@ -366,11 +384,7 @@ function createRegister(change, type) {
         dateInfo = `Finally removed on ${change.trueDeletionDate}`;
       } else {
         dateInfo = `Expected deprecation on ${change.deprecationDate}`;
-        additionalInfo = change.daysRemaining
-          ? change.daysRemaining === 'Already passed'
-            ? '(Item will be removed on the next update)'
-            : `(Days left: ${change.daysRemaining})`
-          : '';
+        additionalInfo = '';
       }
       break;
     case 'r':
@@ -384,7 +398,7 @@ function createRegister(change, type) {
       keyword = 'Security';
       break;
     case 'u':
-      keyword = 'Unreleased';
+      keyword = change.subject;
       break;
   }
 
@@ -398,7 +412,6 @@ function formatDeprecatedNotes(currentlyDeprecated, newDeletedNotesArr) {
   for (const key of Object.keys(currentlyDeprecated)) {
     const foundDate = newDeletedNotesArr.find(a => a.key === key);
     if (foundDate) {
-      
       const foundType = foundDate.value.find(f => f.type === 'd');
       if (foundType) {
         foundType.value.push(currentlyDeprecated[key]);
@@ -416,17 +429,40 @@ function formatDeprecatedNotes(currentlyDeprecated, newDeletedNotesArr) {
   return newDeletedNotesArr;
 }
 
+// this might replace the function of deprecation
+function formatDeprecatedUnreleasedNotes(currentlyDeprecated) {
+  const deprecatedUnreleasedArray = [];
+  let date_u = { key: 99999999999999, value: [{ type: 'u', value: [] }] };
+
+  for (const key of Object.keys(currentlyDeprecated)) {
+    const date_d = { key: key, value: [{ type: 'd', value: [] }] };
+    for (const entry of currentlyDeprecated[key]) {
+      date_d.value[0].value.push(entry);
+      date_u.value[0].value.push(entry);
+    }
+
+    deprecatedUnreleasedArray.push(date_d);
+  }
+  date_u = utils.copy(date_u);
+  date_u.value[0].value.map(v=>v.subject = 'Removal of')
+  deprecatedUnreleasedArray.push(date_u);
+  return deprecatedUnreleasedArray;
+}
+
 // Creates new array...
 function recreateArrayAsType(target, arr, typeChange) {
-  const newArray = JSON.parse(JSON.stringify(arr));
+  const newArray = utils.copy(arr);
   for (const date of newArray) {
     for (const type of date.value) {
       for (const entry of type.value) {
-        const targetDate = target.find(t=>t.key === entry.deprecationDate)
-        if(targetDate){
+        const targetDate = target.find(t => t.key === entry.deprecationDate);
+        if (targetDate) {
           targetDate.value[0].value.push(entry);
-        }else{
-          target.push({key: entry.deprecationDate, value:[{type: typeChange, value:[entry]}]});
+        } else {
+          target.push({
+            key: entry.deprecationDate,
+            value: [{ type: typeChange, value: [entry] }]
+          });
         }
       }
     }
@@ -435,7 +471,7 @@ function recreateArrayAsType(target, arr, typeChange) {
 
 // Used to join equally structured arrays. Can change type if passed type name. Also can change dates
 function fuseEqualArrays(target, arr, typeChange = false) {
-  const newArray = JSON.parse(JSON.stringify(arr));
+  const newArray = utils.copy(arr);
   for (const date of newArray) {
     const dateTarget = target.find(t => t.key === date.key);
     if (dateTarget) {
