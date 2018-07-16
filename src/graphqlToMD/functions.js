@@ -14,7 +14,7 @@ function renderType(type, ret) {
 }
 
 function getTypeURL(type) {
-  const url = `${config.relUrl}`;
+  const url = `${config.relURL}`;
   const name = type.name.toLowerCase();
   switch (type.kind) {
     case 'INPUT_OBJECT':
@@ -50,6 +50,13 @@ function newArgField(fieldOrArg) {
 
 const functions = {
   parseFields: type => {
+    
+    // if (type.name === 'HotelXQuery') {
+    //   console.log('\n\n\n');
+    //   console.log(JSON.stringify(type));
+      
+    //   console.log('\n\n\n');
+    // }
     let fields = [];
     if (type.fields) {
       fields = type.fields;
@@ -139,6 +146,7 @@ const functions = {
 
       fieldsList.push(newField);
     });
+    
     return fieldsList.length ? fieldsList : null;
   },
   parseRequiredBy: (types, name) => {
@@ -171,10 +179,92 @@ const functions = {
     });
     return filter.length ? filter : null;
   },
-  findSharedTypes: (coreItem, fields) =>{
-      console.log('\nINSIDE FUNCTION\n');
-      console.log(JSON.stringify(coreItem));
-      return 'In development';
+  findSharedTypes: async (coreItem, types) => {
+    let auxArray = [];
+    const relatedFields = [];
+
+    // Function that looks for types recursively
+    const deeper = t => {
+      let typeString;
+      if (t.kind) {
+        typeString = {
+          name: t.name,
+          kind: t.kind
+        };
+      } else {
+        typeString = {
+          name: t.type.name,
+          kind: t.type.kind
+        };
+      }
+      if (
+        auxArray.find(
+          au => au.name === typeString.name && au.kind === typeString.kind
+        ) &&
+        !relatedFields.find(rf => rf.name === t.name && rf.kind === t.kind)
+      ) {
+        relatedFields.push(t);
+      } else {
+        console.log(t);
+      }
+    };
+
+    //Checks for the of type property. Recursively
+    const checkOfTypes = item => {
+      const ofTypes = [];
+
+      ofTypes.push({
+        name: item.name,
+        kind: item.kind
+      });
+
+      if (item.ofType) {
+        ofTypes.push(checkOfTypes(item.ofType));
+      }
+
+      return ofTypes;
+    };
+
+    // Loop through the fields inside coreItem
+    for (const field of coreItem.fields) {
+      const types = [];
+      const item = field.kind ? field : field.type;
+
+      types.push({
+        name: item.name,
+        kind: item.kind
+      });
+
+      let ofTypes = [];
+      if (item.ofType) {
+        ofTypes = checkOfTypes(item.ofType);
+      }
+
+      ofTypes.forEach(o => types.push(o));
+
+      auxArray = auxArray.concat(types);
+    }
+
+    auxArray = auxArray.filter(aux => aux.name);
+    console.log(JSON.stringify(auxArray));
+    let flattenedFields = [];
+
+    types.forEach(type => {
+      var fields = [];
+      if (type.fields) {
+        fields = type.fields;
+      } else if (type.inputFields) {
+        fields = type.inputFields;
+      }
+      flattenedFields = flattenedFields.concat(fields);
+    });
+
+    for (const field of flattenedFields) {
+      await deeper(field);
+    }
+
+    relatedFields.push(coreItem);
+    return relatedFields;
   }
 };
 

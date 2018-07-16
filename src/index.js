@@ -40,7 +40,7 @@ function initScript() {
       console.log('\n');
       bar.tick();
       createQuery();
-    });   
+    });
   });
 }
 
@@ -69,7 +69,7 @@ function createQuery() {
           if (index && extendableTypesInfo[ext].type) {
             data[index] = `
             ${extendableTypesInfo[ext].type} 
-            ${extendableTypesInfo[ext].extend} 
+            ${extendableTypesInfo[ext].extend || ''} 
             }`;
           }
         }
@@ -97,6 +97,12 @@ function fakeSchema() {
   faker(__dirname + '/tmp/merged_schema.graphql', () => {}, '9002');
 
   fetchSchemaJSON().then(res => {
+    res.__schema.types = res.__schema.types.map(t => {
+      if (t.fields) {
+        t.fields = t.fields.filter(f => f.name !== 'a');
+      }
+      return t;
+    });
     fs.writeFile(
       __dirname + '/tmp/introspection.json',
       JSON.stringify(res),

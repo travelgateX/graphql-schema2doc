@@ -12,6 +12,18 @@ function sortBy(arr, property) {
   });
 }
 
+function log(t,d) {
+  console.log('\n******************************************\n');
+  console.log(t.toUpperCase());
+  console.log('\n\n');
+  console.log(JSON.stringify(d));
+  console.log('\n******************************************');
+}
+
+function copy(i) {
+  return JSON.parse(JSON.stringify(i));
+}
+
 function formatDate(d) {
   const date = new Date(d);
   const day = ('' + date.getDate()).padStart(2, '0');
@@ -34,5 +46,7 @@ module.exports = {
   printer,
   sortBy,
   formatDate,
-  escapeHtml
+  escapeHtml,
+  log,
+  copy
 };

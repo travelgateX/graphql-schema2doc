@@ -1,4 +1,5 @@
 'use strict';
+var fs = require('fs');
 var config = require('./config');
 var globalConfig = require('./../config');
 var bar = require(__dirname + '/../../progressBar/bar');
@@ -8,8 +9,9 @@ var utils = require('./utils.js');
 var deprecationManagement = require('./deprecation-management.js');
 
 // MAIN FUNCTION
+function evaluateFields(s) {
+  const schema = s.__schema;
 
-function renderSchema(schema) {
   if (globalConfig.USER_CHOICES.filter !== 'Everything') {
     let aux;
     let coreItem;
@@ -18,17 +20,25 @@ function renderSchema(schema) {
     if (globalConfig.USER_CHOICES.filter.includes('HotelX')) {
       aux = 'HotelXQuery';
     }
-    const type = schema.__schema.types.filter(t => t.name === aux);
-    if((type || []).length){
-      coreItem = schema.__schema.types.filter(t => t.name === aux)[0];
-      const finalItem = functions.findSharedTypes(coreItem, schema.__schema.types);
+    const type = schema.types.filter(t => t.name === aux);
+    if ((type || []).length) {
+      coreItem = schema.types.filter(t => t.name === aux)[0];
+      functions.findSharedTypes(coreItem, schema.types).then(types => {
+        renderSchema(schema);
+      });
+
+      bar.tick();
+      bar.interrupt(`[Built object tree]`);
+    } else {
+      bar.tick();
     }
+  } else {
+    // In case we select 'Everything'
+    renderSchema(schema);
   }
+}
 
-  if (schema.__schema) {
-    schema = schema.__schema;
-  }
-
+function renderSchema(schema) {
   saveFile(config.frontmatters.INDEX, `_index`);
 
   const types = schema.types.filter(type => !type.name.startsWith('__'));
@@ -77,23 +87,24 @@ function renderSchema(schema) {
   bar.tick();
   if (config.frontmatters.DEPRECATED && config.LOG.length) {
     const lines = [];
+    // disabled deprecation stuff unless all selected
     deprecationManagement(
       lines,
       config.frontmatters.DEPRECATED,
       'deprecated_notes'
     );
     saveFile(lines.join('\n'), `deprecated_notes`);
+
     bar.tick();
   }
 }
-
-
 
 function render(objects, types, dirname, template, operator = template) {
   if (objects.length) {
     utils.sortBy(objects, 'name');
     objects.forEach(type => {
       var lines = [];
+     
       renderObject(lines, type, types, template, operator);
       saveFile(lines.join('\n'), `${dirname}/${type.name}`);
     });
@@ -137,5 +148,4 @@ function renderObject(lines, type, types, template, operator = template) {
   }
 }
 
-
-module.exports = renderSchema;
+module.exports = evaluateFields;
