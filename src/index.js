@@ -7,7 +7,8 @@ const fs = require('fs-extra'),
   toMD = require(__dirname + '/graphqlToMD'),
   bar = require(__dirname + '/../progressBar/bar'),
   inquirer = require('inquirer'),
-  config = require(__dirname + '/config.js');
+  config = require(__dirname + '/config.js'),
+  childConfig = require(__dirname + '/graphqlToMD/config.js');
 
 const mds = {
   default: '',
@@ -37,6 +38,14 @@ function initScript() {
     if (err) return console.error(err);
     inquirer.prompt(questions).then(function(answers) {
       config.USER_CHOICES.filter = answers.filter;
+
+      if (config.USER_CHOICES.filter !== 'Everything') {
+        childConfig.PATH = '/hotelx/';
+        childConfig.relURL = childConfig.PATH + childConfig.DIRNAME;
+        childConfig.LOCATION += '-hotelX';
+      } else {
+      }
+
       console.log('\n');
       bar.tick();
       createQuery();
