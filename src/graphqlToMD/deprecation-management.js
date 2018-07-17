@@ -6,84 +6,26 @@ var deepDiff = require('deep-diff');
 var bar = require('./../../progressBar/bar');
 var saveFile = require('./save.js');
 
-function renderDeprecatedNotes(lines, frontMatter, template) {
-  const olog = [];
+function renderDeprecatedNotes() {
+  const deprecatedFields = [];
 
   for (const log of config.LOG) {
     estimateDeletionDate(log);
-    const foundLog = olog.length
-      ? olog.find(ol => ol.key === log.deprecationDate)
+    const foundLog = deprecatedFields.length
+      ? deprecatedFields.find(ol => ol.key === log.deprecationDate)
       : undefined;
 
     if (foundLog) {
       foundLog.value[0].value.push(log);
     } else {
-      olog.push({
+      deprecatedFields.push({
         key: log.deprecationDate,
         value: [{ type: 'd', value: [log] }]
       });
     }
   }
 
-  // const orderedLog = config.LOG.map(l => {
-  //   l.dateMilliseconds = new Date(l.deprecationDate || '2100-01-01').getTime();
-  //   return l;
-  // }).sort((a, b) => {
-  //   if (a.dateMilliseconds < b.dateMilliseconds) return -1;
-  //   if (a.dateMilliseconds > b.dateMilliseconds) return 1;
-  //   return 0;
-  // });
-
-  // frontMatter = JSON.parse(frontMatter);
-
-  // const table = `|Deprecation date|Expected deletion date|Days left|Name|Location|Deprecation Reason|\n`;
-  // const tableLayout = `|:--|:--|:--|:--|:--|:--|\n`;
-  // let tableContent = ``;
-
-  // const dpf = orderedLog.map(l => {
-  //   l.deletionDate = 'unknown';
-  //   l.daysRemaining = 'unknown';
-  //   if (l.deprecationDate) {
-  //     const date = new Date(new Date(l.deprecationDate).getTime() + 7776000000);
-
-  //     l.deletionDate = utils.formatDate(date);
-
-  //     l.daysRemaining =
-  //       new Date(l.deletionDate).getTime() - new Date().getTime();
-  //     if (l.daysRemaining >= 0) {
-  //       l.daysRemaining = Math.floor(l.daysRemaining / 86400000);
-  //     } else {
-  //       l.daysRemaining = 'Already passed';
-  //     }
-  //   }
-
-  //   tableContent += `|${l.deprecationDate || 'unknown'}|${l.deletionDate}|${
-  //     l.daysRemaining
-  //   }|[${l.name}](${l.url})|${l.typeName}|${l.deprecationReason}|\n`;
-  //   return l;
-  // });
-
-  // const objectLog = {};
-  // const dates = Array.from(new Set(config.LOG.map(l => l.deprecationDate)));
-
-  // for (const date of dates) {
-  //   const property = date || 'Unknown';
-  //   objectLog[property] = dpf.filter(df => df.deprecationDate === date);
-  // }
-
-  // // Fix to avoid sending the entire log to the md
-  // frontMatter.log = {} || objectLog;
-
-  // frontMatter.hideGithubLink = true;
-  // lines.push(JSON.stringify(frontMatter, null, '\t'));
-  // lines.push(
-  //   '\n{{% alert theme="info" %}}Changes that can break existing queries to the GraphQL API. For example, removing a field would be a breaking change{{% /alert %}}\n'
-  // );
-  // utils.printer(lines, table + tableLayout + tableContent);
-  // utils.printer(lines, `## Deprecations`);
-  // utils.printer(lines, `{{% ${template} %}}\n`);
-
-  checkDeprecatedDeletions(olog);
+  checkDeprecatedDeletions(deprecatedFields);
 }
 
 function checkDeprecatedDeletions(deprecatedFields) {
@@ -105,20 +47,15 @@ function checkDeprecatedDeletions(deprecatedFields) {
           if (stored) {
             storedData = JSON.parse(stored);
           }
-          // console.log(storedData);
-          // console.log('----------------------');
-          // console.log(deprecatedFields);
-          // prueba
-          const e = deprecatedFields
-            .find(d => d.key === '2018-08-03')
-            .value[0].value.splice(1);
-            utils.log(deprecatedFields, 'prueba eliminado');
-          // prueba
           const difference = deepDiff.diff(storedData, deprecatedFields);
           // PRUEBAS
           // deprecatedFields['2017-11-21'][0] = {};
           //  console.log(deprecatedFields);
           // delete deprecatedFields['2018-03-19'];
+          // const e = deprecatedFields
+          //   .find(d => d.key === '2018-08-03')
+          //   .value[0].value.splice(1);
+          //   utils.log(deprecatedFields, 'prueba eliminado');
 
           // Check if there is a difference.
           // This package is capable of figuring out which may be the differences, yet it's method of comparison is not too clear
@@ -129,7 +66,7 @@ function checkDeprecatedDeletions(deprecatedFields) {
               const foundDeprecatedDate = deprecatedFields.find(
                 df => df.key === date.key
               );
-              
+
               const noteIndex = deletedNotes.findIndex(
                 dn => dn.key === date.key
               );
@@ -137,7 +74,6 @@ function checkDeprecatedDeletions(deprecatedFields) {
               // If the key is no more, that means it and its contents have been removed.
               // Otherwise, we check if the property is equal between the stored data and the current one.
               // If it is different, we enter another loop and keep looking for differences
-
               if (!foundDeprecatedDate || !foundDeprecatedDate.value.length) {
                 const value = date.value[0].value.map(v => {
                   v['trueDeletionDate'] = utils.formatDate(config.CURRENT_DATE);
@@ -190,7 +126,10 @@ function checkDeprecatedDeletions(deprecatedFields) {
                         entry['trueDeletionDate'] = utils.formatDate(
                           config.CURRENT_DATE
                         );
-                        deletedNotes.push({key:entry.deprecationDate, value:[{type:'r', value:[entry]}]});
+                        deletedNotes.push({
+                          key: entry.deprecationDate,
+                          value: [{ type: 'r', value: [entry] }]
+                        });
                       } else if (
                         // IF not present already in deleted notes, info gets added
                         !deletedNotes[noteIndex].value[0].value.find(pd => {
@@ -234,27 +173,26 @@ function checkDeprecatedDeletions(deprecatedFields) {
  * @param {Array} deletedNotes
  */
 function saveDeprecatedNotesSnapshot(deprecatedFields, deletedNotes) {
-  utils.log(deletedNotes);
-  // fs.writeFile(
-  //   __dirname + `/../deprecated-storage${config.PATH}stored-deprecated.json`,
-  //   JSON.stringify(olog),
-  //   function(err) {
-  //     if (err) return console.log(err);
-  //     bar.tick();
-  //     bar.interrupt('[Stored current deprecated and deleted notes]');
-  //   }
-  // );
+  fs.writeFile(
+    __dirname + `/../deprecated-storage${config.PATH}stored-deprecated.json`,
+    JSON.stringify(deprecatedFields),
+    function(err) {
+      if (err) return console.log(err);
+      bar.tick();
+      bar.interrupt('[Stored current deprecated and deleted notes]');
+    }
+  );
 
-  // // console.log(deletedNotes);
-  // fs.writeFile(
-  //   __dirname + `/../deprecated-storage${config.PATH}deleted-notes.json`,
-  //   JSON.stringify(deletedNotes),
-  //   function(err) {
-  //     if (err) return console.log(err);
-  //     bar.tick();
-  //     bar.interrupt('[Stored deleted notes]');
-  //   }
-  // );
+  // console.log(deletedNotes);
+  fs.writeFile(
+    __dirname + `/../deprecated-storage${config.PATH}deleted-notes.json`,
+    JSON.stringify(deletedNotes),
+    function(err) {
+      if (err) return console.log(err);
+      bar.tick();
+      bar.interrupt('[Stored deleted notes]');
+    }
+  );
 
   if (config.frontmatters.DELETED) {
     const lines = [];
@@ -331,10 +269,11 @@ function renderDeletedNotes(
 
     // Duplicate deleted to also be present in the deprecated section
     fuseEqualArrays(newDeletedNotesArr, deletedAsDeprecated);
+
     // Duplicate deprecated to also be present in the unreleased section
     fuseEqualArrays(newDeletedNotesArr, unreleasedNotes);
 
-    // ultimate fusion
+    // Fuse deprecated entries with all the rest
     fuseEqualArrays(newDeletedNotesArr, deprecatedFields);
 
     for (const entry of newDeletedNotesArr) {
@@ -363,7 +302,9 @@ function renderDeletedNotes(
         utils.printer(lines, shorcode);
 
         for (const change of changeType.value) {
+          console.log(changeType.type, change.name);
           utils.printer(lines, createRegister(change, changeType.type));
+
         }
 
         utils.printer(lines, `{{% / release-notes-container %}}`);
@@ -391,7 +332,7 @@ function createRegister(change, type) {
       if (change.trueDeletionDate) {
         dateInfo = `Finally removed on ${change.trueDeletionDate}`;
       } else {
-        dateInfo = `Expected deprecation on ${change.deprecationDate}`;
+        dateInfo = `Expected deprecation on ${change.deletionDate}`;
         additionalInfo = '';
       }
       break;
@@ -407,6 +348,9 @@ function createRegister(change, type) {
       break;
     case 'u':
       keyword = change.subject;
+      if (change.deletionDate) {
+        additionalInfo = `Expected deprecation on ${change.deletionDate}`;
+      }
       break;
   }
 
@@ -416,29 +360,8 @@ function createRegister(change, type) {
 }
 
 // this might replace the function of deprecation
-function formatDeprecatedNotes(deprecatedFields, newDeletedNotesArr) {
-  for (const key of Object.keys(deprecatedFields)) {
-    const foundDate = newDeletedNotesArr.find(a => a.key === key);
-    if (foundDate) {
-      const foundType = foundDate.value.find(f => f.type === 'd');
-      if (foundType) {
-        foundType.value.push(deprecatedFields[key]);
-      } else {
-        foundDate.value.push({ type: 'd', value: deprecatedFields[key] });
-      }
-    } else {
-      newDeletedNotesArr.push({
-        key: key,
-        value: [{ type: 'd', value: deprecatedFields[key] }]
-      });
-    }
-  }
-
-  return newDeletedNotesArr;
-}
-
-// this might replace the function of deprecation
 function formatUnreleasedNotes(deprecatedFields) {
+  // Those nines are a date waaaaay into the future
   let date_u = { key: 99999999999999, value: [{ type: 'u', value: [] }] };
 
   for (const date of deprecatedFields) {
@@ -446,10 +369,10 @@ function formatUnreleasedNotes(deprecatedFields) {
   }
   date_u = utils.copy(date_u);
   date_u.value[0].value.map(v => (v.subject = 'Removal of'));
-  return date_u;
+  return [date_u];
 }
 
-// Creates new array...
+// Clones an array of dates, changing their type to the specified one
 function recreateArrayAsType(target, arr, typeChange) {
   const newArray = utils.copy(arr);
   for (const date of newArray) {
