@@ -302,9 +302,7 @@ function renderDeletedNotes(
         utils.printer(lines, shorcode);
 
         for (const change of changeType.value) {
-          console.log(changeType.type, change.name);
           utils.printer(lines, createRegister(change, changeType.type));
-
         }
 
         utils.printer(lines, `{{% / release-notes-container %}}`);
@@ -332,7 +330,7 @@ function createRegister(change, type) {
       if (change.trueDeletionDate) {
         dateInfo = `Finally removed on ${change.trueDeletionDate}`;
       } else {
-        dateInfo = `Expected deprecation on ${change.deletionDate}`;
+        dateInfo = `Expected removal on ${change.deletionDate}`;
         additionalInfo = '';
       }
       break;
@@ -349,7 +347,11 @@ function createRegister(change, type) {
     case 'u':
       keyword = change.subject;
       if (change.deletionDate) {
-        additionalInfo = `Expected deprecation on ${change.deletionDate}`;
+        additionalInfo = `Deprecated on ${change.deprecationDate}.`;
+        additionalInfo +=
+          change.daysRemaining && isNaN(change.daysRemaining)
+            ? `To be removed soon`
+            : `Expected removal on ${change.deletionDate}`;
       }
       break;
   }
