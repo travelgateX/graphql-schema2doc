@@ -172,12 +172,14 @@ const functions = {
     });
     return filter.length ? filter : null;
   },
-  findSharedTypes: async (coreItem, schemaTypes) => {
-    buildTreeRecursive(coreItem, schemaTypes).then(res => {
-      console.log('\n\n*********');
-      console.log(res);
-      console.log('\n\n-------');
+  findSharedTypes: (coreItem, schemaTypes) => {
+    const promise = new Promise((resolve, reject) => {
+      buildTreeRecursive(coreItem, schemaTypes).then(res => {
+        resolve(res);
+      });
     });
+
+    return promise;
 
     function compareString(a, b) {
       return a.localeCompare(b, undefined, { sensitivity: 'base' }) === 0;

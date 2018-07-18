@@ -22,9 +22,10 @@ function evaluateFields(s) {
     }
     const type = schema.types.filter(t => t.name === aux);
     if ((type || []).length) {
-      coreItem = schema.types.filter(t => t.name === aux)[0];
+      coreItem = schema.types.find(t => t.name === aux);
       functions.findSharedTypes(coreItem, schema.types).then(types => {
         // Types will depend on the option selected on the beginning
+        types.push(coreItem);
         schema.types = types;
         renderSchema(schema);
       });
@@ -67,7 +68,7 @@ function renderSchema(schema) {
     queryType && types.find(type => type.name === schema.queryType.name);
   if (query) {
     var lines = [];
-    renderObject(lines, query, types, 'type');
+    renderObject(lines, query, types, 'type', undefined, 1);
     saveFile(lines.join('\n'), `schema/query`);
   }
 
@@ -75,7 +76,7 @@ function renderSchema(schema) {
     mutationType && types.find(type => type.name === schema.mutationType.name);
   if (mutation) {
     var lines = [];
-    renderObject(lines, mutation, types, 'type');
+    renderObject(lines, mutation, types, 'type', undefined, 2);
     saveFile(lines.join('\n'), `schema/mutation`);
   }
 
@@ -112,11 +113,11 @@ function render(objects, types, dirname, template, operator = template) {
   }
 }
 
-function renderObject(lines, type, types, template, operator = template) {
+function renderObject(lines, type, types, template, operator = template, weight = 1) {
   let frontMatter = {
     title: type.name,
     description: '',
-    weight: 1,
+    weight: weight,
     fields: functions.parseFields(type),
     requireby: functions.parseRequiredBy(types, type.name),
     enumValues: type.enumValues,

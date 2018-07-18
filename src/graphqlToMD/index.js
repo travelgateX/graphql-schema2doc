@@ -32,7 +32,7 @@ function init() {
       throw e;
     }
 
-    // Patch
+    // Patch: Folders are created if not there
     const deprecated_storage = __dirname + '/../deprecated-storage';
 console.log(deprecated_storage);
     if (!fs.existsSync(deprecated_storage)) {
