@@ -24,6 +24,8 @@ function evaluateFields(s) {
     if ((type || []).length) {
       coreItem = schema.types.filter(t => t.name === aux)[0];
       functions.findSharedTypes(coreItem, schema.types).then(types => {
+        // Types will depend on the option selected on the beginning
+        schema.types = types;
         renderSchema(schema);
       });
 
