@@ -6,12 +6,6 @@ const renderToHugo = require('./render-schema-to-hugo'),
   bar = require(__dirname + '/../../progressBar/bar');
 
 function init() {
-  if (globalConfig.USER_CHOICES.filter !== 'Everything') {
-    config.PATH = '/hotelx/';
-    config.relURL = config.PATH + config.DIRNAME;
-    config.LOCATION += '-hotelX';
-  } else {
-  }
   fs.readFile(__dirname + '/../tmp/md-data.json', (err, data) => {
     if (err) throw err;
     config.MD_DATA = JSON.parse(data);
@@ -38,9 +32,8 @@ function init() {
       throw e;
     }
 
-    // Patch
+    // Patch: Folders are created if not there
     const deprecated_storage = __dirname + '/../deprecated-storage';
-console.log(deprecated_storage);
     if (!fs.existsSync(deprecated_storage)) {
       fs.mkdirSync(deprecated_storage);
     }
@@ -56,6 +49,10 @@ console.log(deprecated_storage);
       if (err) throw err;
       const parsedData = JSON.parse(data);
       bar.tick();
+      if (globalConfig.USER_CHOICES.filter !== 'Everything') {
+        parsedData.__schema['mainQueryType'] = {name:"HotelXQuery"};
+        parsedData.__schema['mainMutationType'] = {name:"HotelXMutation"};
+      }
       renderToHugo(parsedData);
     });
   });

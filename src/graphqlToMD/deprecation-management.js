@@ -293,6 +293,22 @@ function renderDeletedNotes(
       if (date.key !== 99999999999999) {
         utils.printer(lines, `### ${date.key}`);
       } else {
+        // Ordered unreleased by deletion date
+        date.value[0].value = date.value[0].value
+          .map(v => {
+            v.deletionDateMilliseconds =
+              (v.daysRemaining === 'Already passed')
+                ? 99999999999999
+                : new Date(v.deletionDate).getTime();
+            return v;
+          })
+          .sort((a, b) => {
+            if (a.deletionDateMilliseconds < b.deletionDateMilliseconds)
+              return 1;
+            if (a.deletionDateMilliseconds > b.deletionDateMilliseconds)
+              return -1;
+            return 0;
+          });
         utils.printer(lines, `### Unreleased`);
       }
       for (const changeType of date.value) {
@@ -300,7 +316,6 @@ function renderDeletedNotes(
           changeType.type
         }"%}}`;
         utils.printer(lines, shorcode);
-
         for (const change of changeType.value) {
           utils.printer(lines, createRegister(change, changeType.type));
         }
@@ -350,7 +365,7 @@ function createRegister(change, type) {
         additionalInfo = `Deprecated on ${change.deprecationDate}.`;
         additionalInfo +=
           change.daysRemaining && isNaN(change.daysRemaining)
-            ? `To be removed soon`
+            ? `**To be removed soon**`
             : `Expected removal on ${change.deletionDate}`;
       }
       break;
