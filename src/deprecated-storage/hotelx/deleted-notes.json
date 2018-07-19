@@ -1,1 +1,1 @@
-[]
+[{"key":"2018-05-21","value":[{"type":"r","value":[{"typeString":"JSON","name":"distribute","url":"/hotelx/reference/scalars/json","description":"Extra information from the distribution layer","isDeprecated":true,"args":null,"deprecationReason":"You can find it in distribution AddOn","descriptionSplitted":{"date":"2018-05-21","first":"deprecated from","second":"You can find it in distribution AddOn"},"deprecationDate":"2018-05-21","typeName":"AddOns","deletionDate":"2018-08-19","daysRemaining":31,"trueDeletionDate":"2018-07-19"}]}]}]
