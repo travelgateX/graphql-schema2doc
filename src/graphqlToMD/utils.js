@@ -12,7 +12,7 @@ function sortBy(arr, property) {
   });
 }
 
-function log(t,d) {
+function log(d=[],t = "NONE") {
   console.log('\n******************************************\n');
   console.log(t.toUpperCase());
   console.log('\n\n');

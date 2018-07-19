@@ -56,7 +56,7 @@ var DELETED = frontMatter(
   'Changes history of deprecated notes previously announced',
   5,
   'fa-eraser',
-  ['reaking-changes']
+  ['breaking-changes']
 );
 
 var QUERY = frontMatter('Query', null, '', 1, null);

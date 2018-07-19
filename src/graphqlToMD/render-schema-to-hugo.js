@@ -88,12 +88,7 @@ function renderSchema(schema) {
   if (config.frontmatters.DEPRECATED && config.LOG.length) {
     const lines = [];
     // disabled deprecation stuff unless all selected
-    deprecationManagement(
-      lines,
-      config.frontmatters.DEPRECATED,
-      'deprecated_notes'
-    );
-    saveFile(lines.join('\n'), `deprecated_notes`);
+    deprecationManagement();
 
     bar.tick();
   }
