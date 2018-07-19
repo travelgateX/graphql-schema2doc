@@ -32,26 +32,13 @@ function init() {
       throw e;
     }
 
-    // Patch: Folders are created if not there
-    const deprecated_storage = __dirname + '/../deprecated-storage';
-    if (!fs.existsSync(deprecated_storage)) {
-      fs.mkdirSync(deprecated_storage);
-    }
-    if (!fs.existsSync(deprecated_storage + '/travelgatex')) {
-      fs.mkdirSync(deprecated_storage + '/travelgatex');
-    }
-    if (!fs.existsSync(deprecated_storage + '/hotelx')) {
-      fs.mkdirSync(deprecated_storage + '/hotelx');
-    }
-    // - Patch
-
     fs.readFile(__dirname + '/../tmp/introspection.json', (err, data) => {
       if (err) throw err;
       const parsedData = JSON.parse(data);
       bar.tick();
-      if (globalConfig.USER_CHOICES.filter !== 'Everything') {
-        parsedData.__schema['mainQueryType'] = {name:"HotelXQuery"};
-        parsedData.__schema['mainMutationType'] = {name:"HotelXMutation"};
+      if (config.SCHEMA_OPTIONS.length) {
+        parsedData.__schema.queryType = config.SCHEMA_OPTIONS[0];
+        parsedData.__schema.mutationType = config.SCHEMA_OPTIONS[1];
       }
       renderToHugo(parsedData);
     });

@@ -12,15 +12,9 @@ var deprecationManagement = require('./deprecation-management.js');
 function evaluateFields(s) {
   const schema = s.__schema;
 
-  if (globalConfig.USER_CHOICES.filter !== 'Everything') {
-    let filterOptions;
-    let coreItem;
+  if (globalConfig.USER_CHOICES.filter !== 'All') {
+    const filterOptions = config.SCHEMA_OPTIONS;
 
-    // If-else block that sorts out which query type is to be filtered
-    if (globalConfig.USER_CHOICES.filter.includes('HotelX')) {
-      filterOptions = ['HotelXQuery', 'HotelXMutation'];
-    }
- 
     const filteredTypes = schema.types.filter(t =>
       filterOptions.includes(t.name)
     );
@@ -44,21 +38,16 @@ function evaluateFields(s) {
       bar.tick();
     }
   } else {
-    // In case we select 'Everything'
+    config.SCHEMA_OPTIONS = [schema.queryType, schema.mutationType];
+    // In case we select 'All'
     renderSchema(schema);
   }
 }
 
 function renderSchema(schema) {
-  const renderWholeSchema = globalConfig.USER_CHOICES.filter === 'Everything';
   saveFile(config.frontmatters.INDEX, `_index`);
 
   const types = schema.types.filter(type => !type.name.startsWith('__'));
-
-  const queryType = renderWholeSchema ? schema.queryType : schema.mainQueryType;
-  const mutationType = renderWholeSchema
-    ? schema.mutationType
-    : schema.mainMutationType;
 
   const objects = types.filter(
     type =>

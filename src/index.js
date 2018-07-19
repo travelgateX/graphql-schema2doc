@@ -38,15 +38,29 @@ function initScript() {
     if (err) return console.error(err);
     inquirer.prompt(questions).then(function(answers) {
       config.USER_CHOICES.filter = answers.filter;
+      // config.USER_CHOICES.root
 
-      //IS NOT DYNAMIC
-      if (config.USER_CHOICES.filter !== 'Everything') {
-        childConfig.PATH = '/hotelx/';
+      switch (config.USER_CHOICES.filter) {
+        case 'hotelx':
+          childConfig.SCHEMA_OPTIONS = [
+            { name: 'HotelXQuery' },
+            { name: 'HotelXMutation' }
+          ];
+          childConfig.PATH = '/hotelx/';
+          childConfig.relURL = childConfig.PATH + childConfig.DIRNAME;
+          childConfig.LOCATION += '-hotelX';
+          break;
+        case 'paymentx':
+        childConfig.SCHEMA_OPTIONS = [
+          { name: 'PaymentXQuery' },
+          { name: 'PaymentXMutation' }
+        ];
+        childConfig.PATH = '/paymentx/';
         childConfig.relURL = childConfig.PATH + childConfig.DIRNAME;
-        childConfig.LOCATION += '-hotelX';
-      } else {
+        childConfig.LOCATION += '-paymentx';
+        break;
       }
-
+      
       console.log('\n');
       bar.tick();
       createQuery();

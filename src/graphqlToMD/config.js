@@ -14,6 +14,8 @@ const CURRENT_DATE = new Date();
 
 let MD_DATA = {};
 
+var SCHEMA_OPTIONS = [];
+
 var frontMatter = (title, pagetitle, description, weight, icon, tags = []) =>
   JSON.stringify(
     {
@@ -75,6 +77,7 @@ module.exports = {
   DIRNAME,
   relURL,
   PATH,
+  SCHEMA_OPTIONS,
   frontmatters: {
     frontMatter,
     INDEX,
