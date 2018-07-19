@@ -34,7 +34,6 @@ function init() {
 
     // Patch: Folders are created if not there
     const deprecated_storage = __dirname + '/../deprecated-storage';
-console.log(deprecated_storage);
     if (!fs.existsSync(deprecated_storage)) {
       fs.mkdirSync(deprecated_storage);
     }
@@ -50,6 +49,10 @@ console.log(deprecated_storage);
       if (err) throw err;
       const parsedData = JSON.parse(data);
       bar.tick();
+      if (globalConfig.USER_CHOICES.filter !== 'Everything') {
+        parsedData.__schema['mainQueryType'] = {name:"HotelXQuery"};
+        parsedData.__schema['mainMutationType'] = {name:"HotelXMutation"};
+      }
       renderToHugo(parsedData);
     });
   });

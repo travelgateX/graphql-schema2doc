@@ -39,6 +39,7 @@ function initScript() {
     inquirer.prompt(questions).then(function(answers) {
       config.USER_CHOICES.filter = answers.filter;
 
+      //IS NOT DYNAMIC
       if (config.USER_CHOICES.filter !== 'Everything') {
         childConfig.PATH = '/hotelx/';
         childConfig.relURL = childConfig.PATH + childConfig.DIRNAME;

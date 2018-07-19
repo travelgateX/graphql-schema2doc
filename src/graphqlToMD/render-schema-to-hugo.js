@@ -13,25 +13,33 @@ function evaluateFields(s) {
   const schema = s.__schema;
 
   if (globalConfig.USER_CHOICES.filter !== 'Everything') {
-    let aux;
+    let filterOptions;
     let coreItem;
 
     // If-else block that sorts out which query type is to be filtered
     if (globalConfig.USER_CHOICES.filter.includes('HotelX')) {
-      aux = 'HotelXQuery';
+      filterOptions = ['HotelXQuery', 'HotelXMutation'];
     }
-    const type = schema.types.filter(t => t.name === aux);
-    if ((type || []).length) {
-      coreItem = schema.types.find(t => t.name === aux);
-      functions.findSharedTypes(coreItem, schema.types).then(types => {
-        // Types will depend on the option selected on the beginning
-        types.push(coreItem);
-        schema.types = types;
-        renderSchema(schema);
-      });
-
-      bar.tick();
-      bar.interrupt(`[Built object tree]`);
+ 
+    const filteredTypes = schema.types.filter(t =>
+      filterOptions.includes(t.name)
+    );
+    if ((filteredTypes || []).length) {
+      // Types will depend on the option selected on the beginning
+      functions
+        .findSharedTypes(filteredTypes[0], schema.types, [])
+        .then(types1 => {
+          types1.push(filteredTypes[0]);
+          functions
+            .findSharedTypes(filteredTypes[1], schema.types, types1)
+            .then(types2 => {
+              types2.push(filteredTypes[1]);
+              schema.types = types2;
+              renderSchema(schema);
+              bar.tick();
+              bar.interrupt(`[Built object tree]`);
+            });
+        });
     } else {
       bar.tick();
     }
@@ -42,18 +50,21 @@ function evaluateFields(s) {
 }
 
 function renderSchema(schema) {
+  const renderWholeSchema = globalConfig.USER_CHOICES.filter === 'Everything';
   saveFile(config.frontmatters.INDEX, `_index`);
 
   const types = schema.types.filter(type => !type.name.startsWith('__'));
 
-  const queryType = schema.queryType;
-  const mutationType = schema.mutationType;
+  const queryType = renderWholeSchema ? schema.queryType : schema.mainQueryType;
+  const mutationType = renderWholeSchema
+    ? schema.mutationType
+    : schema.mainMutationType;
 
   const objects = types.filter(
     type =>
       type.kind === 'OBJECT' &&
-      type.name !== schema.mutationType.name &&
-      type.name !== schema.queryType.name
+      type.name !== mutationType.name &&
+      type.name !== queryType.name
   );
 
   render(objects, types, 'objects', 'type');
@@ -64,8 +75,7 @@ function renderSchema(schema) {
   const inputObjects = types.filter(type => type.kind === 'INPUT_OBJECT');
   render(inputObjects, types, 'inputobjects', 'type');
 
-  const query =
-    queryType && types.find(type => type.name === schema.queryType.name);
+  const query = queryType && types.find(type => type.name === queryType.name);
   if (query) {
     var lines = [];
     renderObject(lines, query, types, 'type', undefined, 1);
@@ -73,7 +83,7 @@ function renderSchema(schema) {
   }
 
   const mutation =
-    mutationType && types.find(type => type.name === schema.mutationType.name);
+    mutationType && types.find(type => type.name === mutationType.name);
   if (mutation) {
     var lines = [];
     renderObject(lines, mutation, types, 'type', undefined, 2);
@@ -102,7 +112,7 @@ function render(objects, types, dirname, template, operator = template) {
     utils.sortBy(objects, 'name');
     objects.forEach(type => {
       var lines = [];
-     
+
       renderObject(lines, type, types, template, operator);
       saveFile(lines.join('\n'), `${dirname}/${type.name}`);
     });
@@ -113,7 +123,14 @@ function render(objects, types, dirname, template, operator = template) {
   }
 }
 
-function renderObject(lines, type, types, template, operator = template, weight = 1) {
+function renderObject(
+  lines,
+  type,
+  types,
+  template,
+  operator = template,
+  weight = 1
+) {
   let frontMatter = {
     title: type.name,
     description: '',

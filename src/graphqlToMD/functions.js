@@ -172,9 +172,10 @@ const functions = {
     });
     return filter.length ? filter : null;
   },
-  findSharedTypes: (coreItem, schemaTypes) => {
+  findSharedTypes: (coreItem, schemaTypes, foundArrayTree
+  ) => {
     const promise = new Promise((resolve, reject) => {
-      buildTreeRecursive(coreItem, schemaTypes).then(res => {
+      buildTreeRecursive(coreItem, schemaTypes,foundArrayTree).then(res => {
         resolve(res);
       });
     });
@@ -185,9 +186,7 @@ const functions = {
       return a.localeCompare(b, undefined, { sensitivity: 'base' }) === 0;
     }
 
-    async function buildTreeRecursive(coreItem, schemaTypes) {
-      let foundArrayTree = [];
-
+    async function buildTreeRecursive(coreItem, schemaTypes,foundArrayTree) {
       await manageRecursion(coreItem.fields, schemaTypes, foundArrayTree);
 
       return foundArrayTree;
