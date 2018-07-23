@@ -1,3 +1,5 @@
+var bar = require(__dirname + '/../../progressBar/bar');
+
 function printer(lines, s) {
   lines.push(s);
 }
@@ -42,11 +44,23 @@ function escapeHtml(unsafe) {
     .replace(/\n/g, ' \\n ');
 }
 
+function completeBar() {
+  if (!bar.complete) {
+    setTimeout(_ => {
+      bar.tick();
+      completeBar();
+    }, 200);
+  } else {
+    bar.interrupt('[Done]');
+  }
+};
+
 module.exports = {
   printer,
   sortBy,
   formatDate,
   escapeHtml,
   log,
-  copy
+  copy,
+  completeBar
 };

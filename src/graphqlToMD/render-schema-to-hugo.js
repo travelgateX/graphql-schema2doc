@@ -1,5 +1,4 @@
 'use strict';
-var fs = require('fs');
 var config = require('./config');
 var globalConfig = require('./../config');
 var bar = require(__dirname + '/../../progressBar/bar');
@@ -13,7 +12,7 @@ function evaluateFields(s) {
   const schema = s.__schema;
 
   if (globalConfig.USER_CHOICES.filter !== 'All') {
-    const filterOptions = config.SCHEMA_OPTIONS;
+    const filterOptions = config.SCHEMA_OPTIONS.map(so => so.name);
 
     const filteredTypes = schema.types.filter(t =>
       filterOptions.includes(t.name)
@@ -24,15 +23,22 @@ function evaluateFields(s) {
         .findSharedTypes(filteredTypes[0], schema.types, [])
         .then(types1 => {
           types1.push(filteredTypes[0]);
-          functions
-            .findSharedTypes(filteredTypes[1], schema.types, types1)
-            .then(types2 => {
-              types2.push(filteredTypes[1]);
-              schema.types = types2;
-              renderSchema(schema);
-              bar.tick();
-              bar.interrupt(`[Built object tree]`);
-            });
+          if (filteredTypes[1]) {
+            functions
+              .findSharedTypes(filteredTypes[1], schema.types, types1)
+              .then(types2 => {
+                types2.push(filteredTypes[1]);
+                schema.types = types2;
+                bar.tick();
+                bar.interrupt(`[Built object tree]`);
+                renderSchema(schema);
+              });
+          } else {
+            schema.types = types1;
+            bar.tick();
+            bar.interrupt(`[Built object tree (only Query)]`);
+            renderSchema(schema);
+          }
         });
     } else {
       bar.tick();
@@ -52,8 +58,8 @@ function renderSchema(schema) {
   const objects = types.filter(
     type =>
       type.kind === 'OBJECT' &&
-      type.name !== mutationType.name &&
-      type.name !== queryType.name
+      type.name !== (schema.mutationType || {}).name &&
+      type.name !== (schema.queryType || {}).name
   );
 
   render(objects, types, 'objects', 'type');
@@ -64,7 +70,8 @@ function renderSchema(schema) {
   const inputObjects = types.filter(type => type.kind === 'INPUT_OBJECT');
   render(inputObjects, types, 'inputobjects', 'type');
 
-  const query = queryType && types.find(type => type.name === queryType.name);
+  const query =
+    schema.queryType && types.find(type => type.name === schema.queryType.name);
   if (query) {
     var lines = [];
     renderObject(lines, query, types, 'type', undefined, 1);
@@ -72,7 +79,8 @@ function renderSchema(schema) {
   }
 
   const mutation =
-    mutationType && types.find(type => type.name === mutationType.name);
+    schema.mutationType &&
+    types.find(type => type.name === schema.mutationType.name);
   if (mutation) {
     var lines = [];
     renderObject(lines, mutation, types, 'type', undefined, 2);
@@ -87,12 +95,12 @@ function renderSchema(schema) {
   const interfaces = types.filter(type => type.kind === 'INTERFACE');
   render(interfaces, types, 'interfaces', 'type', 'interface');
   bar.tick();
+  bar.interrupt('[Rendered menu]');
   if (config.frontmatters.DEPRECATED && config.LOG.length) {
-    const lines = [];
-    // disabled deprecation stuff unless all selected
     deprecationManagement();
-
-    bar.tick();
+    utils.completeBar();
+  } else {
+    utils.completeBar();
   }
 }
 
