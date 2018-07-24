@@ -49,7 +49,7 @@ function completeBar() {
     setTimeout(_ => {
       bar.tick();
       completeBar();
-    }, 200);
+    }, 500);
   } else {
     bar.interrupt('[Done]');
   }

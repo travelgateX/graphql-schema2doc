@@ -1,4 +1,5 @@
 'use strict';
+var fs = require('fs-extra')
 var config = require('./config');
 var globalConfig = require('./../config');
 var bar = require(__dirname + '/../../progressBar/bar');
@@ -51,6 +52,8 @@ function evaluateFields(s) {
 }
 
 function renderSchema(schema) {
+  
+
   saveFile(config.frontmatters.INDEX, `_index`);
 
   const types = schema.types.filter(type => !type.name.startsWith('__'));
@@ -68,6 +71,7 @@ function renderSchema(schema) {
   render(enums, types, 'enums', 'enum');
 
   const inputObjects = types.filter(type => type.kind === 'INPUT_OBJECT');
+ 
   render(inputObjects, types, 'inputobjects', 'type');
 
   const query =

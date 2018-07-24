@@ -172,10 +172,9 @@ const functions = {
     });
     return filter.length ? filter : null;
   },
-  findSharedTypes: (coreItem, schemaTypes, foundArrayTree
-  ) => {
+  findSharedTypes: (coreItem, schemaTypes, foundArrayTree) => {
     const promise = new Promise((resolve, reject) => {
-      buildTreeRecursive(coreItem, schemaTypes,foundArrayTree).then(res => {
+      buildTreeRecursive(coreItem, schemaTypes, foundArrayTree).then(res => {
         resolve(res);
       });
     });
@@ -183,10 +182,13 @@ const functions = {
     return promise;
 
     function compareString(a, b) {
+      if (!a) {
+        return false;
+      }
       return a.localeCompare(b, undefined, { sensitivity: 'base' }) === 0;
     }
 
-    async function buildTreeRecursive(coreItem, schemaTypes,foundArrayTree) {
+    async function buildTreeRecursive(coreItem, schemaTypes, foundArrayTree) {
       await manageRecursion(coreItem.fields, schemaTypes, foundArrayTree);
 
       return foundArrayTree;
@@ -227,7 +229,31 @@ const functions = {
 
       for (const field of fields) {
         const fieldTypes = [];
-        const item = field.kind ? field : field.type;
+        let item;
+        if (field.kind) {
+          item = field;
+        } else {
+          if (field.args) {
+            for (const arg of field.args) {
+              if (arg.name) {
+                fieldTypes.push(arg);
+              }
+              if (arg.type) {
+                const argType = arg.type;
+                if (argType.ofType) {
+                  const ofTypes = [];
+                  checkOfTypes(argType.ofType, ofTypes);
+                  ofTypes.forEach(o => {
+                    if (o.name) {
+                      fieldTypes.push(o);
+                    }
+                  });
+                }
+              }
+            }
+          }
+          item = field.type;
+        }
 
         if (item.name) {
           fieldTypes.push(item);
@@ -244,6 +270,7 @@ const functions = {
         } else {
           fieldTypes.push(item);
         }
+
         auxArray = auxArray.concat(fieldTypes);
       }
       auxArray.map(au => {
@@ -254,6 +281,9 @@ const functions = {
 
       const typesFound = [];
       for (const a of arr) {
+        if (a.name === 'HotelXBoardQueryInput') {
+          console.log('hola');
+        }
         const item = schemaTypes.find(t => compareString(t.name, a.name)) || a;
         typesFound.push(item);
       }
