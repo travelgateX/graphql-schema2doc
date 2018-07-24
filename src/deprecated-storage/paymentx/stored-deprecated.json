@@ -8,7 +8,7 @@
           {
             "typeString": "String",
             "name": "organization",
-            "url": "/paymentx/reference/scalars/string",
+            "url": "undefined/scalars/string",
             "description": "Responsible organization of the booked property. @deprecated(reason: \"deprecated from 2018-08-03. Please use PaymentXBookingInfoCriteriaInput\")",
             "isDeprecated": true,
             "args": null,
@@ -26,7 +26,7 @@
           {
             "typeString": "ID",
             "name": "pointOfSaleCode",
-            "url": "/paymentx/reference/scalars/id",
+            "url": "undefined/scalars/id",
             "description": "Indicates the code of the booked property. @deprecated(reason: \"deprecated from 2018-08-03. Please use PaymentXBookingInfoCriteriaInput\")",
             "isDeprecated": true,
             "args": null,
@@ -44,7 +44,7 @@
           {
             "typeString": "String",
             "name": "bookingReference",
-            "url": "/paymentx/reference/scalars/string",
+            "url": "undefined/scalars/string",
             "description": "Indicates the referece of the booking. @deprecated(reason: \"deprecated from 2018-08-03. Please use PaymentXBookingInfoCriteriaInput\")",
             "isDeprecated": true,
             "args": null,

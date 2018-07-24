@@ -8,7 +8,7 @@
           {
             "typeString": "JSON",
             "name": "distribute",
-            "url": "/hotelx/reference/scalars/json",
+            "url": "undefined/scalars/json",
             "description": "Extra information from the distribution layer",
             "isDeprecated": true,
             "args": null,

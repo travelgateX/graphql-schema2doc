@@ -4,14 +4,14 @@ var config = require('./config');
 var globalConfig = require('./../config');
 var bar = require(__dirname + '/../../progressBar/bar');
 var functions = require('./functions.js');
-var saveFile = require('./save.js');
+var save = require('./save.js');
 var utils = require('./utils.js');
 var deprecationManagement = require('./deprecation-management.js');
 
 // MAIN FUNCTION
 function evaluateFields(s) {
   const schema = s.__schema;
-  if (globalConfig.USER_CHOICES.filter !== 'All') {
+  if (globalConfig.USER_CHOICES.filter !== 'travelgatex') {
     const filterOptions = config.SCHEMA_OPTIONS.map(so => so.name);
     
     const filteredTypes = schema.types.filter(t =>
@@ -47,7 +47,7 @@ function evaluateFields(s) {
     }
   } else {
     config.SCHEMA_OPTIONS = [schema.queryType, schema.mutationType];
-    // In case we select 'All'
+    // In case we select 'travelgatex'
     renderSchema(schema);
   }
 }
@@ -55,7 +55,7 @@ function evaluateFields(s) {
 function renderSchema(schema) {
   
 
-  saveFile(config.frontmatters.INDEX, `_index`);
+  save.saveFile(config.frontmatters.INDEX, `_index`);
 
   const types = schema.types.filter(type => !type.name.startsWith('__'));
 
@@ -80,7 +80,7 @@ function renderSchema(schema) {
   if (query) {
     var lines = [];
     renderObject(lines, query, types, 'type', undefined, 1);
-    saveFile(lines.join('\n'), `schema/query`);
+    save.saveFile(lines.join('\n'), `schema/query`);
   }
 
   const mutation =
@@ -89,10 +89,10 @@ function renderSchema(schema) {
   if (mutation) {
     var lines = [];
     renderObject(lines, mutation, types, 'type', undefined, 2);
-    saveFile(lines.join('\n'), `schema/mutation`);
+    save.saveFile(lines.join('\n'), `schema/mutation`);
   }
 
-  saveFile(config.frontmatters.INDEXSCHEMA, `schema/_index`);
+  save.saveFile(config.frontmatters.INDEXSCHEMA, `schema/_index`);
 
   const scalars = types.filter(type => type.kind === 'SCALAR');
   render(scalars, types, 'scalars', 'scalar');
@@ -116,9 +116,9 @@ function render(objects, types, dirname, template, operator = template) {
       var lines = [];
 
       renderObject(lines, type, types, template, operator);
-      saveFile(lines.join('\n'), `${dirname}/${type.name}`);
+      save.saveFile(lines.join('\n'), `${dirname}/${type.name}`);
     });
-    saveFile(
+    save.saveFile(
       config.frontmatters[`INDEX${dirname.toUpperCase()}`],
       `${dirname}/_index`
     );

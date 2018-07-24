@@ -20,4 +20,4 @@ This project will create folders, subfolders and files. Make sure the folder has
 
 ## Running the scripts
 
-Once everything is ready, just run the index.js script inside src. If everything goes well, a folder called "reference" inside "output" will be generated, which then can be moved to `documentation-site`, inside `travelgateX`.
+Once everything is ready, just run the index.js script inside src. If everything goes as expected, a folder called "reference"  will be generated inside the `documentation-site` project, in the category chosen by the user. By default, this project assumes that it and `documentation-site` are on the same folder. If you want to have them on different folders, you will have to modify the configurations by hand.

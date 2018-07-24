@@ -14,7 +14,7 @@ function renderType(type, ret) {
 }
 
 function getTypeURL(type) {
-  const url = `${config.relURL}`;
+  const url = `${config.get}`;
   const name = type.name.toLowerCase();
   switch (type.kind) {
     case 'INPUT_OBJECT':
@@ -279,9 +279,6 @@ const functions = {
 
       const typesFound = [];
       for (const a of arr) {
-        if (a.name === 'HotelXBoardQueryInput') {
-          console.log('hola');
-        }
         const item = schemaTypes.find(t => compareString(t.name, a.name)) || a;
         typesFound.push(item);
       }

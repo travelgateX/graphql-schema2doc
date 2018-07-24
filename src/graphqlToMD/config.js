@@ -2,21 +2,34 @@
  * CONSTANTS CONFIG
  */
 
-var URL = 'https://api.travelgatex.com';
-var DIRNAME = 'reference';
+let URL = 'https://api.travelgatex.com';
+let DIRNAME = 'reference';
 // Default
-var PATH = '/travelgatex/';
-var relURL = PATH + DIRNAME;
-var LOCATION = __dirname + '/../output/reference';
+let PATH = '/travelgatex/';
+let relURL = PATH + DIRNAME;
+let LOCATION = `${__dirname}/../../../documentation-site/content${PATH}/reference`;
+let DEPRECATED_NOTES_LOCATION = `${__dirname}/../../../documentation-site/content${PATH}/release-notes/breaking-changes.md`;
+
+const resetLocations = newPath => {
+  PATH = newPath;
+  relURL = PATH + DIRNAME;
+  LOCATION = `${__dirname}/../../../documentation-site/content${PATH}/reference`;
+  DEPRECATED_NOTES_LOCATION = `${__dirname}/../../../documentation-site/content${PATH}/release-notes/breaking-changes.md`;
+};
+
+const getPath = _=> PATH;
+const getRelUrl = _ => relURL;
+const getLocation = _=>LOCATION;
+const getDeprecatedNotesLocation = _=>  DEPRECATED_NOTES_LOCATION;
 
 const LOG = [];
 const CURRENT_DATE = new Date();
 
 let MD_DATA = {};
 
-var SCHEMA_OPTIONS = [];
+let SCHEMA_OPTIONS = [];
 
-var frontMatter = (title, pagetitle, description, weight, icon, tags = []) =>
+let frontMatter = (title, pagetitle, description, weight, icon, tags = []) =>
   JSON.stringify(
     {
       title: title,
@@ -31,28 +44,28 @@ var frontMatter = (title, pagetitle, description, weight, icon, tags = []) =>
     2
   );
 
-var INDEX = frontMatter(
+let INDEX = frontMatter(
   'Reference',
   'Reference Documentation',
   'Reference Documentation',
   2,
   'fa-book'
 );
-var INDEXSCHEMA = frontMatter('Schema', null, '', 1, null);
-var INDEXOBJECTS = frontMatter('Objects', null, '', 2, null);
-var INDEXSCALARS = frontMatter('Scalars', null, '', 3, null);
-var INDEXINTERFACES = frontMatter('Interfaces', null, '', 4, null);
-var INDEXINPUTOBJECTS = frontMatter('Input objects', null, '', 5, null);
-var INDEXENUMS = frontMatter('Enums', null, '', 6, null);
-var DEPRECATED = frontMatter(
+let INDEXSCHEMA = frontMatter('Schema', null, '', 1, null);
+let INDEXOBJECTS = frontMatter('Objects', null, '', 2, null);
+let INDEXSCALARS = frontMatter('Scalars', null, '', 3, null);
+let INDEXINTERFACES = frontMatter('Interfaces', null, '', 4, null);
+let INDEXINPUTOBJECTS = frontMatter('Input objects', null, '', 5, null);
+let INDEXENUMS = frontMatter('Enums', null, '', 6, null);
+let DEPRECATED = frontMatter(
   'Deprecated Schema Notes',
   'Deprecated schema notes',
   'Changes that can break existing queries to the GraphQL API. For example, removing a field would be a breaking change',
   4,
   'fa-exclamation-triangle',
-  ["deprecated-notes"]
+  ['deprecated-notes']
 );
-var DELETED = frontMatter(
+let DELETED = frontMatter(
   'GraphQL Schema breaking changes',
   'GraphQL Schema breaking changes',
   'Changes history of deprecated notes previously announced',
@@ -61,22 +74,18 @@ var DELETED = frontMatter(
   ['breaking-changes']
 );
 
-var QUERY = frontMatter('Query', null, '', 1, null);
-var MUTATION = frontMatter('Mutation', null, '', 2, null);
+let QUERY = frontMatter('Query', null, '', 1, null);
+let MUTATION = frontMatter('Mutation', null, '', 2, null);
 
-var SECTION1 = 'GraphQL schema definition';
-var SECTION2 = 'Fields';
-var SECTION3 = 'Required by';
+let SECTION1 = 'GraphQL schema definition';
+let SECTION2 = 'Fields';
+let SECTION3 = 'Required by';
 
 module.exports = {
   URL,
   LOG,
   CURRENT_DATE,
   MD_DATA,
-  LOCATION,
-  DIRNAME,
-  relURL,
-  PATH,
   SCHEMA_OPTIONS,
   frontmatters: {
     frontMatter,
@@ -94,5 +103,11 @@ module.exports = {
   },
   SECTION1,
   SECTION2,
-  SECTION3
+  SECTION3,
+  resetLocations,
+  getPath,
+  getLocation,
+  getRelUrl,
+  getDeprecatedNotesLocation,
+  DEPRECATED_NOTES_LOCATION
 };

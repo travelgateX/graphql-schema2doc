@@ -4,7 +4,7 @@ var fs = require('fs');
 var utils = require('./utils');
 var deepDiff = require('deep-diff');
 var bar = require('./../../progressBar/bar');
-var saveFile = require('./save.js');
+var save = require('./save.js');
 
 function renderDeprecatedNotes() {
   const deprecatedFields = [];
@@ -30,7 +30,7 @@ function renderDeprecatedNotes() {
 
 function checkDeprecatedDeletions(deprecatedFields) {
   fs.readFile(
-    __dirname + `/../deprecated-storage${config.PATH}deleted-notes.json`,
+    __dirname + `/../deprecated-storage${config.getPath()}deleted-notes.json`,
     'utf8',
     (err, dn) => {
       let deletedNotes = [];
@@ -40,7 +40,7 @@ function checkDeprecatedDeletions(deprecatedFields) {
       // The name
       fs.readFile(
         __dirname +
-          `/../deprecated-storage${config.PATH}stored-deprecated.json`,
+          `/../deprecated-storage${config.getPath()}stored-deprecated.json`,
         'utf8',
         (err, stored) => {
           let storedData;
@@ -181,7 +181,7 @@ function checkDeprecatedDeletions(deprecatedFields) {
  */
 function saveDeprecatedNotesSnapshot(deprecatedFields, deletedNotes) {
   fs.writeFile(
-    __dirname + `/../deprecated-storage${config.PATH}stored-deprecated.json`,
+    __dirname + `/../deprecated-storage${config.getPath()}stored-deprecated.json`,
     JSON.stringify(deprecatedFields, undefined, '  '),
     function(err) {
       if (err) return console.log(err);
@@ -192,7 +192,7 @@ function saveDeprecatedNotesSnapshot(deprecatedFields, deletedNotes) {
 
   // console.log(deletedNotes);
   fs.writeFile(
-    __dirname + `/../deprecated-storage${config.PATH}deleted-notes.json`,
+    __dirname + `/../deprecated-storage${config.getPath()}deleted-notes.json`,
     JSON.stringify(deletedNotes, undefined, '  '),
     function(err) {
       if (err) return console.log(err);
@@ -209,7 +209,7 @@ function saveDeprecatedNotesSnapshot(deprecatedFields, deletedNotes) {
       config.frontmatters.DELETED,
       utils.copy(deprecatedFields)
     );
-    saveFile(lines.join('\n'), `breaking-changes`);
+    save.saveDeprecated(lines.join('\n'), `breaking-changes`);
   }
 }
 

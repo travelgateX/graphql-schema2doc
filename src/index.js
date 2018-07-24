@@ -46,35 +46,27 @@ function initScript() {
             { name: 'HotelXQuery' },
             { name: 'HotelXMutation' }
           ];
-          childConfig.PATH = '/hotelx/';
-          childConfig.relURL = childConfig.PATH + childConfig.DIRNAME;
-          childConfig.LOCATION += '-hotelx';
+          childConfig.resetLocations('/hotelx/');
           break;
         case 'paymentx':
           childConfig.SCHEMA_OPTIONS = [
             { name: 'PaymentXQuery' },
             { name: 'PaymentXMutation' }
           ];
-          childConfig.PATH = '/paymentx/';
-          childConfig.relURL = childConfig.PATH + childConfig.DIRNAME;
-          childConfig.LOCATION += '-paymentx';
+          childConfig.resetLocations('/paymentx/');
           break;
         case 'mappea':
           childConfig.SCHEMA_OPTIONS = [
             { name: 'MappeaQuery' },
             { name: 'MappeaMutation' }
           ];
-          childConfig.PATH = '/mappea/';
-          childConfig.relURL = childConfig.PATH + childConfig.DIRNAME;
-          childConfig.LOCATION += '-mappea';
+          childConfig.resetLocations('/mappea/');
           break;
         case 'stats':
           childConfig.SCHEMA_OPTIONS = [
             { name: 'StatsQuery' }
           ];
-          childConfig.PATH = '/stats/';
-          childConfig.relURL = childConfig.PATH + childConfig.DIRNAME;
-          childConfig.LOCATION += '-stats';
+          childConfig.resetLocations('/stats/');
           break;
       }
       console.log('\n');

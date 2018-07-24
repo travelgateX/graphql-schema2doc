@@ -9,13 +9,15 @@ function init() {
     config.MD_DATA = JSON.parse(data);
   });
 
-  fsex.emptyDirSync(config.LOCATION);
-  fsex.emptyDirSync(config.LOCATION + '/objects');
-  fsex.emptyDirSync(config.LOCATION + '/schema');
-  fsex.emptyDirSync(config.LOCATION + '/inputobjects');
-  fsex.emptyDirSync(config.LOCATION + '/interfaces');
-  fsex.emptyDirSync(config.LOCATION + '/enums');
-  fsex.emptyDirSync(config.LOCATION + '/scalars');
+  console.log(config.getDeprecatedNotesLocation());
+
+  fsex.emptyDirSync(config.getLocation());
+  fsex.emptyDirSync(config.getLocation() + '/objects');
+  fsex.emptyDirSync(config.getLocation() + '/schema');
+  fsex.emptyDirSync(config.getLocation() + '/inputobjects');
+  fsex.emptyDirSync(config.getLocation() + '/interfaces');
+  fsex.emptyDirSync(config.getLocation() + '/enums');
+  fsex.emptyDirSync(config.getLocation() + '/scalars');
 
   fsex.readFile(__dirname + '/../tmp/introspection.json', (err, data) => {
     if (err) throw err;
