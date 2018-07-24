@@ -203,21 +203,19 @@ const functions = {
       if (foundTypes) {
         const typesOnThisCycle = [];
         for (const ft of foundTypes) {
-          const foundItem = foundArrayTree.find(
-            fa =>
-              compareString(fa.name, ft.name) &&
-              compareString(fa.description, ft.description) &&
-              compareString(fa.kind, ft.kind)
-          );
+          const foundItem = foundArrayTree.find(fat => fullComparison(fat, ft));
+
           if (!foundItem) {
             typesOnThisCycle.push(ft);
             foundArrayTree.push(ft);
           }
         }
 
-        for (const found of typesOnThisCycle) {
-          if (found.fields && found.fields.length) {
-            manageRecursion(found.fields, schemaTypes, foundArrayTree);
+        if (typesOnThisCycle.length) {
+          for (const found of typesOnThisCycle) {
+            if (found.fields && found.fields.length) {
+              manageRecursion(found.fields, schemaTypes, foundArrayTree);
+            }
           }
         }
       }
@@ -297,6 +295,10 @@ const functions = {
       if (item.ofType) {
         checkOfTypes(item.ofType, ofTypes);
       }
+    }
+
+    function fullComparison(type1, type2) {
+      return JSON.stringify(type1) === JSON.stringify(type2);
     }
   }
 };

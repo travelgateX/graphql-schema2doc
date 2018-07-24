@@ -11,13 +11,13 @@ var deprecationManagement = require('./deprecation-management.js');
 // MAIN FUNCTION
 function evaluateFields(s) {
   const schema = s.__schema;
-
   if (globalConfig.USER_CHOICES.filter !== 'All') {
     const filterOptions = config.SCHEMA_OPTIONS.map(so => so.name);
-
+    
     const filteredTypes = schema.types.filter(t =>
       filterOptions.includes(t.name)
     );
+    
     if ((filteredTypes || []).length) {
       // Types will depend on the option selected on the beginning
       functions
@@ -42,7 +42,8 @@ function evaluateFields(s) {
           }
         });
     } else {
-      bar.tick();
+      bar.interrupt(`[FATAL ERROR. No query nor mutation]`);
+      utils.completeBar();
     }
   } else {
     config.SCHEMA_OPTIONS = [schema.queryType, schema.mutationType];
