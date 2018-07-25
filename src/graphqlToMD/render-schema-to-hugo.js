@@ -43,7 +43,7 @@ function evaluateFields(s) {
         });
     } else {
       bar.interrupt(`[FATAL ERROR. No query nor mutation]`);
-      utils.completeBar();
+      // utils.completeBar();
     }
   } else {
     config.SCHEMA_OPTIONS = [schema.queryType, schema.mutationType];
@@ -103,9 +103,10 @@ function renderSchema(schema) {
   bar.interrupt('[Rendered menu]');
   if (config.frontmatters.DEPRECATED && config.LOG.length) {
     deprecationManagement();
-    utils.completeBar();
+    // utils.completeBar();
+
   } else {
-    utils.completeBar();
+    // utils.completeBar();
   }
 }
 

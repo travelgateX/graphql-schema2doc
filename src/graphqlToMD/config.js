@@ -7,6 +7,7 @@ let DIRNAME = 'reference';
 // Default
 let PATH = '/travelgatex/';
 let relURL = PATH + DIRNAME;
+let DOCUMENTATION_LOCATION = `${__dirname}/../../../documentation-site/`;
 let LOCATION = `${__dirname}/../../../documentation-site/content${PATH}/reference`;
 let DEPRECATED_NOTES_LOCATION = `${__dirname}/../../../documentation-site/content${PATH}/release-notes/breaking-changes.md`;
 
@@ -17,10 +18,10 @@ const resetLocations = newPath => {
   DEPRECATED_NOTES_LOCATION = `${__dirname}/../../../documentation-site/content${PATH}/release-notes/breaking-changes.md`;
 };
 
-const getPath = _=> PATH;
+const getPath = _ => PATH;
 const getRelUrl = _ => relURL;
-const getLocation = _=>LOCATION;
-const getDeprecatedNotesLocation = _=>  DEPRECATED_NOTES_LOCATION;
+const getLocation = _ => LOCATION;
+const getDeprecatedNotesLocation = _ => DEPRECATED_NOTES_LOCATION;
 
 const LOG = [];
 const CURRENT_DATE = new Date();
@@ -28,6 +29,14 @@ const CURRENT_DATE = new Date();
 let MD_DATA = {};
 
 let SCHEMA_OPTIONS = [];
+let ALL_SCHEMAS = false;
+let ALL_SCHEMAS_OPTIONS = {
+  '/travelgatex/': [{ name: 'Query' }, { name: 'Mutation' }],
+  '/hotelx/': [{ name: 'HotelXQuery' }, { name: 'HotelXMutation' }],
+  '/paymentx/': [{ name: 'PaymentXQuery' }, { name: 'PaymentXMutation' }],
+  '/mappea/': [{ name: 'MappeaQuery' }, { name: 'MappeaMutation' }],
+  '/stats/': [{ name: 'StatsQuery' }]
+};
 
 let frontMatter = (title, pagetitle, description, weight, icon, tags = []) =>
   JSON.stringify(
@@ -109,5 +118,7 @@ module.exports = {
   getLocation,
   getRelUrl,
   getDeprecatedNotesLocation,
-  DEPRECATED_NOTES_LOCATION
+  DOCUMENTATION_LOCATION,
+  ALL_SCHEMAS,
+  ALL_SCHEMAS_OPTIONS
 };

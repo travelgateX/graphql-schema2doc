@@ -41,6 +41,9 @@ function initScript() {
       // config.USER_CHOICES.root
 
       switch (config.USER_CHOICES.filter) {
+        case 'All':
+          childConfig.ALL_SCHEMAS = true;
+          break;
         case 'hotelx':
           childConfig.SCHEMA_OPTIONS = [
             { name: 'HotelXQuery' },
@@ -69,7 +72,7 @@ function initScript() {
       }
 
       console.log('\n');
-      if (fs.existsSync(childConfig.getLocation())) {
+      if (fs.existsSync(childConfig.DOCUMENTATION_LOCATION)) {
         bar.tick();
         createQuery();
       } else {
@@ -208,6 +211,18 @@ function writeMdJSON() {
     if (err) return console.log(err);
     bar.tick();
     bar.interrupt('[Created MD data JSON]');
+    if (childConfig.ALL_SCHEMAS) {
+      (async function loop() {
+        for (const key in childConfig.ALL_SCHEMAS_OPTIONS) {
+          await new Promise(resolve => {
+            childConfig.SCHEMA_OPTIONS = childConfig.ALL_SCHEMAS_OPTIONS[key];
+            childConfig.resetLocations(key);
+            toMD.init();
+            setTimeout(resolve, 10000);
+          });
+        }
+      })();
+    }
     toMD.init();
   });
 }
