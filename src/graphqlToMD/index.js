@@ -9,8 +9,6 @@ function init() {
     config.MD_DATA = JSON.parse(data);
   });
 
-  console.log(config.getDeprecatedNotesLocation());
-
   fsex.emptyDirSync(config.getLocation());
   fsex.emptyDirSync(config.getLocation() + '/objects');
   fsex.emptyDirSync(config.getLocation() + '/schema');

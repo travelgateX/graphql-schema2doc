@@ -63,15 +63,20 @@ function initScript() {
           childConfig.resetLocations('/mappea/');
           break;
         case 'stats':
-          childConfig.SCHEMA_OPTIONS = [
-            { name: 'StatsQuery' }
-          ];
+          childConfig.SCHEMA_OPTIONS = [{ name: 'StatsQuery' }];
           childConfig.resetLocations('/stats/');
           break;
       }
+
       console.log('\n');
-      bar.tick();
-      createQuery();
+      if (fs.existsSync(childConfig.getLocation())) {
+        bar.tick();
+        createQuery();
+      } else {
+        console.log(
+          'Output path is nor correct. Please, move the project to the folder containing documentation-site or modify the configurations'
+        );
+      }
     });
   });
 }

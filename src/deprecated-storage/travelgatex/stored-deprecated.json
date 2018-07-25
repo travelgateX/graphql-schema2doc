@@ -21,7 +21,7 @@
             "deprecationDate": "2018-05-21",
             "typeName": "AddOns",
             "deletionDate": "2018-08-19",
-            "daysRemaining": 25
+            "daysRemaining": 24
           }
         ]
       }
@@ -220,7 +220,7 @@
             "deprecationDate": "2018-08-03",
             "typeName": "PaymentXBookingInfoFilterInput",
             "deletionDate": "2018-11-01",
-            "daysRemaining": 99
+            "daysRemaining": 98
           },
           {
             "typeString": "ID",
@@ -238,7 +238,7 @@
             "deprecationDate": "2018-08-03",
             "typeName": "PaymentXBookingInfoFilterInput",
             "deletionDate": "2018-11-01",
-            "daysRemaining": 99
+            "daysRemaining": 98
           },
           {
             "typeString": "String",
@@ -256,7 +256,7 @@
             "deprecationDate": "2018-08-03",
             "typeName": "PaymentXBookingInfoFilterInput",
             "deletionDate": "2018-11-01",
-            "daysRemaining": 99
+            "daysRemaining": 98
           }
         ]
       }
