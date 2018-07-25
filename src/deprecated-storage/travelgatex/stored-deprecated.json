@@ -8,7 +8,7 @@
           {
             "typeString": "JSON",
             "name": "distribute",
-            "url": "undefined/scalars/json",
+            "url": "/travelgatex/reference/scalars/json",
             "description": "Extra information from the distribution layer",
             "isDeprecated": true,
             "args": null,
@@ -36,20 +36,20 @@
           {
             "typeString": "HotelBooking",
             "name": "hotel",
-            "url": "undefined/objects/hotelbooking",
+            "url": "/travelgatex/reference/objects/hotelbooking",
             "description": "Returns detailed information about books, you can indicated a list of locators or a range date.",
             "isDeprecated": true,
             "args": [
               {
                 "typeString": "HotelCriteriaBookingInput!",
                 "name": "criteria",
-                "url": "undefined/inputobjects/hotelcriteriabookinginput",
+                "url": "/travelgatex/reference/inputobjects/hotelcriteriabookinginput",
                 "description": ""
               },
               {
                 "typeString": "HotelSettingsInput",
                 "name": "settings",
-                "url": "undefined/inputobjects/hotelsettingsinput",
+                "url": "/travelgatex/reference/inputobjects/hotelsettingsinput",
                 "description": ""
               }
             ],
@@ -67,20 +67,20 @@
           {
             "typeString": "HotelQuote",
             "name": "hotel",
-            "url": "undefined/objects/hotelquote",
+            "url": "/travelgatex/reference/objects/hotelquote",
             "description": "Returns the total price and cancellation policies of the Option selected in the previous step (Search).",
             "isDeprecated": true,
             "args": [
               {
                 "typeString": "HotelCriteriaQuoteInput!",
                 "name": "criteria",
-                "url": "undefined/inputobjects/hotelcriteriaquoteinput",
+                "url": "/travelgatex/reference/inputobjects/hotelcriteriaquoteinput",
                 "description": ""
               },
               {
                 "typeString": "HotelSettingsInput",
                 "name": "settings",
-                "url": "undefined/inputobjects/hotelsettingsinput",
+                "url": "/travelgatex/reference/inputobjects/hotelsettingsinput",
                 "description": ""
               }
             ],
@@ -98,32 +98,32 @@
           {
             "typeString": "HotelSearch",
             "name": "hotel",
-            "url": "undefined/objects/hotelsearch",
+            "url": "/travelgatex/reference/objects/hotelsearch",
             "description": "Available options of an hotel for a given date and itinerary. It does not filter different classes, times or\nfares. It will always retrieve all results returned by the suppliers. The availability request is very straight\nforward. It only requires the criteria of search (destination, travel dates and the number of pax in each room).\nBut you must preload the other fields in our system by complete the fields absents.",
             "isDeprecated": true,
             "args": [
               {
                 "typeString": "String",
                 "name": "token",
-                "url": "undefined/scalars/string",
+                "url": "/travelgatex/reference/scalars/string",
                 "description": ""
               },
               {
                 "typeString": "HotelCriteriaSearchInput",
                 "name": "criteria",
-                "url": "undefined/inputobjects/hotelcriteriasearchinput",
+                "url": "/travelgatex/reference/inputobjects/hotelcriteriasearchinput",
                 "description": ""
               },
               {
                 "typeString": "HotelSettingsInput",
                 "name": "settings",
-                "url": "undefined/inputobjects/hotelsettingsinput",
+                "url": "/travelgatex/reference/inputobjects/hotelsettingsinput",
                 "description": ""
               },
               {
                 "typeString": "FilterInput",
                 "name": "filter",
-                "url": "undefined/inputobjects/filterinput",
+                "url": "/travelgatex/reference/inputobjects/filterinput",
                 "description": ""
               }
             ],
@@ -151,7 +151,7 @@
           {
             "typeString": "Boolean",
             "name": "useContext",
-            "url": "undefined/scalars/boolean",
+            "url": "/travelgatex/reference/scalars/boolean",
             "description": "Indicates if you want use context, or not, by default is true.\n@deprecated(reason: \"deprecated from 2017-12-12. Redundant.\")",
             "isDeprecated": true,
             "args": null,
@@ -179,7 +179,7 @@
           {
             "typeString": "String",
             "name": "connectUser",
-            "url": "undefined/scalars/string",
+            "url": "/travelgatex/reference/scalars/string",
             "description": " This field is occurs only if the authorization header is of the type JWT.. It is used to change the user that has been set by default in the preload.\n@deprecated(reason: \"deprecated from 2018-03-19. Redundant.\")",
             "isDeprecated": true,
             "args": null,
@@ -207,7 +207,7 @@
           {
             "typeString": "String",
             "name": "organization",
-            "url": "undefined/scalars/string",
+            "url": "/travelgatex/reference/scalars/string",
             "description": "Responsible organization of the booked property. @deprecated(reason: \"deprecated from 2018-08-03. Please use PaymentXBookingInfoCriteriaInput\")",
             "isDeprecated": true,
             "args": null,
@@ -225,7 +225,7 @@
           {
             "typeString": "ID",
             "name": "pointOfSaleCode",
-            "url": "undefined/scalars/id",
+            "url": "/travelgatex/reference/scalars/id",
             "description": "Indicates the code of the booked property. @deprecated(reason: \"deprecated from 2018-08-03. Please use PaymentXBookingInfoCriteriaInput\")",
             "isDeprecated": true,
             "args": null,
@@ -243,7 +243,7 @@
           {
             "typeString": "String",
             "name": "bookingReference",
-            "url": "undefined/scalars/string",
+            "url": "/travelgatex/reference/scalars/string",
             "description": "Indicates the referece of the booking. @deprecated(reason: \"deprecated from 2018-08-03. Please use PaymentXBookingInfoCriteriaInput\")",
             "isDeprecated": true,
             "args": null,

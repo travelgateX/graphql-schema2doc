@@ -8,7 +8,7 @@
           {
             "typeString": "String",
             "name": "organization",
-            "url": "undefined/scalars/string",
+            "url": "/paymentx/reference/scalars/string",
             "description": "Responsible organization of the booked property. @deprecated(reason: \"deprecated from 2018-08-03. Please use PaymentXBookingInfoCriteriaInput\")",
             "isDeprecated": true,
             "args": null,
@@ -21,12 +21,12 @@
             "deprecationDate": "2018-08-03",
             "typeName": "PaymentXBookingInfoFilterInput",
             "deletionDate": "2018-11-01",
-            "daysRemaining": 99
+            "daysRemaining": 98
           },
           {
             "typeString": "ID",
             "name": "pointOfSaleCode",
-            "url": "undefined/scalars/id",
+            "url": "/paymentx/reference/scalars/id",
             "description": "Indicates the code of the booked property. @deprecated(reason: \"deprecated from 2018-08-03. Please use PaymentXBookingInfoCriteriaInput\")",
             "isDeprecated": true,
             "args": null,
@@ -39,12 +39,12 @@
             "deprecationDate": "2018-08-03",
             "typeName": "PaymentXBookingInfoFilterInput",
             "deletionDate": "2018-11-01",
-            "daysRemaining": 99
+            "daysRemaining": 98
           },
           {
             "typeString": "String",
             "name": "bookingReference",
-            "url": "undefined/scalars/string",
+            "url": "/paymentx/reference/scalars/string",
             "description": "Indicates the referece of the booking. @deprecated(reason: \"deprecated from 2018-08-03. Please use PaymentXBookingInfoCriteriaInput\")",
             "isDeprecated": true,
             "args": null,
@@ -57,7 +57,7 @@
             "deprecationDate": "2018-08-03",
             "typeName": "PaymentXBookingInfoFilterInput",
             "deletionDate": "2018-11-01",
-            "daysRemaining": 99
+            "daysRemaining": 98
           }
         ]
       }

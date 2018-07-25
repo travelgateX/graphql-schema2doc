@@ -8,7 +8,7 @@
           {
             "typeString": "JSON",
             "name": "distribute",
-            "url": "undefined/scalars/json",
+            "url": "/hotelx/reference/scalars/json",
             "description": "Extra information from the distribution layer",
             "isDeprecated": true,
             "args": null,
@@ -21,7 +21,7 @@
             "deprecationDate": "2018-05-21",
             "typeName": "AddOns",
             "deletionDate": "2018-08-19",
-            "daysRemaining": 25
+            "daysRemaining": 24
           }
         ]
       }
