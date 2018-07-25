@@ -14,7 +14,7 @@ function renderType(type, ret) {
 }
 
 function getTypeURL(type) {
-  const url = `${config.get}`;
+  const url = `${config.getRelUrl}`;
   const name = type.name.toLowerCase();
   switch (type.kind) {
     case 'INPUT_OBJECT':
