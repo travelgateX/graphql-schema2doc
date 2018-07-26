@@ -8,13 +8,13 @@ let DIRNAME = 'reference';
 let PATH = '/travelgatex/';
 let relURL = PATH + DIRNAME;
 let DOCUMENTATION_LOCATION = `${__dirname}/../../../documentation-site/`;
-let LOCATION = `${__dirname}/../output/reference${PATH}`;
+let LOCATION = `${__dirname}/../output/reference${PATH.slice(0,-1)}reference/`;
 let DEPRECATED_NOTES_LOCATION = `${__dirname}/../output/${PATH.slice(1,-1)}breaking-changes.md`;
 
 const resetLocations = newPath => {
   PATH = newPath;
   relURL = PATH + DIRNAME;
-  LOCATION = `${__dirname}/../output/reference${PATH}`;
+  LOCATION = `${__dirname}/../output/reference${PATH.slice(0,-1)}reference/`;
   DEPRECATED_NOTES_LOCATION = `${__dirname}/../output/${PATH.slice(1,-1)}breaking-changes.md`;
 };
 
@@ -31,7 +31,7 @@ let MD_DATA = {};
 let SCHEMA_OPTIONS = [];
 let ALL_SCHEMAS = false;
 let ALL_SCHEMAS_OPTIONS = {
-  '/travelgatex/': [{ name: 'Query' }, { name: 'Mutation' }],
+  '/travelgatex/': [],
   '/hotelx/': [{ name: 'HotelXQuery' }, { name: 'HotelXMutation' }],
   '/paymentx/': [{ name: 'PaymentXQuery' }, { name: 'PaymentXMutation' }],
   '/mappea/': [{ name: 'MappeaQuery' }, { name: 'MappeaMutation' }],

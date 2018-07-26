@@ -212,10 +212,12 @@ function writeMdJSON() {
     bar.tick();
     bar.interrupt('[Created MD data JSON]');
     if (childConfig.ALL_SCHEMAS) {
+      bar.total *= 3;
       (async function loop() {
         for (const key in childConfig.ALL_SCHEMAS_OPTIONS) {
           await new Promise(resolve => {
             childConfig.SCHEMA_OPTIONS = childConfig.ALL_SCHEMAS_OPTIONS[key];
+            config.USER_CHOICES.filter = key.slice(1, - 1);
             childConfig.resetLocations(key);
             toMD.init();
             setTimeout(resolve, 10000);
