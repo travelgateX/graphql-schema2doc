@@ -60,6 +60,7 @@ typings/
 # next.js build output
 .next
 
+src/output/*
 src/tmp/*
 src/testing.js
 package-lock.json

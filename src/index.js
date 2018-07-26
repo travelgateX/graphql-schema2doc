@@ -41,7 +41,7 @@ function initScript() {
       // config.USER_CHOICES.root
 
       switch (config.USER_CHOICES.filter) {
-        case 'All':
+        case 'all':
           childConfig.ALL_SCHEMAS = true;
           break;
         case 'hotelx':

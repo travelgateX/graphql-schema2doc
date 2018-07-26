@@ -8,14 +8,14 @@ let DIRNAME = 'reference';
 let PATH = '/travelgatex/';
 let relURL = PATH + DIRNAME;
 let DOCUMENTATION_LOCATION = `${__dirname}/../../../documentation-site/`;
-let LOCATION = `${__dirname}/../../../documentation-site/content${PATH}/reference`;
-let DEPRECATED_NOTES_LOCATION = `${__dirname}/../../../documentation-site/content${PATH}/release-notes/breaking-changes.md`;
+let LOCATION = `${__dirname}/../output/reference${PATH}`;
+let DEPRECATED_NOTES_LOCATION = `${__dirname}/../output/${PATH.slice(1,-1)}breaking-changes.md`;
 
 const resetLocations = newPath => {
   PATH = newPath;
   relURL = PATH + DIRNAME;
-  LOCATION = `${__dirname}/../../../documentation-site/content${PATH}/reference`;
-  DEPRECATED_NOTES_LOCATION = `${__dirname}/../../../documentation-site/content${PATH}/release-notes/breaking-changes.md`;
+  LOCATION = `${__dirname}/../output/reference${PATH}`;
+  DEPRECATED_NOTES_LOCATION = `${__dirname}/../output/${PATH.slice(1,-1)}breaking-changes.md`;
 };
 
 const getPath = _ => PATH;
