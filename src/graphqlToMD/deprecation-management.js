@@ -1,5 +1,5 @@
 'use strict';
-var config = require('./config');
+var config = require('./../config');
 var fs = require('fs');
 var utils = require('./utils');
 var deepDiff = require('deep-diff');
@@ -25,12 +25,17 @@ function renderDeprecatedNotes() {
     }
   }
 
-  checkDeprecatedDeletions(deprecatedFields);
+  const promise = new Promise((resolve, reject) => {
+    checkDeprecatedDeletions(deprecatedFields);
+    resolve();
+  });
+
+  return promise;
 }
 
 function checkDeprecatedDeletions(deprecatedFields) {
   fs.readFile(
-    __dirname + `/../deprecated-storage${config.getPath()}deleted-notes.json`,
+    __dirname + `/../deprecated-storage${config.currentKey}deleted-notes.json`,
     'utf8',
     (err, dn) => {
       let deletedNotes = [];
@@ -40,7 +45,7 @@ function checkDeprecatedDeletions(deprecatedFields) {
       // The name
       fs.readFile(
         __dirname +
-          `/../deprecated-storage${config.getPath()}stored-deprecated.json`,
+          `/../deprecated-storage${config.currentKey}stored-deprecated.json`,
         'utf8',
         (err, stored) => {
           let storedData;
@@ -79,7 +84,7 @@ function checkDeprecatedDeletions(deprecatedFields) {
                   v['trueDeletionDate'] = utils.formatDate(config.CURRENT_DATE);
                   return v;
                 });
-                
+
                 // Key does not exist in deleted notes. It is created now
 
                 if (noteIndex !== -1) {
@@ -180,33 +185,39 @@ function checkDeprecatedDeletions(deprecatedFields) {
  * @param {Array} deletedNotes
  */
 function saveDeprecatedNotesSnapshot(deprecatedFields, deletedNotes) {
-  fs.writeFile(
-    __dirname + `/../deprecated-storage${config.getPath()}stored-deprecated.json`,
-    JSON.stringify(deprecatedFields, undefined, '  '),
-    function(err) {
-      if (err) return console.log(err);
-      bar.tick();
-      bar.interrupt('[Stored current deprecated and deleted notes]');
-    }
-  );
+  const storedDeprecatedPromise = new Promise((resolve, reject) => {
+    fs.writeFile(
+      __dirname +
+        `/../deprecated-storage${config.currentKey}stored-deprecated.json`,
+      JSON.stringify(deprecatedFields, undefined, '  '),
+      function(err) {
+        if (err) return console.log(err);
+        bar.tick();
+        bar.interrupt('[Stored current deprecated and deleted notes]');
+      }
+    );
+  });
 
   // console.log(deletedNotes);
-  fs.writeFile(
-    __dirname + `/../deprecated-storage${config.getPath()}deleted-notes.json`,
-    JSON.stringify(deletedNotes, undefined, '  '),
-    function(err) {
-      if (err) return console.log(err);
-      bar.tick();
-      bar.interrupt('[Stored deleted notes]');
-    }
-  );
+  const deletedNotesPromise = new Promise((resolve, reject) => {
+    fs.writeFile(
+      __dirname + `/../deprecated-storage${config.currentKey}deleted-notes.json`,
+      JSON.stringify(deletedNotes, undefined, '  '),
+      function(err) {
+        if (err) return console.log(err);
+        bar.tick();
+        bar.interrupt('[Stored deleted notes]');
+        resolve();
+      }
+    );
+  });
 
-  if (config.frontmatters.DELETED) {
+  if (config.STRUCTURE.DELETED) {
     const lines = [];
     renderDeletedNotes(
       lines,
       deletedNotes,
-      config.frontmatters.DELETED,
+      config.STRUCTURE.DELETED,
       utils.copy(deprecatedFields)
     );
     save.saveDeprecated(lines.join('\n'), `breaking-changes`);
@@ -269,6 +280,8 @@ function renderDeletedNotes(
     }
 
     const unreleasedNotes = formatUnreleasedNotes(deprecatedFields);
+
+    utils.log(unreleasedNotes, '' + new Date().getTime());
 
     // 12/07/2018 Recreate deleted as deprecated, so there can be seen properly on the timeline.
     const deletedAsDeprecated = [];

@@ -295,7 +295,13 @@ const functions = {
     }
 
     function fullComparison(type1, type2) {
-      return JSON.stringify(type1) === JSON.stringify(type2);
+      return (
+        type1.name === type2.name &&
+        type1.url === type2.url &&
+        type1.deprecationDate === type2.deprecationDate &&
+        type1.typeString === type2.typeString &&
+        type1.typeName === type2.typeName
+      );
     }
   }
 };

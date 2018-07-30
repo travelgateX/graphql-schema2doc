@@ -1,5 +1,5 @@
 'use strict';
-var fs = require('fs-extra')
+var fs = require('fs-extra');
 var config = require('./config');
 var globalConfig = require('./../config');
 var bar = require(__dirname + '/../../progressBar/bar');
@@ -13,11 +13,11 @@ function evaluateFields(s) {
   const schema = s.__schema;
   if (globalConfig.USER_CHOICES.filter !== 'travelgatex') {
     const filterOptions = config.SCHEMA_OPTIONS.map(so => so.name);
-    
+
     const filteredTypes = schema.types.filter(t =>
       filterOptions.includes(t.name)
     );
-    
+
     if ((filteredTypes || []).length) {
       // Types will depend on the option selected on the beginning
       functions
@@ -53,77 +53,121 @@ function evaluateFields(s) {
 }
 
 function renderSchema(schema) {
-  
+  const shemaRendered = new Promise(resolve, reject => {
+    const filesRendered = [];
+    save.saveFile(config.frontmatters.INDEX, `_index`);
 
-  save.saveFile(config.frontmatters.INDEX, `_index`);
+    const types = schema.types.filter(type => !type.name.startsWith('__'));
 
-  const types = schema.types.filter(type => !type.name.startsWith('__'));
+    const objects = types.filter(
+      type =>
+        type.kind === 'OBJECT' &&
+        type.name !== (schema.mutationType || {}).name &&
+        type.name !== (schema.queryType || {}).name
+    );
 
-  const objects = types.filter(
-    type =>
-      type.kind === 'OBJECT' &&
-      type.name !== (schema.mutationType || {}).name &&
-      type.name !== (schema.queryType || {}).name
-  );
+    filesRendered[filesRendered.length] = render(
+      objects,
+      types,
+      'objects',
+      'type'
+    );
 
-  render(objects, types, 'objects', 'type');
+    const enums = types.filter(type => type.kind === 'ENUM');
+    filesRendered[filesRendered.length] = render(enums, types, 'enums', 'enum');
 
-  const enums = types.filter(type => type.kind === 'ENUM');
-  render(enums, types, 'enums', 'enum');
+    const inputObjects = types.filter(type => type.kind === 'INPUT_OBJECT');
 
-  const inputObjects = types.filter(type => type.kind === 'INPUT_OBJECT');
- 
-  render(inputObjects, types, 'inputobjects', 'type');
+    filesRendered[filesRendered.length] = render(
+      inputObjects,
+      types,
+      'inputobjects',
+      'type'
+    );
 
-  const query =
-    schema.queryType && types.find(type => type.name === schema.queryType.name);
-  if (query) {
-    var lines = [];
-    renderObject(lines, query, types, 'type', undefined, 1);
-    save.saveFile(lines.join('\n'), `schema/query`);
-  }
+    const query =
+      schema.queryType &&
+      types.find(type => type.name === schema.queryType.name);
+    if (query) {
+      var lines = [];
+      filesRendered[filesRendered.length] = renderObject(
+        lines,
+        query,
+        types,
+        'type',
+        undefined,
+        1
+      );
+      save.saveFile(lines.join('\n'), `schema/query`);
+    }
 
-  const mutation =
-    schema.mutationType &&
-    types.find(type => type.name === schema.mutationType.name);
-  if (mutation) {
-    var lines = [];
-    renderObject(lines, mutation, types, 'type', undefined, 2);
-    save.saveFile(lines.join('\n'), `schema/mutation`);
-  }
+    const mutation =
+      schema.mutationType &&
+      types.find(type => type.name === schema.mutationType.name);
+    if (mutation) {
+      var lines = [];
+      filesRendered[filesRendered.length] = renderObject(
+        lines,
+        mutation,
+        types,
+        'type',
+        undefined,
+        2
+      );
+      save.saveFile(lines.join('\n'), `schema/mutation`);
+    }
 
-  save.saveFile(config.frontmatters.INDEXSCHEMA, `schema/_index`);
+    save.saveFile(config.frontmatters.INDEXSCHEMA, `schema/_index`);
 
-  const scalars = types.filter(type => type.kind === 'SCALAR');
-  render(scalars, types, 'scalars', 'scalar');
+    const scalars = types.filter(type => type.kind === 'SCALAR');
+    filesRendered[filesRendered.length] = render(
+      scalars,
+      types,
+      'scalars',
+      'scalar'
+    );
 
-  const interfaces = types.filter(type => type.kind === 'INTERFACE');
-  render(interfaces, types, 'interfaces', 'type', 'interface');
-  bar.tick();
-  bar.interrupt('[Rendered menu]');
-  if (config.frontmatters.DEPRECATED && config.LOG.length) {
-    deprecationManagement();
-    // utils.completeBar();
+    const interfaces = types.filter(type => type.kind === 'INTERFACE');
+    filesRendered[filesRendered.length] = render(
+      interfaces,
+      types,
+      'interfaces',
+      'type',
+      'interface'
+    );
 
-  } else {
-    // utils.completeBar();
-  }
+    Promise.all(filesRendered).then(_ => {
+      bar.tick();
+      bar.interrupt('[Rendered menu]');
+      if (config.frontmatters.DEPRECATED && config.LOG.length) {
+        deprecationManagement().then(resolve);
+      } else {
+        resolve();
+      }
+    });
+  });
 }
 
 function render(objects, types, dirname, template, operator = template) {
-  if (objects.length) {
-    utils.sortBy(objects, 'name');
-    objects.forEach(type => {
-      var lines = [];
+  const rendered = new Promise((resolve, reject) => {
+    if (objects.length) {
+      utils.sortBy(objects, 'name');
+      objects.forEach(type => {
+        var lines = [];
 
-      renderObject(lines, type, types, template, operator);
-      save.saveFile(lines.join('\n'), `${dirname}/${type.name}`);
-    });
-    save.saveFile(
-      config.frontmatters[`INDEX${dirname.toUpperCase()}`],
-      `${dirname}/_index`
-    );
-  }
+        renderObject(lines, type, types, template, operator);
+        save.saveFile(lines.join('\n'), `${dirname}/${type.name}`).then();
+      });
+      save
+        .saveFile(
+          config.frontmatters[`INDEX${dirname.toUpperCase()}`],
+          `${dirname}/_index`
+        )
+        .then(resolve)
+        .catch(reject);
+    }
+  });
+  return rendered;
 }
 
 function renderObject(
@@ -151,17 +195,17 @@ function renderObject(
     utils.printer(lines, `${type.description}`);
   }
 
-  utils.printer(lines, `## ${config.SECTION1}\n`);
+  utils.printer(lines, `## ${config.STRUCTURE.SECTION1}\n`);
   utils.printer(lines, `{{% graphql-schema-${template} %}}\n`);
 
   let fields = frontMatter.fields;
   if (fields && fields.length) {
-    utils.printer(lines, `## ${config.SECTION2}\n`);
+    utils.printer(lines, `## ${config.STRUCTURE.SECTION2}\n`);
     utils.printer(lines, `{{% graphql-field %}}\n`);
   }
 
   if (frontMatter.requireby && frontMatter.requireby.length) {
-    utils.printer(lines, `## ${config.SECTION3}\n`);
+    utils.printer(lines, `## ${config.STRUCTURE.SECTION3}\n`);
     utils.printer(lines, `{{% graphql-require-by %}}\n`);
   }
 }

@@ -7,8 +7,7 @@ const fs = require('fs-extra'),
   toMD = require(__dirname + '/graphqlToMD'),
   bar = require(__dirname + '/../progressBar/bar'),
   inquirer = require('inquirer'),
-  config = require(__dirname + '/config.js'),
-  childConfig = require(__dirname + '/graphqlToMD/config.js');
+  config = require(__dirname + '/config');
 
 const mds = {
   default: '',
@@ -26,7 +25,7 @@ const questions = [
     type: 'list',
     name: 'filter',
     message: 'What do you want to generate?',
-    choices: config.USER_OPTIONS
+    choices: config.USER_CONFIG.options
   }
 ];
 
@@ -37,42 +36,21 @@ function initScript() {
   fs.emptyDir(__dirname + '/tmp/', err => {
     if (err) return console.error(err);
     inquirer.prompt(questions).then(function(answers) {
-      config.USER_CHOICES.filter = answers.filter;
-      // config.USER_CHOICES.root
+      config.USER_CONFIG.selected = answers.filter;
 
-      switch (config.USER_CHOICES.filter) {
+      switch (config.USER_CONFIG.selected) {
         case 'all':
-          childConfig.ALL_SCHEMAS = true;
+          for (const key in config.PATHS) {
+            config.PATHS[`/${key}/`].enabled = true;
+          }
           break;
-        case 'hotelx':
-          childConfig.SCHEMA_OPTIONS = [
-            { name: 'HotelXQuery' },
-            { name: 'HotelXMutation' }
-          ];
-          childConfig.resetLocations('/hotelx/');
-          break;
-        case 'paymentx':
-          childConfig.SCHEMA_OPTIONS = [
-            { name: 'PaymentXQuery' },
-            { name: 'PaymentXMutation' }
-          ];
-          childConfig.resetLocations('/paymentx/');
-          break;
-        case 'mappea':
-          childConfig.SCHEMA_OPTIONS = [
-            { name: 'MappeaQuery' },
-            { name: 'MappeaMutation' }
-          ];
-          childConfig.resetLocations('/mappea/');
-          break;
-        case 'stats':
-          childConfig.SCHEMA_OPTIONS = [{ name: 'StatsQuery' }];
-          childConfig.resetLocations('/stats/');
+        default:
+          config.PATHS[`/${config.USER_CONFIG.selected}/`].enabled = true;
           break;
       }
 
       console.log('\n');
-      if (fs.existsSync(childConfig.DOCUMENTATION_LOCATION)) {
+      if (fs.existsSync(config.DOCUMENTATION_LOCATION)) {
         bar.tick();
         createQuery();
       } else {
@@ -211,16 +189,15 @@ function writeMdJSON() {
     if (err) return console.log(err);
     bar.tick();
     bar.interrupt('[Created MD data JSON]');
-    if (childConfig.ALL_SCHEMAS) {
+    if (config.ALL_SCHEMAS) {
       bar.total *= 3;
       (async function loop() {
-        for (const key in childConfig.ALL_SCHEMAS_OPTIONS) {
+        for (const key in config.PATHS) {
+          config.LOG = [];
+          config.currentKey = key;
           await new Promise(resolve => {
-            childConfig.SCHEMA_OPTIONS = childConfig.ALL_SCHEMAS_OPTIONS[key];
-            config.USER_CHOICES.filter = key.slice(1, - 1);
-            childConfig.resetLocations(key);
             toMD.init();
-            setTimeout(resolve, 10000);
+            setTimeout(resolve, 20000);
           });
         }
       })();
