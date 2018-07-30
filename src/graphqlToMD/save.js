@@ -1,5 +1,5 @@
 var fs = require('fs');
-var config = require('./config');
+var config = require('./../config');
 
 function saveFile(l, path) {
   let lines = l;
@@ -26,7 +26,7 @@ function saveFile(l, path) {
     }
   }
 
-  fs.writeFile(`${config.getLocation()}/${path}.md`, lines, function(err) {
+  fs.writeFile(`./../output/${path}.md`, lines, function(err) {
     if (err) {
       return console.log(err);
     }

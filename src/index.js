@@ -37,15 +37,17 @@ function initScript() {
     if (err) return console.error(err);
     inquirer.prompt(questions).then(function(answers) {
       config.USER_CONFIG.selected = answers.filter;
-
+      
       switch (config.USER_CONFIG.selected) {
         case 'all':
           for (const key in config.PATHS) {
-            config.PATHS[`/${key}/`].enabled = true;
+            console.log(key);
+            console.log(config.PATHS[key]);
+            config.PATHS[key].enabled = true;
           }
           break;
         default:
-          config.PATHS[`/${config.USER_CONFIG.selected}/`].enabled = true;
+          config.PATHS[config.USER_CONFIG.selected].enabled = true;
           break;
       }
 

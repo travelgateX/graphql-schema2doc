@@ -1,7 +1,6 @@
 'use strict';
 var fs = require('fs-extra');
-var config = require('./config');
-var globalConfig = require('./../config');
+var config = require('./../config');
 var bar = require(__dirname + '/../../progressBar/bar');
 var functions = require('./functions.js');
 var save = require('./save.js');
@@ -11,12 +10,11 @@ var deprecationManagement = require('./deprecation-management.js');
 // MAIN FUNCTION
 function evaluateFields(s) {
   const schema = s.__schema;
-  if (globalConfig.USER_CHOICES.filter !== 'travelgatex') {
-    const filterOptions = config.SCHEMA_OPTIONS.map(so => so.name);
-
-    const filteredTypes = schema.types.filter(t =>
-      filterOptions.includes(t.name)
-    );
+  // quitar comprobaciones absurdas
+  const filteredTypes = config.PATHS[config.currentKey].rootItems;
+  
+  if (config.USER_CONFIG.selected !== 'travelgatex') {
+    
 
     if ((filteredTypes || []).length) {
       // Types will depend on the option selected on the beginning
@@ -46,8 +44,6 @@ function evaluateFields(s) {
       // utils.completeBar();
     }
   } else {
-    config.SCHEMA_OPTIONS = [schema.queryType, schema.mutationType];
-    // In case we select 'travelgatex'
     renderSchema(schema);
   }
 }

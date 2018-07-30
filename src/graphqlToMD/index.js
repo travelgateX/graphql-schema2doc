@@ -1,5 +1,5 @@
 const renderToHugo = require('./render-schema-to-hugo'),
-  config = require('./config'),
+  config = require('./../config'),
   fs = require('fs-extra'),
   fsex = require('fs.extra'),
   bar = require(__dirname + '/../../progressBar/bar');
@@ -10,7 +10,7 @@ function init() {
     config.MD_DATA = JSON.parse(data);
   });
 
-  const loc = config.getLocation();
+  const loc = './../output';
 
   var removeDir = new Promise((resolve, reject) =>
     fsex.rmrf(loc, function(err) {
@@ -38,10 +38,6 @@ function init() {
       if (err) throw err;
       const parsedData = JSON.parse(data);
       bar.tick();
-      if (config.SCHEMA_OPTIONS.length) {
-        parsedData.__schema.queryType = config.SCHEMA_OPTIONS[0];
-        parsedData.__schema.mutationType = config.SCHEMA_OPTIONS[1];
-      }
       renderToHugo(parsedData);
     });
   });

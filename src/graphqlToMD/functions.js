@@ -1,5 +1,5 @@
 'use strict';
-var config = require('./config');
+var config = require('./../config');
 
 function renderType(type, ret) {
   if (type.kind === 'NON_NULL') {
@@ -14,7 +14,7 @@ function renderType(type, ret) {
 }
 
 function getTypeURL(type) {
-  const url = `${config.getRelUrl()}`;
+  const url = `${config.PATHS[config.currentKey].relUrl}`;
   const name = type.name.toLowerCase();
   switch (type.kind) {
     case 'INPUT_OBJECT':
