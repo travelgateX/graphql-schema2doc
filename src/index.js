@@ -183,38 +183,82 @@ function readMDs() {
 }
 
 function writeMdJSON() {
-  fs.writeFile(__dirname + '/tmp/md-data.json', JSON.stringify(mds), function(
-    err
-  ) {
-    if (err) return console.log(err);
-    bar.tick();
-    bar.interrupt('[Created MD data JSON]');
-    if (config.USER_CONFIG.selected === 'all') {
-      bar.total += 28;
-      (async function loop() {
-        for (const key in config.PATHS) {
-          config.LOG = [];
-          config.currentKey = key;
-          bar.interrupt(`[BUILDING '${config.currentKey}']`);
-          await new Promise(resolve => {
-            toMD.init().then(_ => {
-              bar.interrupt(`[FINNISHED '${config.currentKey}']`);
-              bar.tick();
-              resolve();
+  const promise = new Promise(finish => {
+    fs.writeFile(__dirname + '/tmp/md-data.json', JSON.stringify(mds), function(
+      err
+    ) {
+      if (err) return console.log(err);
+      bar.tick();
+      bar.interrupt('[Created MD data JSON]');
+      if (config.USER_CONFIG.selected === 'all') {
+        bar.total += 28;
+        (async function loop() {
+          for (const key in config.PATHS) {
+            config.LOG = [];
+            config.currentKey = key;
+            bar.interrupt(`[BUILDING '${config.currentKey}']`);
+            await new Promise(resolve => {
+              toMD.init().then(_ => {
+                bar.interrupt(`[FINNISHED '${config.currentKey}']`);
+                bar.tick();
+                resolve();
+              });
             });
-          });
-        }
-        return;
-      })();
+          }
+          finish(true);
+        })();
+      } else {
+        config.LOG = [];
+        config.currentKey = `/${config.USER_CONFIG.selected}/`;
+        bar.interrupt(`[BUILDING '${config.currentKey}']`);
+        toMD.init().then(_ => {
+          bar.interrupt(`[FINNISHED '${config.currentKey}']`);
+          bar.tick();
+          finish(false);
+        });
+      }
+    });
+  });
+
+  promise.then(all => {
+    const output_dir = `${__dirname}/output`;
+    const content_dir = `${config.DOCUMENTATION_LOCATION}/content`;
+    if (all) {
+      for (const key in config.PATHS) {
+        const reference = `${output_dir}${key}`;
+        const target_reference = `${content_dir}${key}reference`;
+        const release_notes = `${content_dir}${key}release-notes`;
+
+        moveFiles(reference, target_reference, release_notes).then(_ =>
+          console.log(`${key} has been moved to documentation-site`)
+        );
+      }
     } else {
-      config.LOG = [];
-      config.currentKey = `/${config.USER_CONFIG.selected}/`;
-      bar.interrupt(`[BUILDING '${config.currentKey}']`);
-      toMD.init().then(_ => {
-        bar.interrupt(`[FINNISHED '${config.currentKey}']`);
-        bar.tick();
-        return;
-      });
+      const reference = `${output_dir}${config.currentKey}`;
+      const target_reference = `${content_dir}${config.currentKey}reference`;
+      const release_notes = `${content_dir}${config.currentKey}release-notes`;
+
+      moveFiles(reference, target_reference, release_notes).then(_ =>
+        console.log(`${config.currentKey} has been moved to documentation-site`)
+      );
     }
+  });
+}
+
+function moveFiles(reference, target_reference, release_notes) {
+  return new Promise(resolve => {
+    fs.remove(target_reference, _ => {
+      fs.copy(reference, target_reference, _ => {
+        fs.ensureDir(release_notes, _ => {
+          fs.pathExists;
+          fs.move(
+            `${target_reference}/breaking-changes.md`,
+            `${release_notes}/breaking-changes.md`,
+            { overwrite: true },
+            err3 => resolve()
+          );
+        });
+      });
+    });
   });
 }
