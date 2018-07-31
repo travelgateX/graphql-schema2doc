@@ -22,28 +22,39 @@ function saveFile(l, path) {
         str.slice(position - 1)
       ].join('');
     } else {
-      console.log(path);
+      
     }
   }
-
-  fs.writeFile(`./../output/${path}.md`, lines, function(err) {
-    if (err) {
-      return console.log(err);
-    }
+  return new Promise((resolve, reject) => {
+    fs.writeFile(`${__dirname}/../output/${path}.md`, lines, function(err) {
+      if (err) {
+        console.log(err);
+        reject();
+      }
+      resolve();
+    });
   });
-};
+}
 
 function saveDeprecated(l) {
   let lines = l;
 
-  fs.writeFile(`${config.getDeprecatedNotesLocation()}`, lines, function(err) {
-    if (err) {
-      return console.log(err);
-    }
+  return new Promise((resolve, reject) => {
+    fs.writeFile(
+      `${config.PATHS[config.currentKey].deprecatedUrl}`,
+      lines,
+      function(err) {
+        if (err) {
+          console.log(err);
+          reject();
+        }
+        resolve();
+      }
+    );
   });
-};
+}
 
 module.exports = {
   saveFile,
   saveDeprecated
-}
+};

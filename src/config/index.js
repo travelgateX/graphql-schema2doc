@@ -9,7 +9,6 @@ const CURRENT_DATE = new Date();
 
 let MD_DATA = {};
 
-let ALL_SCHEMAS = false;
 let currentKey = '';
 
 module.exports = {
@@ -20,7 +19,6 @@ module.exports = {
   STRUCTURE,
   PATHS,
   USER_CONFIG,
-  ALL_SCHEMAS,
   DOCUMENTATION_LOCATION,
   currentKey
 };

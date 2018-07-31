@@ -11,75 +11,63 @@ var deprecationManagement = require('./deprecation-management.js');
 function evaluateFields(s) {
   const schema = s.__schema;
   // quitar comprobaciones absurdas
-  const filteredTypes = config.PATHS[config.currentKey].rootItems;
-  
-  if (config.USER_CONFIG.selected !== 'travelgatex') {
-    
+  const filteredTypes = [];
 
-    if ((filteredTypes || []).length) {
-      // Types will depend on the option selected on the beginning
+  for (const rItem of config.PATHS[config.currentKey].rootItems) {
+    const found = schema.types.find(t => rItem.name === t.name);
+    if (found) {
+      filteredTypes.push(found);
+    }
+  }
+
+  if ((filteredTypes || []).length) {
+    // Types will depend on the option selected on the beginning
+
+    return new Promise(resolve => {
       functions
         .findSharedTypes(filteredTypes[0], schema.types, [])
         .then(types1 => {
+          schema.queryType.name = filteredTypes[0].name;
           types1.push(filteredTypes[0]);
           if (filteredTypes[1]) {
             functions
               .findSharedTypes(filteredTypes[1], schema.types, types1)
               .then(types2 => {
+                schema.mutationType.name = filteredTypes[1].name;
                 types2.push(filteredTypes[1]);
                 schema.types = types2;
                 bar.tick();
                 bar.interrupt(`[Built object tree]`);
-                renderSchema(schema);
+                renderSchema(schema).then(resolve);
               });
           } else {
             schema.types = types1;
+            schema.queryType.name = filteredTypes[0].name;
             bar.tick();
             bar.interrupt(`[Built object tree (only Query)]`);
-            renderSchema(schema);
+            renderSchema(schema).then(resolve);
           }
         });
-    } else {
-      bar.interrupt(`[FATAL ERROR. No query nor mutation]`);
-      // utils.completeBar();
-    }
+    });
   } else {
-    renderSchema(schema);
+    bar.interrupt(`[FATAL ERROR. No query nor mutation]`);
+    // utils.completeBar();
   }
 }
 
 function renderSchema(schema) {
-  const shemaRendered = new Promise(resolve, reject => {
+  return new Promise(resolve => {
     const filesRendered = [];
-    save.saveFile(config.frontmatters.INDEX, `_index`);
+    save.saveFile(config.STRUCTURE.INDEX, `${config.currentKey}_index`);
 
     const types = schema.types.filter(type => !type.name.startsWith('__'));
 
-    const objects = types.filter(
-      type =>
-        type.kind === 'OBJECT' &&
-        type.name !== (schema.mutationType || {}).name &&
-        type.name !== (schema.queryType || {}).name
-    );
-
-    filesRendered[filesRendered.length] = render(
-      objects,
-      types,
-      'objects',
-      'type'
-    );
-
-    const enums = types.filter(type => type.kind === 'ENUM');
-    filesRendered[filesRendered.length] = render(enums, types, 'enums', 'enum');
-
-    const inputObjects = types.filter(type => type.kind === 'INPUT_OBJECT');
-
-    filesRendered[filesRendered.length] = render(
-      inputObjects,
-      types,
-      'inputobjects',
-      'type'
-    );
+    save
+      .saveFile(
+        config.STRUCTURE.INDEXSCHEMA,
+        `${config.currentKey}schema/_index`
+      )
+      .then(_ => (filesRendered[filesRendered.length] = Promise.resolve(true)));
 
     const query =
       schema.queryType &&
@@ -94,7 +82,7 @@ function renderSchema(schema) {
         undefined,
         1
       );
-      save.saveFile(lines.join('\n'), `schema/query`);
+      save.saveFile(lines.join('\n'), `${config.currentKey}schema/query`);
     }
 
     const mutation =
@@ -110,34 +98,76 @@ function renderSchema(schema) {
         undefined,
         2
       );
-      save.saveFile(lines.join('\n'), `schema/mutation`);
+      save.saveFile(lines.join('\n'), `${config.currentKey}schema/mutation`);
     }
 
-    save.saveFile(config.frontmatters.INDEXSCHEMA, `schema/_index`);
+    const enums = types.filter(type => type.kind === 'ENUM');
+    if (enums.length) {
+      filesRendered[filesRendered.length] = render(
+        enums,
+        types,
+        'enums',
+        'enum'
+      );
+    }
 
-    const scalars = types.filter(type => type.kind === 'SCALAR');
-    filesRendered[filesRendered.length] = render(
-      scalars,
-      types,
-      'scalars',
-      'scalar'
-    );
+    const inputObjects = types.filter(type => type.kind === 'INPUT_OBJECT');
+
+    if (inputObjects.length) {
+      filesRendered[filesRendered.length] = render(
+        inputObjects,
+        types,
+        'inputobjects',
+        'type'
+      );
+    }
 
     const interfaces = types.filter(type => type.kind === 'INTERFACE');
-    filesRendered[filesRendered.length] = render(
-      interfaces,
-      types,
-      'interfaces',
-      'type',
-      'interface'
+    if (interfaces.length) {
+      filesRendered[filesRendered.length] = render(
+        interfaces,
+        types,
+        'interfaces',
+        'type',
+        'interface'
+      );
+    }
+
+    const objects = types.filter(
+      type =>
+        type.kind === 'OBJECT' &&
+        type.name !== (schema.mutationType || {}).name &&
+        type.name !== (schema.queryType || {}).name
     );
+
+    if (objects.length) {
+      filesRendered[filesRendered.length] = render(
+        objects,
+        types,
+        'objects',
+        'type'
+      );
+    }
+
+    const scalars = types.filter(type => type.kind === 'SCALAR');
+    if (scalars.length) {
+      filesRendered[filesRendered.length] = render(
+        scalars,
+        types,
+        'scalars',
+        'scalar'
+      );
+    }
 
     Promise.all(filesRendered).then(_ => {
       bar.tick();
       bar.interrupt('[Rendered menu]');
-      if (config.frontmatters.DEPRECATED && config.LOG.length) {
+      if (config.STRUCTURE.DEPRECATED && config.LOG.length) {
         deprecationManagement().then(resolve);
       } else {
+        bar.tick();
+        bar.tick();
+        bar.tick();
         resolve();
       }
     });
@@ -145,25 +175,29 @@ function renderSchema(schema) {
 }
 
 function render(objects, types, dirname, template, operator = template) {
-  const rendered = new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     if (objects.length) {
       utils.sortBy(objects, 'name');
       objects.forEach(type => {
         var lines = [];
 
         renderObject(lines, type, types, template, operator);
-        save.saveFile(lines.join('\n'), `${dirname}/${type.name}`).then();
+        save
+          .saveFile(
+            lines.join('\n'),
+            `${config.currentKey}${dirname}/${type.name}`
+          )
+          .then();
       });
       save
         .saveFile(
-          config.frontmatters[`INDEX${dirname.toUpperCase()}`],
-          `${dirname}/_index`
+          config.STRUCTURE[`INDEX${dirname.toUpperCase()}`],
+          `${config.currentKey}${dirname}/_index`
         )
         .then(resolve)
         .catch(reject);
     }
   });
-  return rendered;
 }
 
 function renderObject(

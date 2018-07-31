@@ -37,17 +37,15 @@ function initScript() {
     if (err) return console.error(err);
     inquirer.prompt(questions).then(function(answers) {
       config.USER_CONFIG.selected = answers.filter;
-      
+
       switch (config.USER_CONFIG.selected) {
         case 'all':
           for (const key in config.PATHS) {
-            console.log(key);
-            console.log(config.PATHS[key]);
             config.PATHS[key].enabled = true;
           }
           break;
         default:
-          config.PATHS[config.USER_CONFIG.selected].enabled = true;
+          config.PATHS[`/${config.USER_CONFIG.selected}/`].enabled = true;
           break;
       }
 
@@ -191,19 +189,32 @@ function writeMdJSON() {
     if (err) return console.log(err);
     bar.tick();
     bar.interrupt('[Created MD data JSON]');
-    if (config.ALL_SCHEMAS) {
-      bar.total *= 3;
+    if (config.USER_CONFIG.selected === 'all') {
+      bar.total += 28;
       (async function loop() {
         for (const key in config.PATHS) {
           config.LOG = [];
           config.currentKey = key;
+          bar.interrupt(`[BUILDING '${config.currentKey}']`);
           await new Promise(resolve => {
-            toMD.init();
-            setTimeout(resolve, 20000);
+            toMD.init().then(_ => {
+              bar.interrupt(`[FINNISHED '${config.currentKey}']`);
+              bar.tick();
+              resolve();
+            });
           });
         }
+        return;
       })();
+    } else {
+      config.LOG = [];
+      config.currentKey = `/${config.USER_CONFIG.selected}/`;
+      bar.interrupt(`[BUILDING '${config.currentKey}']`);
+      toMD.init().then(_ => {
+        bar.interrupt(`[FINNISHED '${config.currentKey}']`);
+        bar.tick();
+        return;
+      });
     }
-    toMD.init();
   });
 }

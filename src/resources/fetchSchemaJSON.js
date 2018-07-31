@@ -9,7 +9,7 @@ function main() {
     query: query,
     variable: null
   };
-  const promise = new Promise(function(resolve) {
+  return new Promise(resolve => {
     check(
       {
         url: 'http://localhost:9002/graphql',
@@ -35,8 +35,6 @@ function main() {
       }
     );
   });
-
-  return promise;
 }
 
 function fetchSchemaJSON(body) {

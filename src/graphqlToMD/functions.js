@@ -173,11 +173,7 @@ const functions = {
     return filter.length ? filter : null;
   },
   findSharedTypes: (coreItem, schemaTypes, foundArrayTree) => {
-    const promise = new Promise((resolve, reject) => {
-      buildTreeRecursive(coreItem, schemaTypes, foundArrayTree).then(res => {
-        resolve(res);
-      });
-    });
+    const promise = new Promise(resolve => buildTreeRecursive(coreItem, schemaTypes, foundArrayTree).then(res => {resolve(res)}));
 
     return promise;
 

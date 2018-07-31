@@ -25,126 +25,105 @@ function renderDeprecatedNotes() {
     }
   }
 
-  const promise = new Promise((resolve, reject) => {
-    checkDeprecatedDeletions(deprecatedFields);
-    resolve();
-  });
-
-  return promise;
+  return new Promise(resolve =>
+    checkDeprecatedDeletions(deprecatedFields).then(resolve)
+  );
 }
 
 function checkDeprecatedDeletions(deprecatedFields) {
-  fs.readFile(
-    __dirname + `/../deprecated-storage${config.currentKey}deleted-notes.json`,
-    'utf8',
-    (err, dn) => {
-      let deletedNotes = [];
-      if (dn) {
-        deletedNotes = JSON.parse(dn);
-      }
-      // The name
-      fs.readFile(
-        __dirname +
-          `/../deprecated-storage${config.currentKey}stored-deprecated.json`,
-        'utf8',
-        (err, stored) => {
-          let storedData;
-          if (stored) {
-            storedData = JSON.parse(stored);
-          }
-          const difference = deepDiff.diff(storedData, deprecatedFields);
-          // PRUEBAS
-          // deprecatedFields['2017-11-21'][0] = {};
-          //  console.log(deprecatedFields);
-          // delete deprecatedFields['2018-03-19'];
-          // const e = deprecatedFields
-          //   .find(d => d.key === '2018-08-03')
-          //   .value[0].value.splice(1);
-          //   utils.log(deprecatedFields, 'prueba eliminado');
+  return new Promise(resolve => {
+    fs.readFile(
+      __dirname +
+        `/../deprecated-storage${config.currentKey}deleted-notes.json`,
+      'utf8',
+      (err, dn) => {
+        let deletedNotes = [];
+        if (dn) {
+          deletedNotes = JSON.parse(dn);
+        }
+        // The name
+        fs.readFile(
+          __dirname +
+            `/../deprecated-storage${config.currentKey}stored-deprecated.json`,
+          'utf8',
+          (err, stored) => {
+            let storedData;
+            if (stored) {
+              storedData = JSON.parse(stored);
+            }
+            const difference = deepDiff.diff(storedData, deprecatedFields);
+            // PRUEBAS
+            // deprecatedFields['2017-11-21'][0] = {};
+            //  console.log(deprecatedFields);
+            // delete deprecatedFields['2018-03-19'];
+            // const e = deprecatedFields
+            //   .find(d => d.key === '2018-08-03')
+            //   .value[0].value.splice(1);
+            //   utils.log(deprecatedFields, 'prueba eliminado');
 
-          // Check if there is a difference.
-          // This package is capable of figuring out which may be the differences, yet it's method of comparison is not too clear
-          // and seems to compare keys by index which is of no use in this case
-          if (difference && storedData) {
-            // Outer loop. Compares DATES
-            for (const date of storedData) {
-              const foundDeprecatedDate = deprecatedFields.find(
-                df => df.key === date.key
-              );
-
-              const noteIndex = deletedNotes.findIndex(
-                dn => dn.key === date.key
-              );
-
-              // If the key is no more, that means it and its contents have been removed.
-              // Otherwise, we check if the property is equal between the stored data and the current one.
-              // If it is different, we enter another loop and keep looking for differences
-              if (!foundDeprecatedDate || !foundDeprecatedDate.value.length) {
-                const dateValue = date.value[0].value.map(v => {
-                  v['trueDeletionDate'] = utils.formatDate(config.CURRENT_DATE);
-                  return v;
-                });
-
-                // Key does not exist in deleted notes. It is created now
-
-                if (noteIndex !== -1) {
-                  if (
-                    !deletedNotes[noteIndex].value[0].value.find(dn => {
-                      return (
-                        dn &&
-                        dateValue.find(
-                          v =>
-                            v &&
-                            dn.name === v.name &&
-                            dn.url === v.url &&
-                            dn.deprecationDate === v.deprecationDate &&
-                            dn.typeString === v.typeString &&
-                            dn.typeName === v.typeName
-                        )
-                      );
-                    })
-                  ) {
-                    deletedNotes[noteIndex].value[0].value.push(dateValue);
-                  }
-                } else {
-                  deletedNotes.push({
-                    key: date.key,
-                    value: [{ type: 'r', value: dateValue }]
-                  });
-                }
-              } else {
-                const storedEntries = storedData.find(
-                  sd => sd.key === date.key
+            // Check if there is a difference.
+            // This package is capable of figuring out which may be the differences, yet it's method of comparison is not too clear
+            // and seems to compare keys by index which is of no use in this case
+            if (difference && storedData) {
+              // Outer loop. Compares DATES
+              for (const date of storedData) {
+                const foundDeprecatedDate = deprecatedFields.find(
+                  df => df.key === date.key
                 );
 
-                if (deepDiff.diff(storedEntries, foundDeprecatedDate)) {
-                  for (const entry of storedEntries.value[0].value) {
-                    // If entry of past data is not found in new data, it is added to deleted notes
+                const noteIndex = deletedNotes.findIndex(
+                  dn => dn.key === date.key
+                );
 
+                // If the key is no more, that means it and its contents have been removed.
+                // Otherwise, we check if the property is equal between the stored data and the current one.
+                // If it is different, we enter another loop and keep looking for differences
+                if (!foundDeprecatedDate || !foundDeprecatedDate.value.length) {
+                  const dateValue = date.value[0].value.map(v => {
+                    v['trueDeletionDate'] = utils.formatDate(
+                      config.CURRENT_DATE
+                    );
+                    return v;
+                  });
+
+                  // Key does not exist in deleted notes. It is created now
+
+                  if (noteIndex !== -1) {
                     if (
-                      !foundDeprecatedDate.value[0].value.find(pd => {
+                      !deletedNotes[noteIndex].value[0].value.find(dn => {
                         return (
-                          entry &&
-                          pd &&
-                          pd.name === entry.name &&
-                          pd.url === entry.url &&
-                          pd.deprecationDate === entry.deprecationDate &&
-                          pd.typeString === entry.typeString &&
-                          pd.typeName === entry.typeName
+                          dn &&
+                          dateValue.find(
+                            v =>
+                              v &&
+                              dn.name === v.name &&
+                              dn.url === v.url &&
+                              dn.deprecationDate === v.deprecationDate &&
+                              dn.typeString === v.typeString &&
+                              dn.typeName === v.typeName
+                          )
                         );
                       })
                     ) {
-                      if (!deletedNotes[noteIndex]) {
-                        entry['trueDeletionDate'] = utils.formatDate(
-                          config.CURRENT_DATE
-                        );
-                        deletedNotes.push({
-                          key: entry.deprecationDate,
-                          value: [{ type: 'r', value: [entry] }]
-                        });
-                      } else if (
-                        // IF not present already in deleted notes, info gets added
-                        !deletedNotes[noteIndex].value[0].value.find(pd => {
+                      deletedNotes[noteIndex].value[0].value.push(dateValue);
+                    }
+                  } else {
+                    deletedNotes.push({
+                      key: date.key,
+                      value: [{ type: 'r', value: dateValue }]
+                    });
+                  }
+                } else {
+                  const storedEntries = storedData.find(
+                    sd => sd.key === date.key
+                  );
+
+                  if (deepDiff.diff(storedEntries, foundDeprecatedDate)) {
+                    for (const entry of storedEntries.value[0].value) {
+                      // If entry of past data is not found in new data, it is added to deleted notes
+
+                      if (
+                        !foundDeprecatedDate.value[0].value.find(pd => {
                           return (
                             entry &&
                             pd &&
@@ -156,26 +135,50 @@ function checkDeprecatedDeletions(deprecatedFields) {
                           );
                         })
                       ) {
-                        entry['trueDeletionDate'] = utils.formatDate(
-                          config.CURRENT_DATE
-                        );
-                        deletedNotes[noteIndex].value[0].value.push(entry);
-                      } else {
-                        console.log('Already in. Hopefully');
+                        if (!deletedNotes[noteIndex]) {
+                          entry['trueDeletionDate'] = utils.formatDate(
+                            config.CURRENT_DATE
+                          );
+                          deletedNotes.push({
+                            key: entry.deprecationDate,
+                            value: [{ type: 'r', value: [entry] }]
+                          });
+                        } else if (
+                          // IF not present already in deleted notes, info gets added
+                          !deletedNotes[noteIndex].value[0].value.find(pd => {
+                            return (
+                              entry &&
+                              pd &&
+                              pd.name === entry.name &&
+                              pd.url === entry.url &&
+                              pd.deprecationDate === entry.deprecationDate &&
+                              pd.typeString === entry.typeString &&
+                              pd.typeName === entry.typeName
+                            );
+                          })
+                        ) {
+                          entry['trueDeletionDate'] = utils.formatDate(
+                            config.CURRENT_DATE
+                          );
+                          deletedNotes[noteIndex].value[0].value.push(entry);
+                        } else {
+                          console.log('Already in. Hopefully');
+                        }
                       }
                     }
                   }
                 }
               }
             }
+            bar.tick();
+            bar.interrupt('[Checked deleted notes]');
+
+            saveDeprecatedNotesSnapshot(deprecatedFields, deletedNotes).then(resolve);
           }
-          bar.tick();
-          bar.interrupt('[Checked deleted notes]');
-          saveDeprecatedNotesSnapshot(deprecatedFields, deletedNotes);
-        }
-      );
-    }
-  );
+        );
+      }
+    );
+  });
 }
 
 /**
@@ -185,7 +188,7 @@ function checkDeprecatedDeletions(deprecatedFields) {
  * @param {Array} deletedNotes
  */
 function saveDeprecatedNotesSnapshot(deprecatedFields, deletedNotes) {
-  const storedDeprecatedPromise = new Promise((resolve, reject) => {
+  const storedDeprecatedPromise = new Promise(resolve => {
     fs.writeFile(
       __dirname +
         `/../deprecated-storage${config.currentKey}stored-deprecated.json`,
@@ -194,14 +197,15 @@ function saveDeprecatedNotesSnapshot(deprecatedFields, deletedNotes) {
         if (err) return console.log(err);
         bar.tick();
         bar.interrupt('[Stored current deprecated and deleted notes]');
+        resolve();
       }
     );
   });
 
-  // console.log(deletedNotes);
-  const deletedNotesPromise = new Promise((resolve, reject) => {
+  const deletedNotesPromise = new Promise(resolve => {
     fs.writeFile(
-      __dirname + `/../deprecated-storage${config.currentKey}deleted-notes.json`,
+      __dirname +
+        `/../deprecated-storage${config.currentKey}deleted-notes.json`,
       JSON.stringify(deletedNotes, undefined, '  '),
       function(err) {
         if (err) return console.log(err);
@@ -212,7 +216,7 @@ function saveDeprecatedNotesSnapshot(deprecatedFields, deletedNotes) {
     );
   });
 
-  if (config.STRUCTURE.DELETED) {
+  return new Promise(resolve => {
     const lines = [];
     renderDeletedNotes(
       lines,
@@ -220,8 +224,20 @@ function saveDeprecatedNotesSnapshot(deprecatedFields, deletedNotes) {
       config.STRUCTURE.DELETED,
       utils.copy(deprecatedFields)
     );
-    save.saveDeprecated(lines.join('\n'), `breaking-changes`);
-  }
+
+    save
+      .saveDeprecated(lines.join('\n'), `breaking-changes`)
+      .then(_ => {
+        Promise.all([storedDeprecatedPromise, deletedNotesPromise]).then(
+          resolve
+        );
+      })
+      .catch(_ => {
+        Promise.all([storedDeprecatedPromise, deletedNotesPromise]).then(
+          resolve
+        );
+      });
+  });
 }
 
 /**
@@ -280,8 +296,6 @@ function renderDeletedNotes(
     }
 
     const unreleasedNotes = formatUnreleasedNotes(deprecatedFields);
-
-    utils.log(unreleasedNotes, '' + new Date().getTime());
 
     // 12/07/2018 Recreate deleted as deprecated, so there can be seen properly on the timeline.
     const deletedAsDeprecated = [];
