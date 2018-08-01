@@ -10,7 +10,7 @@
             "deprecationReason": "You can find it in query at HotelX",
             "description": "Returns the total price and cancellation policies of the Option selected in the previous step (Search).",
             "name": "quote",
-            "url": "/travelgatex/objects/quote",
+            "url": "/hotelx/objects/quote",
             "deprecationDate": "2017-11-21",
             "typeString": "Quote!",
             "typeName": "Query",
@@ -21,14 +21,14 @@
               {
                 "typeString": "String!",
                 "name": "input",
-                "url": "/travelgatex/scalars/string",
+                "url": "/hotelx/scalars/string",
                 "description": ""
               }
             ],
             "deprecationReason": "You can find it in query at Admin",
             "description": "Deletes a defaultSettings for a given group",
             "name": "deleteDefaultSettings",
-            "url": "/travelgatex/scalars/boolean",
+            "url": "/hotelx/scalars/boolean",
             "deprecationDate": "2017-11-21",
             "typeString": "Boolean!",
             "typeName": "Mutation",
@@ -39,14 +39,14 @@
               {
                 "typeString": "DefaultSettingsInput!",
                 "name": "input",
-                "url": "/travelgatex/inputobjects/defaultsettingsinput",
+                "url": "/hotelx/inputobjects/defaultsettingsinput",
                 "description": ""
               }
             ],
             "deprecationReason": "You can find it in query at Admin",
             "description": "Updates a defaultSettings for a given group",
             "name": "updateDefaultSettings",
-            "url": "/travelgatex/objects/defaultsettings",
+            "url": "/hotelx/objects/defaultsettings",
             "deprecationDate": "2017-11-21",
             "typeString": "DefaultSettings",
             "typeName": "Mutation",
@@ -57,14 +57,14 @@
               {
                 "typeString": "DefaultSettingsInput!",
                 "name": "input",
-                "url": "/travelgatex/inputobjects/defaultsettingsinput",
+                "url": "/hotelx/inputobjects/defaultsettingsinput",
                 "description": ""
               }
             ],
             "deprecationReason": "You can find it in query at Admin",
             "description": "Creates a defaultSettings for a given group",
             "name": "createDefaultSettings",
-            "url": "/travelgatex/objects/defaultsettings",
+            "url": "/hotelx/objects/defaultsettings",
             "deprecationDate": "2017-11-21",
             "typeString": "DefaultSettings",
             "typeName": "Mutation",
@@ -75,14 +75,14 @@
               {
                 "typeString": "String!",
                 "name": "input",
-                "url": "/travelgatex/scalars/string",
+                "url": "/hotelx/scalars/string",
                 "description": ""
               }
             ],
             "deprecationReason": "You can find it in query at Admin",
             "description": "Load mapping files for a group.",
             "name": "loadFile",
-            "url": "/travelgatex/scalars/string",
+            "url": "/hotelx/scalars/string",
             "deprecationDate": "2017-11-21",
             "typeString": "String!",
             "typeName": "Mutation",
@@ -93,20 +93,20 @@
               {
                 "typeString": "HotelCancelInput!",
                 "name": "input",
-                "url": "/travelgatex/inputobjects/hotelcancelinput",
+                "url": "/hotelx/inputobjects/hotelcancelinput",
                 "description": ""
               },
               {
                 "typeString": "HotelSettingsInput",
                 "name": "settings",
-                "url": "/travelgatex/inputobjects/hotelsettingsinput",
+                "url": "/hotelx/inputobjects/hotelsettingsinput",
                 "description": ""
               }
             ],
             "deprecationReason": "You can find it in query at HotelX",
             "description": "Cancels an existing hotel booking consisting of an option of 1 or more rooms.",
             "name": "hotelCancel",
-            "url": "/travelgatex/objects/hotelcancelpayload",
+            "url": "/hotelx/objects/hotelcancelpayload",
             "deprecationDate": "2017-11-21",
             "typeString": "HotelCancelPayload",
             "typeName": "Mutation",
@@ -117,20 +117,20 @@
               {
                 "typeString": "HotelBookInput!",
                 "name": "input",
-                "url": "/travelgatex/inputobjects/hotelbookinput",
+                "url": "/hotelx/inputobjects/hotelbookinput",
                 "description": ""
               },
               {
                 "typeString": "HotelSettingsInput",
                 "name": "settings",
-                "url": "/travelgatex/inputobjects/hotelsettingsinput",
+                "url": "/hotelx/inputobjects/hotelsettingsinput",
                 "description": ""
               }
             ],
             "deprecationReason": "You can find it in query at HotelX",
             "description": "Creates a new hotel booking consisting of an option of 1 or more rooms.",
             "name": "hotelBook",
-            "url": "/travelgatex/objects/hotelbookpayload",
+            "url": "/hotelx/objects/hotelbookpayload",
             "deprecationDate": "2017-11-21",
             "typeString": "HotelBookPayload",
             "typeName": "Mutation",
@@ -141,7 +141,7 @@
             "deprecationReason": "You can find it in query at HotelX",
             "description": "Available options for a given date and itinerary.",
             "name": "search",
-            "url": "/travelgatex/objects/search",
+            "url": "/hotelx/objects/search",
             "deprecationDate": "2017-11-21",
             "typeString": "Search!",
             "typeName": "Query",
@@ -152,7 +152,7 @@
             "deprecationReason": "You can find it in query at HotelX",
             "description": "Returns detailed information about books.",
             "name": "booking",
-            "url": "/travelgatex/objects/booking",
+            "url": "/hotelx/objects/booking",
             "deprecationDate": "2017-11-21",
             "typeString": "Booking",
             "typeName": "Query",
@@ -163,14 +163,14 @@
               {
                 "typeString": "String!",
                 "name": "groupCode",
-                "url": "/travelgatex/scalars/string",
+                "url": "/hotelx/scalars/string",
                 "description": ""
               }
             ],
             "deprecationReason": "You can find it in query at HotelX",
             "description": "Reads defaultSettings of the given group",
             "name": "defaultSettings",
-            "url": "/travelgatex/objects/defaultsettings",
+            "url": "/hotelx/objects/defaultsettings",
             "deprecationDate": "2017-11-21",
             "typeString": "DefaultSettings",
             "typeName": "Query",
@@ -181,783 +181,19 @@
               {
                 "typeString": "String!",
                 "name": "groupCode",
-                "url": "/travelgatex/scalars/string",
+                "url": "/hotelx/scalars/string",
                 "description": ""
               }
             ],
             "deprecationReason": "You can find it in query at HotelX",
             "description": "Returns the mapping for a group, is necessary specify the group.",
             "name": "mapping",
-            "url": "/travelgatex/objects/mapping",
+            "url": "/hotelx/objects/mapping",
             "deprecationDate": "2017-11-21",
             "typeString": "Mapping!",
             "typeName": "Query",
             "trueDeletionDate": "2018-07-09"
-          },
-          [
-            {
-              "typeString": "HotelBooking",
-              "name": "hotel",
-              "url": "/travelgatex/reference/objects/hotelbooking",
-              "description": "Returns detailed information about books, you can indicated a list of locators or a range date.",
-              "isDeprecated": true,
-              "args": [
-                {
-                  "typeString": "HotelCriteriaBookingInput!",
-                  "name": "criteria",
-                  "url": "/travelgatex/reference/inputobjects/hotelcriteriabookinginput",
-                  "description": ""
-                },
-                {
-                  "typeString": "HotelSettingsInput",
-                  "name": "settings",
-                  "url": "/travelgatex/reference/inputobjects/hotelsettingsinput",
-                  "description": ""
-                }
-              ],
-              "deprecationReason": "You can find it in query at HotelX",
-              "descriptionSplitted": {
-                "date": "2017-11-21",
-                "first": "deprecated from",
-                "second": "You can find it in query at HotelX"
-              },
-              "deprecationDate": "2017-11-21",
-              "typeName": "Booking",
-              "deletionDate": "2018-02-19",
-              "daysRemaining": "Already passed",
-              "trueDeletionDate": "2018-07-26"
-            },
-            {
-              "typeString": "HotelQuote",
-              "name": "hotel",
-              "url": "/travelgatex/reference/objects/hotelquote",
-              "description": "Returns the total price and cancellation policies of the Option selected in the previous step (Search).",
-              "isDeprecated": true,
-              "args": [
-                {
-                  "typeString": "HotelCriteriaQuoteInput!",
-                  "name": "criteria",
-                  "url": "/travelgatex/reference/inputobjects/hotelcriteriaquoteinput",
-                  "description": ""
-                },
-                {
-                  "typeString": "HotelSettingsInput",
-                  "name": "settings",
-                  "url": "/travelgatex/reference/inputobjects/hotelsettingsinput",
-                  "description": ""
-                }
-              ],
-              "deprecationReason": "You can find it in query at HotelX",
-              "descriptionSplitted": {
-                "date": "2017-11-21",
-                "first": "deprecated from",
-                "second": "You can find it in query at HotelX"
-              },
-              "deprecationDate": "2017-11-21",
-              "typeName": "Quote",
-              "deletionDate": "2018-02-19",
-              "daysRemaining": "Already passed",
-              "trueDeletionDate": "2018-07-26"
-            },
-            {
-              "typeString": "HotelSearch",
-              "name": "hotel",
-              "url": "/travelgatex/reference/objects/hotelsearch",
-              "description": "Available options of an hotel for a given date and itinerary. It does not filter different classes, times or\nfares. It will always retrieve all results returned by the suppliers. The availability request is very straight\nforward. It only requires the criteria of search (destination, travel dates and the number of pax in each room).\nBut you must preload the other fields in our system by complete the fields absents.",
-              "isDeprecated": true,
-              "args": [
-                {
-                  "typeString": "String",
-                  "name": "token",
-                  "url": "/travelgatex/reference/scalars/string",
-                  "description": ""
-                },
-                {
-                  "typeString": "HotelCriteriaSearchInput",
-                  "name": "criteria",
-                  "url": "/travelgatex/reference/inputobjects/hotelcriteriasearchinput",
-                  "description": ""
-                },
-                {
-                  "typeString": "HotelSettingsInput",
-                  "name": "settings",
-                  "url": "/travelgatex/reference/inputobjects/hotelsettingsinput",
-                  "description": ""
-                },
-                {
-                  "typeString": "FilterInput",
-                  "name": "filter",
-                  "url": "/travelgatex/reference/inputobjects/filterinput",
-                  "description": ""
-                }
-              ],
-              "deprecationReason": "You can find it in query at HotelX",
-              "descriptionSplitted": {
-                "date": "2017-11-21",
-                "first": "deprecated from",
-                "second": "You can find it in query at HotelX"
-              },
-              "deprecationDate": "2017-11-21",
-              "typeName": "Search",
-              "deletionDate": "2018-02-19",
-              "daysRemaining": "Already passed",
-              "trueDeletionDate": "2018-07-26"
-            },
-            {
-              "typeString": "HotelBooking",
-              "name": "hotel",
-              "url": "/travelgatex/reference/objects/hotelbooking",
-              "description": "Returns detailed information about books, you can indicated a list of locators or a range date.",
-              "isDeprecated": true,
-              "args": [
-                {
-                  "typeString": "HotelCriteriaBookingInput!",
-                  "name": "criteria",
-                  "url": "/travelgatex/reference/inputobjects/hotelcriteriabookinginput",
-                  "description": ""
-                },
-                {
-                  "typeString": "HotelSettingsInput",
-                  "name": "settings",
-                  "url": "/travelgatex/reference/inputobjects/hotelsettingsinput",
-                  "description": ""
-                }
-              ],
-              "deprecationReason": "You can find it in query at HotelX",
-              "descriptionSplitted": {
-                "date": "2017-11-21",
-                "first": "deprecated from",
-                "second": "You can find it in query at HotelX"
-              },
-              "deprecationDate": "2017-11-21",
-              "typeName": "Booking",
-              "deletionDate": "2018-02-19",
-              "daysRemaining": "Already passed",
-              "trueDeletionDate": "2018-07-26"
-            },
-            {
-              "typeString": "HotelQuote",
-              "name": "hotel",
-              "url": "/travelgatex/reference/objects/hotelquote",
-              "description": "Returns the total price and cancellation policies of the Option selected in the previous step (Search).",
-              "isDeprecated": true,
-              "args": [
-                {
-                  "typeString": "HotelCriteriaQuoteInput!",
-                  "name": "criteria",
-                  "url": "/travelgatex/reference/inputobjects/hotelcriteriaquoteinput",
-                  "description": ""
-                },
-                {
-                  "typeString": "HotelSettingsInput",
-                  "name": "settings",
-                  "url": "/travelgatex/reference/inputobjects/hotelsettingsinput",
-                  "description": ""
-                }
-              ],
-              "deprecationReason": "You can find it in query at HotelX",
-              "descriptionSplitted": {
-                "date": "2017-11-21",
-                "first": "deprecated from",
-                "second": "You can find it in query at HotelX"
-              },
-              "deprecationDate": "2017-11-21",
-              "typeName": "Quote",
-              "deletionDate": "2018-02-19",
-              "daysRemaining": "Already passed",
-              "trueDeletionDate": "2018-07-26"
-            },
-            {
-              "typeString": "HotelSearch",
-              "name": "hotel",
-              "url": "/travelgatex/reference/objects/hotelsearch",
-              "description": "Available options of an hotel for a given date and itinerary. It does not filter different classes, times or\nfares. It will always retrieve all results returned by the suppliers. The availability request is very straight\nforward. It only requires the criteria of search (destination, travel dates and the number of pax in each room).\nBut you must preload the other fields in our system by complete the fields absents.",
-              "isDeprecated": true,
-              "args": [
-                {
-                  "typeString": "String",
-                  "name": "token",
-                  "url": "/travelgatex/reference/scalars/string",
-                  "description": ""
-                },
-                {
-                  "typeString": "HotelCriteriaSearchInput",
-                  "name": "criteria",
-                  "url": "/travelgatex/reference/inputobjects/hotelcriteriasearchinput",
-                  "description": ""
-                },
-                {
-                  "typeString": "HotelSettingsInput",
-                  "name": "settings",
-                  "url": "/travelgatex/reference/inputobjects/hotelsettingsinput",
-                  "description": ""
-                },
-                {
-                  "typeString": "FilterInput",
-                  "name": "filter",
-                  "url": "/travelgatex/reference/inputobjects/filterinput",
-                  "description": ""
-                }
-              ],
-              "deprecationReason": "You can find it in query at HotelX",
-              "descriptionSplitted": {
-                "date": "2017-11-21",
-                "first": "deprecated from",
-                "second": "You can find it in query at HotelX"
-              },
-              "deprecationDate": "2017-11-21",
-              "typeName": "Search",
-              "deletionDate": "2018-02-19",
-              "daysRemaining": "Already passed",
-              "trueDeletionDate": "2018-07-26"
-            }
-          ],
-          [
-            {
-              "typeString": "HotelBooking",
-              "name": "hotel",
-              "url": "/travelgatex/reference/objects/hotelbooking",
-              "description": "Returns detailed information about books, you can indicated a list of locators or a range date.",
-              "isDeprecated": true,
-              "args": [
-                {
-                  "typeString": "HotelCriteriaBookingInput!",
-                  "name": "criteria",
-                  "url": "/travelgatex/reference/inputobjects/hotelcriteriabookinginput",
-                  "description": ""
-                },
-                {
-                  "typeString": "HotelSettingsInput",
-                  "name": "settings",
-                  "url": "/travelgatex/reference/inputobjects/hotelsettingsinput",
-                  "description": ""
-                }
-              ],
-              "deprecationReason": "You can find it in query at HotelX",
-              "descriptionSplitted": {
-                "date": "2017-11-21",
-                "first": "deprecated from",
-                "second": "You can find it in query at HotelX"
-              },
-              "deprecationDate": "2017-11-21",
-              "typeName": "Booking",
-              "deletionDate": "2018-02-19",
-              "daysRemaining": "Already passed",
-              "trueDeletionDate": "2018-07-27"
-            },
-            {
-              "typeString": "HotelQuote",
-              "name": "hotel",
-              "url": "/travelgatex/reference/objects/hotelquote",
-              "description": "Returns the total price and cancellation policies of the Option selected in the previous step (Search).",
-              "isDeprecated": true,
-              "args": [
-                {
-                  "typeString": "HotelCriteriaQuoteInput!",
-                  "name": "criteria",
-                  "url": "/travelgatex/reference/inputobjects/hotelcriteriaquoteinput",
-                  "description": ""
-                },
-                {
-                  "typeString": "HotelSettingsInput",
-                  "name": "settings",
-                  "url": "/travelgatex/reference/inputobjects/hotelsettingsinput",
-                  "description": ""
-                }
-              ],
-              "deprecationReason": "You can find it in query at HotelX",
-              "descriptionSplitted": {
-                "date": "2017-11-21",
-                "first": "deprecated from",
-                "second": "You can find it in query at HotelX"
-              },
-              "deprecationDate": "2017-11-21",
-              "typeName": "Quote",
-              "deletionDate": "2018-02-19",
-              "daysRemaining": "Already passed",
-              "trueDeletionDate": "2018-07-27"
-            },
-            {
-              "typeString": "HotelSearch",
-              "name": "hotel",
-              "url": "/travelgatex/reference/objects/hotelsearch",
-              "description": "Available options of an hotel for a given date and itinerary. It does not filter different classes, times or\nfares. It will always retrieve all results returned by the suppliers. The availability request is very straight\nforward. It only requires the criteria of search (destination, travel dates and the number of pax in each room).\nBut you must preload the other fields in our system by complete the fields absents.",
-              "isDeprecated": true,
-              "args": [
-                {
-                  "typeString": "String",
-                  "name": "token",
-                  "url": "/travelgatex/reference/scalars/string",
-                  "description": ""
-                },
-                {
-                  "typeString": "HotelCriteriaSearchInput",
-                  "name": "criteria",
-                  "url": "/travelgatex/reference/inputobjects/hotelcriteriasearchinput",
-                  "description": ""
-                },
-                {
-                  "typeString": "HotelSettingsInput",
-                  "name": "settings",
-                  "url": "/travelgatex/reference/inputobjects/hotelsettingsinput",
-                  "description": ""
-                },
-                {
-                  "typeString": "FilterInput",
-                  "name": "filter",
-                  "url": "/travelgatex/reference/inputobjects/filterinput",
-                  "description": ""
-                }
-              ],
-              "deprecationReason": "You can find it in query at HotelX",
-              "descriptionSplitted": {
-                "date": "2017-11-21",
-                "first": "deprecated from",
-                "second": "You can find it in query at HotelX"
-              },
-              "deprecationDate": "2017-11-21",
-              "typeName": "Search",
-              "deletionDate": "2018-02-19",
-              "daysRemaining": "Already passed",
-              "trueDeletionDate": "2018-07-27"
-            },
-            {
-              "typeString": "HotelBooking",
-              "name": "hotel",
-              "url": "/travelgatex/reference/objects/hotelbooking",
-              "description": "Returns detailed information about books, you can indicated a list of locators or a range date.",
-              "isDeprecated": true,
-              "args": [
-                {
-                  "typeString": "HotelCriteriaBookingInput!",
-                  "name": "criteria",
-                  "url": "/travelgatex/reference/inputobjects/hotelcriteriabookinginput",
-                  "description": ""
-                },
-                {
-                  "typeString": "HotelSettingsInput",
-                  "name": "settings",
-                  "url": "/travelgatex/reference/inputobjects/hotelsettingsinput",
-                  "description": ""
-                }
-              ],
-              "deprecationReason": "You can find it in query at HotelX",
-              "descriptionSplitted": {
-                "date": "2017-11-21",
-                "first": "deprecated from",
-                "second": "You can find it in query at HotelX"
-              },
-              "deprecationDate": "2017-11-21",
-              "typeName": "Booking",
-              "deletionDate": "2018-02-19",
-              "daysRemaining": "Already passed",
-              "trueDeletionDate": "2018-07-27"
-            },
-            {
-              "typeString": "HotelQuote",
-              "name": "hotel",
-              "url": "/travelgatex/reference/objects/hotelquote",
-              "description": "Returns the total price and cancellation policies of the Option selected in the previous step (Search).",
-              "isDeprecated": true,
-              "args": [
-                {
-                  "typeString": "HotelCriteriaQuoteInput!",
-                  "name": "criteria",
-                  "url": "/travelgatex/reference/inputobjects/hotelcriteriaquoteinput",
-                  "description": ""
-                },
-                {
-                  "typeString": "HotelSettingsInput",
-                  "name": "settings",
-                  "url": "/travelgatex/reference/inputobjects/hotelsettingsinput",
-                  "description": ""
-                }
-              ],
-              "deprecationReason": "You can find it in query at HotelX",
-              "descriptionSplitted": {
-                "date": "2017-11-21",
-                "first": "deprecated from",
-                "second": "You can find it in query at HotelX"
-              },
-              "deprecationDate": "2017-11-21",
-              "typeName": "Quote",
-              "deletionDate": "2018-02-19",
-              "daysRemaining": "Already passed",
-              "trueDeletionDate": "2018-07-27"
-            },
-            {
-              "typeString": "HotelSearch",
-              "name": "hotel",
-              "url": "/travelgatex/reference/objects/hotelsearch",
-              "description": "Available options of an hotel for a given date and itinerary. It does not filter different classes, times or\nfares. It will always retrieve all results returned by the suppliers. The availability request is very straight\nforward. It only requires the criteria of search (destination, travel dates and the number of pax in each room).\nBut you must preload the other fields in our system by complete the fields absents.",
-              "isDeprecated": true,
-              "args": [
-                {
-                  "typeString": "String",
-                  "name": "token",
-                  "url": "/travelgatex/reference/scalars/string",
-                  "description": ""
-                },
-                {
-                  "typeString": "HotelCriteriaSearchInput",
-                  "name": "criteria",
-                  "url": "/travelgatex/reference/inputobjects/hotelcriteriasearchinput",
-                  "description": ""
-                },
-                {
-                  "typeString": "HotelSettingsInput",
-                  "name": "settings",
-                  "url": "/travelgatex/reference/inputobjects/hotelsettingsinput",
-                  "description": ""
-                },
-                {
-                  "typeString": "FilterInput",
-                  "name": "filter",
-                  "url": "/travelgatex/reference/inputobjects/filterinput",
-                  "description": ""
-                }
-              ],
-              "deprecationReason": "You can find it in query at HotelX",
-              "descriptionSplitted": {
-                "date": "2017-11-21",
-                "first": "deprecated from",
-                "second": "You can find it in query at HotelX"
-              },
-              "deprecationDate": "2017-11-21",
-              "typeName": "Search",
-              "deletionDate": "2018-02-19",
-              "daysRemaining": "Already passed",
-              "trueDeletionDate": "2018-07-27"
-            }
-          ],
-          [
-            {
-              "typeString": "HotelBooking",
-              "name": "hotel",
-              "url": "/travelgatex/reference/objects/hotelbooking",
-              "description": "Returns detailed information about books, you can indicated a list of locators or a range date.",
-              "isDeprecated": true,
-              "args": [
-                {
-                  "typeString": "HotelCriteriaBookingInput!",
-                  "name": "criteria",
-                  "url": "/travelgatex/reference/inputobjects/hotelcriteriabookinginput",
-                  "description": ""
-                },
-                {
-                  "typeString": "HotelSettingsInput",
-                  "name": "settings",
-                  "url": "/travelgatex/reference/inputobjects/hotelsettingsinput",
-                  "description": ""
-                }
-              ],
-              "deprecationReason": "You can find it in query at HotelX",
-              "descriptionSplitted": {
-                "date": "2017-11-21",
-                "first": "deprecated from",
-                "second": "You can find it in query at HotelX"
-              },
-              "deprecationDate": "2017-11-21",
-              "typeName": "Booking",
-              "deletionDate": "2018-02-19",
-              "daysRemaining": "Already passed",
-              "trueDeletionDate": "2018-07-27"
-            },
-            {
-              "typeString": "HotelQuote",
-              "name": "hotel",
-              "url": "/travelgatex/reference/objects/hotelquote",
-              "description": "Returns the total price and cancellation policies of the Option selected in the previous step (Search).",
-              "isDeprecated": true,
-              "args": [
-                {
-                  "typeString": "HotelCriteriaQuoteInput!",
-                  "name": "criteria",
-                  "url": "/travelgatex/reference/inputobjects/hotelcriteriaquoteinput",
-                  "description": ""
-                },
-                {
-                  "typeString": "HotelSettingsInput",
-                  "name": "settings",
-                  "url": "/travelgatex/reference/inputobjects/hotelsettingsinput",
-                  "description": ""
-                }
-              ],
-              "deprecationReason": "You can find it in query at HotelX",
-              "descriptionSplitted": {
-                "date": "2017-11-21",
-                "first": "deprecated from",
-                "second": "You can find it in query at HotelX"
-              },
-              "deprecationDate": "2017-11-21",
-              "typeName": "Quote",
-              "deletionDate": "2018-02-19",
-              "daysRemaining": "Already passed",
-              "trueDeletionDate": "2018-07-27"
-            },
-            {
-              "typeString": "HotelSearch",
-              "name": "hotel",
-              "url": "/travelgatex/reference/objects/hotelsearch",
-              "description": "Available options of an hotel for a given date and itinerary. It does not filter different classes, times or\nfares. It will always retrieve all results returned by the suppliers. The availability request is very straight\nforward. It only requires the criteria of search (destination, travel dates and the number of pax in each room).\nBut you must preload the other fields in our system by complete the fields absents.",
-              "isDeprecated": true,
-              "args": [
-                {
-                  "typeString": "String",
-                  "name": "token",
-                  "url": "/travelgatex/reference/scalars/string",
-                  "description": ""
-                },
-                {
-                  "typeString": "HotelCriteriaSearchInput",
-                  "name": "criteria",
-                  "url": "/travelgatex/reference/inputobjects/hotelcriteriasearchinput",
-                  "description": ""
-                },
-                {
-                  "typeString": "HotelSettingsInput",
-                  "name": "settings",
-                  "url": "/travelgatex/reference/inputobjects/hotelsettingsinput",
-                  "description": ""
-                },
-                {
-                  "typeString": "FilterInput",
-                  "name": "filter",
-                  "url": "/travelgatex/reference/inputobjects/filterinput",
-                  "description": ""
-                }
-              ],
-              "deprecationReason": "You can find it in query at HotelX",
-              "descriptionSplitted": {
-                "date": "2017-11-21",
-                "first": "deprecated from",
-                "second": "You can find it in query at HotelX"
-              },
-              "deprecationDate": "2017-11-21",
-              "typeName": "Search",
-              "deletionDate": "2018-02-19",
-              "daysRemaining": "Already passed",
-              "trueDeletionDate": "2018-07-27"
-            }
-          ],
-          [
-            {
-              "typeString": "HotelBooking",
-              "name": "hotel",
-              "url": "/travelgatex/reference/objects/hotelbooking",
-              "description": "Returns detailed information about books, you can indicated a list of locators or a range date.",
-              "isDeprecated": true,
-              "args": [
-                {
-                  "typeString": "HotelCriteriaBookingInput!",
-                  "name": "criteria",
-                  "url": "/travelgatex/reference/inputobjects/hotelcriteriabookinginput",
-                  "description": ""
-                },
-                {
-                  "typeString": "HotelSettingsInput",
-                  "name": "settings",
-                  "url": "/travelgatex/reference/inputobjects/hotelsettingsinput",
-                  "description": ""
-                }
-              ],
-              "deprecationReason": "You can find it in query at HotelX",
-              "descriptionSplitted": {
-                "date": "2017-11-21",
-                "first": "deprecated from",
-                "second": "You can find it in query at HotelX"
-              },
-              "deprecationDate": "2017-11-21",
-              "typeName": "Booking",
-              "deletionDate": "2018-02-19",
-              "daysRemaining": "Already passed",
-              "trueDeletionDate": "2018-07-31"
-            },
-            {
-              "typeString": "HotelQuote",
-              "name": "hotel",
-              "url": "/travelgatex/reference/objects/hotelquote",
-              "description": "Returns the total price and cancellation policies of the Option selected in the previous step (Search).",
-              "isDeprecated": true,
-              "args": [
-                {
-                  "typeString": "HotelCriteriaQuoteInput!",
-                  "name": "criteria",
-                  "url": "/travelgatex/reference/inputobjects/hotelcriteriaquoteinput",
-                  "description": ""
-                },
-                {
-                  "typeString": "HotelSettingsInput",
-                  "name": "settings",
-                  "url": "/travelgatex/reference/inputobjects/hotelsettingsinput",
-                  "description": ""
-                }
-              ],
-              "deprecationReason": "You can find it in query at HotelX",
-              "descriptionSplitted": {
-                "date": "2017-11-21",
-                "first": "deprecated from",
-                "second": "You can find it in query at HotelX"
-              },
-              "deprecationDate": "2017-11-21",
-              "typeName": "Quote",
-              "deletionDate": "2018-02-19",
-              "daysRemaining": "Already passed",
-              "trueDeletionDate": "2018-07-31"
-            },
-            {
-              "typeString": "HotelSearch",
-              "name": "hotel",
-              "url": "/travelgatex/reference/objects/hotelsearch",
-              "description": "Available options of an hotel for a given date and itinerary. It does not filter different classes, times or\nfares. It will always retrieve all results returned by the suppliers. The availability request is very straight\nforward. It only requires the criteria of search (destination, travel dates and the number of pax in each room).\nBut you must preload the other fields in our system by complete the fields absents.",
-              "isDeprecated": true,
-              "args": [
-                {
-                  "typeString": "String",
-                  "name": "token",
-                  "url": "/travelgatex/reference/scalars/string",
-                  "description": ""
-                },
-                {
-                  "typeString": "HotelCriteriaSearchInput",
-                  "name": "criteria",
-                  "url": "/travelgatex/reference/inputobjects/hotelcriteriasearchinput",
-                  "description": ""
-                },
-                {
-                  "typeString": "HotelSettingsInput",
-                  "name": "settings",
-                  "url": "/travelgatex/reference/inputobjects/hotelsettingsinput",
-                  "description": ""
-                },
-                {
-                  "typeString": "FilterInput",
-                  "name": "filter",
-                  "url": "/travelgatex/reference/inputobjects/filterinput",
-                  "description": ""
-                }
-              ],
-              "deprecationReason": "You can find it in query at HotelX",
-              "descriptionSplitted": {
-                "date": "2017-11-21",
-                "first": "deprecated from",
-                "second": "You can find it in query at HotelX"
-              },
-              "deprecationDate": "2017-11-21",
-              "typeName": "Search",
-              "deletionDate": "2018-02-19",
-              "daysRemaining": "Already passed",
-              "trueDeletionDate": "2018-07-31"
-            },
-            {
-              "typeString": "HotelBooking",
-              "name": "hotel",
-              "url": "/travelgatex/reference/objects/hotelbooking",
-              "description": "Returns detailed information about books, you can indicated a list of locators or a range date.",
-              "isDeprecated": true,
-              "args": [
-                {
-                  "typeString": "HotelCriteriaBookingInput!",
-                  "name": "criteria",
-                  "url": "/travelgatex/reference/inputobjects/hotelcriteriabookinginput",
-                  "description": ""
-                },
-                {
-                  "typeString": "HotelSettingsInput",
-                  "name": "settings",
-                  "url": "/travelgatex/reference/inputobjects/hotelsettingsinput",
-                  "description": ""
-                }
-              ],
-              "deprecationReason": "You can find it in query at HotelX",
-              "descriptionSplitted": {
-                "date": "2017-11-21",
-                "first": "deprecated from",
-                "second": "You can find it in query at HotelX"
-              },
-              "deprecationDate": "2017-11-21",
-              "typeName": "Booking",
-              "deletionDate": "2018-02-19",
-              "daysRemaining": "Already passed",
-              "trueDeletionDate": "2018-07-31"
-            },
-            {
-              "typeString": "HotelQuote",
-              "name": "hotel",
-              "url": "/travelgatex/reference/objects/hotelquote",
-              "description": "Returns the total price and cancellation policies of the Option selected in the previous step (Search).",
-              "isDeprecated": true,
-              "args": [
-                {
-                  "typeString": "HotelCriteriaQuoteInput!",
-                  "name": "criteria",
-                  "url": "/travelgatex/reference/inputobjects/hotelcriteriaquoteinput",
-                  "description": ""
-                },
-                {
-                  "typeString": "HotelSettingsInput",
-                  "name": "settings",
-                  "url": "/travelgatex/reference/inputobjects/hotelsettingsinput",
-                  "description": ""
-                }
-              ],
-              "deprecationReason": "You can find it in query at HotelX",
-              "descriptionSplitted": {
-                "date": "2017-11-21",
-                "first": "deprecated from",
-                "second": "You can find it in query at HotelX"
-              },
-              "deprecationDate": "2017-11-21",
-              "typeName": "Quote",
-              "deletionDate": "2018-02-19",
-              "daysRemaining": "Already passed",
-              "trueDeletionDate": "2018-07-31"
-            },
-            {
-              "typeString": "HotelSearch",
-              "name": "hotel",
-              "url": "/travelgatex/reference/objects/hotelsearch",
-              "description": "Available options of an hotel for a given date and itinerary. It does not filter different classes, times or\nfares. It will always retrieve all results returned by the suppliers. The availability request is very straight\nforward. It only requires the criteria of search (destination, travel dates and the number of pax in each room).\nBut you must preload the other fields in our system by complete the fields absents.",
-              "isDeprecated": true,
-              "args": [
-                {
-                  "typeString": "String",
-                  "name": "token",
-                  "url": "/travelgatex/reference/scalars/string",
-                  "description": ""
-                },
-                {
-                  "typeString": "HotelCriteriaSearchInput",
-                  "name": "criteria",
-                  "url": "/travelgatex/reference/inputobjects/hotelcriteriasearchinput",
-                  "description": ""
-                },
-                {
-                  "typeString": "HotelSettingsInput",
-                  "name": "settings",
-                  "url": "/travelgatex/reference/inputobjects/hotelsettingsinput",
-                  "description": ""
-                },
-                {
-                  "typeString": "FilterInput",
-                  "name": "filter",
-                  "url": "/travelgatex/reference/inputobjects/filterinput",
-                  "description": ""
-                }
-              ],
-              "deprecationReason": "You can find it in query at HotelX",
-              "descriptionSplitted": {
-                "date": "2017-11-21",
-                "first": "deprecated from",
-                "second": "You can find it in query at HotelX"
-              },
-              "deprecationDate": "2017-11-21",
-              "typeName": "Search",
-              "deletionDate": "2018-02-19",
-              "daysRemaining": "Already passed",
-              "trueDeletionDate": "2018-07-31"
-            }
-          ]
+          }
         ]
       }
     ]
@@ -986,25 +222,6 @@
             "deletionDate": "2018-08-19",
             "daysRemaining": 25,
             "trueDeletionDate": "2018-07-24"
-          },
-          {
-            "typeString": "JSON",
-            "name": "distribute",
-            "url": "/travelgatex/reference/scalars/json",
-            "description": "Extra information from the distribution layer",
-            "isDeprecated": true,
-            "args": null,
-            "deprecationReason": "You can find it in distribution AddOn",
-            "descriptionSplitted": {
-              "date": "2018-05-21",
-              "first": "deprecated from",
-              "second": "You can find it in distribution AddOn"
-            },
-            "deprecationDate": "2018-05-21",
-            "typeName": "AddOns",
-            "deletionDate": "2018-08-19",
-            "daysRemaining": 23,
-            "trueDeletionDate": "2018-07-26"
           }
         ]
       }
@@ -1019,26 +236,7 @@
           {
             "typeString": "Boolean",
             "name": "useContext",
-            "url": "/travelgatex/reference/scalars/boolean",
-            "description": "Indicates if you want use context, or not, by default is true.\n@deprecated(reason: \"deprecated from 2017-12-12. Redundant.\")",
-            "isDeprecated": true,
-            "args": null,
-            "deprecationReason": "Redundant.",
-            "descriptionSplitted": {
-              "date": "2017-12-12",
-              "first": "Indicates if you want use context, or not, by default is true.\n@deprecated(reason: \"deprecated from",
-              "second": "Redundant.\")"
-            },
-            "deprecationDate": "2017-12-12",
-            "typeName": "HotelSettingsInput",
-            "deletionDate": "2018-03-12",
-            "daysRemaining": "Already passed",
-            "trueDeletionDate": "2018-07-26"
-          },
-          {
-            "typeString": "Boolean",
-            "name": "useContext",
-            "url": "/travelgatex/reference/scalars/boolean",
+            "url": "/hotelx/reference/scalars/boolean",
             "description": "Indicates if you want use context, or not, by default is true.\n@deprecated(reason: \"deprecated from 2017-12-12. Redundant.\")",
             "isDeprecated": true,
             "args": null,
@@ -1067,26 +265,7 @@
           {
             "typeString": "String",
             "name": "connectUser",
-            "url": "/travelgatex/reference/scalars/string",
-            "description": " This field is occurs only if the authorization header is of the type JWT.. It is used to change the user that has been set by default in the preload.\n@deprecated(reason: \"deprecated from 2018-03-19. Redundant.\")",
-            "isDeprecated": true,
-            "args": null,
-            "deprecationReason": "Redundant.",
-            "descriptionSplitted": {
-              "date": "2018-03-19",
-              "first": " This field is occurs only if the authorization header is of the type JWT.. It is used to change the user that has been set by default in the preload.\n@deprecated(reason: \"deprecated from",
-              "second": "Redundant.\")"
-            },
-            "deprecationDate": "2018-03-19",
-            "typeName": "HotelSettingsInput",
-            "deletionDate": "2018-06-17",
-            "daysRemaining": "Already passed",
-            "trueDeletionDate": "2018-07-26"
-          },
-          {
-            "typeString": "String",
-            "name": "connectUser",
-            "url": "/travelgatex/reference/scalars/string",
+            "url": "/hotelx/reference/scalars/string",
             "description": " This field is occurs only if the authorization header is of the type JWT.. It is used to change the user that has been set by default in the preload.\n@deprecated(reason: \"deprecated from 2018-03-19. Redundant.\")",
             "isDeprecated": true,
             "args": null,
