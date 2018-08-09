@@ -1,5 +1,8 @@
 'use strict';
 var config = require('./../config');
+var utils = require('./utils');
+
+const aux = [];
 
 function renderType(type, ret) {
   if (type.kind === 'NON_NULL') {
@@ -173,7 +176,11 @@ const functions = {
     return filter.length ? filter : null;
   },
   findSharedTypes: (coreItem, schemaTypes, foundArrayTree) => {
-    const promise = new Promise(resolve => buildTreeRecursive(coreItem, schemaTypes, foundArrayTree).then(res => {resolve(res)}));
+    const promise = new Promise(resolve =>
+      buildTreeRecursive(coreItem, schemaTypes, foundArrayTree).then(res => {
+        resolve(res);
+      })
+    );
 
     return promise;
 
@@ -190,12 +197,8 @@ const functions = {
       return foundArrayTree;
     }
 
-    function manageRecursion(item, schemaTypes, foundArrayTree) {
-      const foundTypes = getTypesOfSelectedItem(
-        item,
-        schemaTypes,
-        foundArrayTree
-      );
+    function manageRecursion(item, schemaTypes, foundArrayTree, type = 'Base') {
+      const foundTypes = getTypesOfSelectedItem(item, schemaTypes, type);
       if (foundTypes) {
         const typesOnThisCycle = [];
         for (const ft of foundTypes) {
@@ -209,17 +212,29 @@ const functions = {
 
         if (typesOnThisCycle.length) {
           for (const found of typesOnThisCycle) {
+            // if (found.name === 'HotelXQuery') {
+            //   console.log(found);
+            // }
+            let fields = [];
             if (found.fields && found.fields.length) {
-              manageRecursion(found.fields, schemaTypes, foundArrayTree);
+              fields = fields.concat(found.fields);
             }
+            if (found.inputFields && found.inputFields.length) {
+              fields = fields.concat(found.inputFields);
+            }
+            if (found.interfaces && found.interfaces.length) {
+              fields = fields.concat(found.interfaces);
+            }
+
+            manageRecursion(fields, schemaTypes, foundArrayTree, found.name);
           }
         }
       }
     }
 
-    function getTypesOfSelectedItem(fields, schemaTypes, foundArrayTree) {
+    function getTypesOfSelectedItem(fields, schemaTypes, type) {
       const arr = [];
-      let auxArray = [];
+      const auxArray = [];
 
       for (const field of fields) {
         const fieldTypes = [];
@@ -229,16 +244,15 @@ const functions = {
         } else {
           if (field.args) {
             for (const arg of field.args) {
-              if (arg.name) {
-                fieldTypes.push(arg);
-              }
               if (arg.type) {
-                const argType = arg.type;
-                if (argType.ofType) {
+                if (arg.type.kind !== 'NON_NULL' && arg.type.name) {
+                  fieldTypes.push(arg.type);
+                }
+                if (arg.type.ofType) {
                   const ofTypes = [];
-                  checkOfTypes(argType.ofType, ofTypes);
+                  checkOfTypes(arg.type.ofType, ofTypes);
                   ofTypes.forEach(o => {
-                    if (o.name) {
+                    if (o.kind && o.name) {
                       fieldTypes.push(o);
                     }
                   });
@@ -249,25 +263,30 @@ const functions = {
           item = field.type;
         }
 
-        if (item.name) {
-          fieldTypes.push(item);
+        if (item) {
+          if (item.name) {
+            fieldTypes.push(item);
+          }
+
+          if (item.ofType) {
+            const ofTypes = [];
+            checkOfTypes(item.ofType, ofTypes);
+            ofTypes.forEach(o => {
+              if (o.kind && o.name) {
+                fieldTypes.push(o);
+              }
+            });
+          } else {
+            fieldTypes.push(item);
+          }
         }
 
-        if (item.ofType) {
-          const ofTypes = [];
-          checkOfTypes(item.ofType, ofTypes);
-          ofTypes.forEach(o => {
-            if (o.name) {
-              fieldTypes.push(o);
-            }
-          });
-        } else {
-          fieldTypes.push(item);
-        }
-
-        auxArray = auxArray.concat(fieldTypes);
+        auxArray.push(fieldTypes);
       }
-      auxArray.map(au => {
+
+      const flatArray = [].concat.apply([], auxArray);
+
+      flatArray.map(au => {
         if (!arr.find(a => compareString(au.name, a.name))) {
           arr.push(au);
         }
@@ -275,8 +294,27 @@ const functions = {
 
       const typesFound = [];
       for (const a of arr) {
-        const item = schemaTypes.find(t => compareString(t.name, a.name)) || a;
-        typesFound.push(item);
+        let item;
+        if (!!a.type) {
+          item =
+            schemaTypes.find(
+              t =>
+                compareString(t.name, a.type.name) &&
+                compareString(t.kind, a.type.kind)
+            ) ||
+            schemaTypes.find(
+              t =>
+                compareString(t.name, a.name) &&
+                compareString((t.type || {}).kind, a.type.kind)
+            );
+        } else {
+          item = schemaTypes.find(
+            t => compareString(t.name, a.name) && compareString(t.kind, a.kind)
+          );
+        }
+        if (item) {
+          typesFound.push(item);
+        }
       }
 
       return typesFound;
@@ -299,6 +337,23 @@ const functions = {
         type1.typeName === type2.typeName
       );
     }
+  },
+  removeUnused: types => {
+
+    const stringTypes = JSON.stringify(types);
+    let baseUnusedFieldsNames = [];
+    types.map(t => {
+      const regex = new RegExp(t.name, 'g');
+      const number = (stringTypes.match(regex) || []).length;
+      if (number === 1 && t.name !== '__Schema') {
+        baseUnusedFieldsNames.push(t.name);
+      }
+    });
+
+    utils.log(baseUnusedFieldsNames, 'unused-names');
+
+    var ftypes = types.filter(t => !baseUnusedFieldsNames.includes(t.name));
+    return ftypes;
   }
 };
 

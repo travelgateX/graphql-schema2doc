@@ -12,9 +12,11 @@ function evaluateFields(s) {
   const schema = s.__schema;
   // quitar comprobaciones absurdas
   const filteredTypes = [];
+  const usedTypes = functions.removeUnused(schema.types);
 
   for (const rItem of config.PATHS[config.currentKey].rootItems) {
-    const found = schema.types.find(t => rItem.name === t.name);
+    const found = usedTypes.find(t => rItem.name === t.name);
+
     if (found) {
       filteredTypes.push(found);
     }
@@ -51,7 +53,6 @@ function evaluateFields(s) {
     });
   } else {
     bar.interrupt(`[FATAL ERROR. No query nor mutation]`);
-    // utils.completeBar();
   }
 }
 

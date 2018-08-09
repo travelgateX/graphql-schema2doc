@@ -8,7 +8,6 @@ module.exports = {
     enabled: false
   },
   '/hotelx/': {
-
     relURL: `/hotelx/${DIRNAME}`,
     rootItems: [{ name: 'HotelXQuery' }, { name: 'HotelXMutation' }],
     deprecatedUrl: `${__dirname}/../output/hotelx/breaking-changes.md`,
