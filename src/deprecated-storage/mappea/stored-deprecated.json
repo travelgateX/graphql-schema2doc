@@ -1,0 +1,30 @@
+[
+  {
+    "key": "2018-08-01",
+    "value": [
+      {
+        "type": "d",
+        "value": [
+          {
+            "typeString": "[Error!]",
+            "name": "error",
+            "url": "/mappea/reference/objects/error",
+            "description": "Errors that abort services",
+            "isDeprecated": true,
+            "args": null,
+            "deprecationReason": "Sustituted by adviseMessage",
+            "descriptionSplitted": {
+              "date": "2018-08-01",
+              "first": "deprecated from",
+              "second": "Sustituted by adviseMessage"
+            },
+            "deprecationDate": "2018-08-01",
+            "typeName": "Group",
+            "deletionDate": "2018-10-30",
+            "daysRemaining": 81
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -1,1 +1,86 @@
-[{"key":"2018-05-21","value":[{"type":"d","value":[{"typeString":"JSON","name":"distribute","url":"/hotelx/reference/scalars/json","description":"Extra information from the distribution layer","isDeprecated":true,"args":null,"deprecationReason":"You can find it in distribution AddOn","descriptionSplitted":{"date":"2018-05-21","first":"deprecated from","second":"You can find it in distribution AddOn"},"deprecationDate":"2018-05-21","typeName":"AddOns","deletionDate":"2018-08-19","daysRemaining":30}]}]}]
+[
+  {
+    "key": "2017-12-12",
+    "value": [
+      {
+        "type": "d",
+        "value": [
+          {
+            "typeString": "Boolean",
+            "name": "useContext",
+            "url": "/hotelx/reference/scalars/boolean",
+            "description": "Indicates if you want use context, or not, by default is true.\n@deprecated(reason: \"deprecated from 2017-12-12. Redundant.\")",
+            "isDeprecated": true,
+            "args": null,
+            "deprecationReason": "Redundant.",
+            "descriptionSplitted": {
+              "date": "2017-12-12",
+              "first": "Indicates if you want use context, or not, by default is true.\n@deprecated(reason: \"deprecated from",
+              "second": "Redundant.\")"
+            },
+            "deprecationDate": "2017-12-12",
+            "typeName": "HotelSettingsInput",
+            "deletionDate": "2018-03-12",
+            "daysRemaining": "Already passed"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "key": "2018-03-19",
+    "value": [
+      {
+        "type": "d",
+        "value": [
+          {
+            "typeString": "String",
+            "name": "connectUser",
+            "url": "/hotelx/reference/scalars/string",
+            "description": " This field is occurs only if the authorization header is of the type JWT.. It is used to change the user that has been set by default in the preload.\n@deprecated(reason: \"deprecated from 2018-03-19. Redundant.\")",
+            "isDeprecated": true,
+            "args": null,
+            "deprecationReason": "Redundant.",
+            "descriptionSplitted": {
+              "date": "2018-03-19",
+              "first": " This field is occurs only if the authorization header is of the type JWT.. It is used to change the user that has been set by default in the preload.\n@deprecated(reason: \"deprecated from",
+              "second": "Redundant.\")"
+            },
+            "deprecationDate": "2018-03-19",
+            "typeName": "HotelSettingsInput",
+            "deletionDate": "2018-06-17",
+            "daysRemaining": "Already passed"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "key": "2018-05-21",
+    "value": [
+      {
+        "type": "d",
+        "value": [
+          {
+            "typeString": "JSON",
+            "name": "distribute",
+            "url": "/hotelx/reference/scalars/json",
+            "description": "Extra information from the distribution layer",
+            "isDeprecated": true,
+            "args": null,
+            "deprecationReason": "You can find it in distribution AddOn",
+            "descriptionSplitted": {
+              "date": "2018-05-21",
+              "first": "deprecated from",
+              "second": "You can find it in distribution AddOn"
+            },
+            "deprecationDate": "2018-05-21",
+            "typeName": "AddOns",
+            "deletionDate": "2018-08-19",
+            "daysRemaining": 9
+          }
+        ]
+      }
+    ]
+  }
+]

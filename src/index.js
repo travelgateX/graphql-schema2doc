@@ -7,8 +7,7 @@ const fs = require('fs-extra'),
   toMD = require(__dirname + '/graphqlToMD'),
   bar = require(__dirname + '/../progressBar/bar'),
   inquirer = require('inquirer'),
-  config = require(__dirname + '/config.js'),
-  childConfig = require(__dirname + '/graphqlToMD/config.js');
+  config = require(__dirname + '/config');
 
 const mds = {
   default: '',
@@ -26,7 +25,7 @@ const questions = [
     type: 'list',
     name: 'filter',
     message: 'What do you want to generate?',
-    choices: config.USER_OPTIONS
+    choices: config.USER_CONFIG.options
   }
 ];
 
@@ -37,19 +36,28 @@ function initScript() {
   fs.emptyDir(__dirname + '/tmp/', err => {
     if (err) return console.error(err);
     inquirer.prompt(questions).then(function(answers) {
-      config.USER_CHOICES.filter = answers.filter;
+      config.USER_CONFIG.selected = answers.filter;
 
-      //IS NOT DYNAMIC
-      if (config.USER_CHOICES.filter !== 'Everything') {
-        childConfig.PATH = '/hotelx/';
-        childConfig.relURL = childConfig.PATH + childConfig.DIRNAME;
-        childConfig.LOCATION += '-hotelX';
-      } else {
+      switch (config.USER_CONFIG.selected) {
+        case 'all':
+          for (const key in config.PATHS) {
+            config.PATHS[key].enabled = true;
+          }
+          break;
+        default:
+          config.PATHS[`/${config.USER_CONFIG.selected}/`].enabled = true;
+          break;
       }
 
       console.log('\n');
-      bar.tick();
-      createQuery();
+      if (fs.existsSync(config.DOCUMENTATION_LOCATION)) {
+        bar.tick();
+        createQuery();
+      } else {
+        console.log(
+          'Output path is nor correct. Please, move the project to the folder containing documentation-site or modify the configurations'
+        );
+      }
     });
   });
 }
@@ -175,12 +183,82 @@ function readMDs() {
 }
 
 function writeMdJSON() {
-  fs.writeFile(__dirname + '/tmp/md-data.json', JSON.stringify(mds), function(
-    err
-  ) {
-    if (err) return console.log(err);
-    bar.tick();
-    bar.interrupt('[Created MD data JSON]');
-    toMD.init();
+  const promise = new Promise(finish => {
+    fs.writeFile(__dirname + '/tmp/md-data.json', JSON.stringify(mds), function(
+      err
+    ) {
+      if (err) return console.log(err);
+      bar.tick();
+      bar.interrupt('[Created MD data JSON]');
+      if (config.USER_CONFIG.selected === 'all') {
+        bar.total += 28;
+        (async function loop() {
+          for (const key in config.PATHS) {
+            config.LOG = [];
+            config.currentKey = key;
+            bar.interrupt(`[BUILDING '${config.currentKey}']`);
+            await new Promise(resolve => {
+              toMD.init().then(_ => {
+                bar.interrupt(`[FINNISHED '${config.currentKey}']`);
+                bar.tick();
+                resolve();
+              });
+            });
+          }
+          finish(true);
+        })();
+      } else {
+        config.LOG = [];
+        config.currentKey = `/${config.USER_CONFIG.selected}/`;
+        bar.interrupt(`[BUILDING '${config.currentKey}']`);
+        toMD.init().then(_ => {
+          bar.interrupt(`[FINNISHED '${config.currentKey}']`);
+          bar.tick();
+          finish(false);
+        });
+      }
+    });
+  });
+
+  promise.then(all => {
+    const output_dir = `${__dirname}/output`;
+    const content_dir = `${config.DOCUMENTATION_LOCATION}/content`;
+    if (all) {
+      for (const key in config.PATHS) {
+        const reference = `${output_dir}${key}`;
+        const target_reference = `${content_dir}${key}reference`;
+        const release_notes = `${content_dir}${key}release-notes`;
+
+        moveFiles(reference, target_reference, release_notes).then(_ =>
+          console.log(`${key} has been moved to documentation-site`)
+        );
+      }
+    } else {
+      const reference = `${output_dir}${config.currentKey}`;
+      const target_reference = `${content_dir}${config.currentKey}reference`;
+      const release_notes = `${content_dir}${config.currentKey}release-notes`;
+
+      moveFiles(reference, target_reference, release_notes).then(_ =>
+        console.log(`${config.currentKey} has been moved to documentation-site`)
+      );
+    }
+  });
+}
+
+function moveFiles(reference, target_reference, release_notes) {
+  return new Promise(resolve => {
+    fs.remove(target_reference, _ => {
+      fs.copy(reference, target_reference, _ => {
+        fs.ensureDir(release_notes, _ => {
+          fs.pathExists;
+          fs.move(
+            `${target_reference}/breaking-changes.md`,
+            `${release_notes}/breaking-changes.md`,
+            { overwrite: true },
+            err3 => resolve()
+          );
+        });
+      });
+    });
   });
 }

@@ -1,11 +1,11 @@
 var fs = require('fs');
-var config = require('./config');
+var config = require('./../config');
 
-module.exports = function saveFile(l, path) {
+function saveFile(l, path) {
   let lines = l;
   if (path.includes('_index')) {
     const pathArray = path.split('/');
-    if (pathArray.length === 1) {
+    if (pathArray.length === 3) {
       const position = config.MD_DATA['reference'].indexOf('pagetitle');
       const str = config.MD_DATA['reference'];
       lines = [
@@ -13,22 +13,48 @@ module.exports = function saveFile(l, path) {
         `"hideGithubLink": true,\n\t`,
         str.slice(position - 1)
       ].join('');
-    } else if (pathArray.length === 2 && config.MD_DATA[pathArray[0]]) {
-      const position = config.MD_DATA[pathArray[0]].indexOf('pagetitle');
-      const str = config.MD_DATA[pathArray[0]];
+    } else if (pathArray.length === 4 && config.MD_DATA[pathArray[2]]) {
+      const position = config.MD_DATA[pathArray[2]].indexOf('pagetitle');
+      const str = config.MD_DATA[pathArray[2]];
       lines = [
         str.slice(0, position - 1),
         `"hideGithubLink": true,\n\t`,
         str.slice(position - 1)
       ].join('');
     } else {
-      console.log(path);
+      
     }
   }
-
-  fs.writeFile(`${config.LOCATION}/${path}.md`, lines, function(err) {
-    if (err) {
-      return console.log(err);
-    }
+  return new Promise((resolve, reject) => {
+    fs.writeFile(`${__dirname}/../output/${path}.md`, lines, function(err) {
+      if (err) {
+        console.log(err);
+        reject();
+      }
+      resolve();
+    });
   });
+}
+
+function saveDeprecated(l) {
+  let lines = l;
+
+  return new Promise((resolve, reject) => {
+    fs.writeFile(
+      `${config.PATHS[config.currentKey].deprecatedUrl}`,
+      lines,
+      function(err) {
+        if (err) {
+          console.log(err);
+          reject();
+        }
+        resolve();
+      }
+    );
+  });
+}
+
+module.exports = {
+  saveFile,
+  saveDeprecated
 };

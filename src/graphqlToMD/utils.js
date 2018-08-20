@@ -1,3 +1,6 @@
+var bar = require(__dirname + '/../../progressBar/bar');
+var fs = require('fs');
+
 function printer(lines, s) {
   lines.push(s);
 }
@@ -12,12 +15,18 @@ function sortBy(arr, property) {
   });
 }
 
-function log(d=[],t = "NONE") {
-  console.log('\n******************************************\n');
-  console.log(t.toUpperCase());
-  console.log('\n\n');
-  console.log(JSON.stringify(d));
-  console.log('\n******************************************');
+function log(arr = [], name = new Date().getTime() +'_log') {
+  const dir =  `${__dirname}/../logs`
+  if (!fs.existsSync(dir)){
+    fs.mkdirSync(dir);
+}
+  fs.writeFile(
+    `${dir}/${name}.json`,
+    JSON.stringify(arr, null, 2),
+    function(err) {
+      if (err) return console.log(err);
+    }
+  );
 }
 
 function copy(i) {
@@ -42,11 +51,23 @@ function escapeHtml(unsafe) {
     .replace(/\n/g, ' \\n ');
 }
 
+function completeBar() {
+  if (!bar.complete) {
+    setTimeout(_ => {
+      bar.tick();
+      completeBar();
+    }, 500);
+  } else {
+    bar.interrupt('[Done]');
+  }
+};
+
 module.exports = {
   printer,
   sortBy,
   formatDate,
   escapeHtml,
   log,
-  copy
+  copy,
+  completeBar
 };

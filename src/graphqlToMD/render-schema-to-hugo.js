@@ -1,126 +1,204 @@
 'use strict';
-var fs = require('fs');
-var config = require('./config');
-var globalConfig = require('./../config');
+var fs = require('fs-extra');
+var config = require('./../config');
 var bar = require(__dirname + '/../../progressBar/bar');
 var functions = require('./functions.js');
-var saveFile = require('./save.js');
+var save = require('./save.js');
 var utils = require('./utils.js');
 var deprecationManagement = require('./deprecation-management.js');
 
 // MAIN FUNCTION
 function evaluateFields(s) {
   const schema = s.__schema;
+  // quitar comprobaciones absurdas
+  const filteredTypes = [];
+  const usedTypes = functions.removeUnused(schema.types);
 
-  if (globalConfig.USER_CHOICES.filter !== 'Everything') {
-    let filterOptions;
-    let coreItem;
+  for (const rItem of config.PATHS[config.currentKey].rootItems) {
+    const found = usedTypes.find(t => rItem.name === t.name);
 
-    // If-else block that sorts out which query type is to be filtered
-    if (globalConfig.USER_CHOICES.filter.includes('HotelX')) {
-      filterOptions = ['HotelXQuery', 'HotelXMutation'];
+    if (found) {
+      filteredTypes.push(found);
     }
- 
-    const filteredTypes = schema.types.filter(t =>
-      filterOptions.includes(t.name)
-    );
-    if ((filteredTypes || []).length) {
-      // Types will depend on the option selected on the beginning
+  }
+
+  if ((filteredTypes || []).length) {
+    // Types will depend on the option selected on the beginning
+
+    return new Promise(resolve => {
       functions
         .findSharedTypes(filteredTypes[0], schema.types, [])
         .then(types1 => {
+          schema.queryType.name = filteredTypes[0].name;
           types1.push(filteredTypes[0]);
-          functions
-            .findSharedTypes(filteredTypes[1], schema.types, types1)
-            .then(types2 => {
-              types2.push(filteredTypes[1]);
-              schema.types = types2;
-              renderSchema(schema);
-              bar.tick();
-              bar.interrupt(`[Built object tree]`);
-            });
+          if (filteredTypes[1]) {
+            functions
+              .findSharedTypes(filteredTypes[1], schema.types, types1)
+              .then(types2 => {
+                schema.mutationType.name = filteredTypes[1].name;
+                types2.push(filteredTypes[1]);
+                schema.types = types2;
+                bar.tick();
+                bar.interrupt(`[Built object tree]`);
+                renderSchema(schema).then(resolve);
+              });
+          } else {
+            schema.types = types1;
+            schema.queryType.name = filteredTypes[0].name;
+            bar.tick();
+            bar.interrupt(`[Built object tree (only Query)]`);
+            renderSchema(schema).then(resolve);
+          }
         });
-    } else {
-      bar.tick();
-    }
+    });
   } else {
-    // In case we select 'Everything'
-    renderSchema(schema);
+    bar.interrupt(`[FATAL ERROR. No query nor mutation]`);
   }
 }
 
 function renderSchema(schema) {
-  const renderWholeSchema = globalConfig.USER_CHOICES.filter === 'Everything';
-  saveFile(config.frontmatters.INDEX, `_index`);
+  return new Promise(resolve => {
+    const filesRendered = [];
+    save.saveFile(config.STRUCTURE.INDEX, `${config.currentKey}_index`);
 
-  const types = schema.types.filter(type => !type.name.startsWith('__'));
+    const types = schema.types.filter(type => !type.name.startsWith('__'));
 
-  const queryType = renderWholeSchema ? schema.queryType : schema.mainQueryType;
-  const mutationType = renderWholeSchema
-    ? schema.mutationType
-    : schema.mainMutationType;
+    save
+      .saveFile(
+        config.STRUCTURE.INDEXSCHEMA,
+        `${config.currentKey}schema/_index`
+      )
+      .then(_ => (filesRendered[filesRendered.length] = Promise.resolve(true)));
 
-  const objects = types.filter(
-    type =>
-      type.kind === 'OBJECT' &&
-      type.name !== mutationType.name &&
-      type.name !== queryType.name
-  );
+    const query =
+      schema.queryType &&
+      types.find(type => type.name === schema.queryType.name);
+    if (query) {
+      var lines = [];
+      filesRendered[filesRendered.length] = renderObject(
+        lines,
+        query,
+        types,
+        'type',
+        undefined,
+        1
+      );
+      save.saveFile(lines.join('\n'), `${config.currentKey}schema/query`);
+    }
 
-  render(objects, types, 'objects', 'type');
+    const mutation =
+      schema.mutationType &&
+      types.find(type => type.name === schema.mutationType.name);
+    if (mutation) {
+      var lines = [];
+      filesRendered[filesRendered.length] = renderObject(
+        lines,
+        mutation,
+        types,
+        'type',
+        undefined,
+        2
+      );
+      save.saveFile(lines.join('\n'), `${config.currentKey}schema/mutation`);
+    }
 
-  const enums = types.filter(type => type.kind === 'ENUM');
-  render(enums, types, 'enums', 'enum');
+    const enums = types.filter(type => type.kind === 'ENUM');
+    if (enums.length) {
+      filesRendered[filesRendered.length] = render(
+        enums,
+        types,
+        'enums',
+        'enum'
+      );
+    }
 
-  const inputObjects = types.filter(type => type.kind === 'INPUT_OBJECT');
-  render(inputObjects, types, 'inputobjects', 'type');
+    const inputObjects = types.filter(type => type.kind === 'INPUT_OBJECT');
 
-  const query = queryType && types.find(type => type.name === queryType.name);
-  if (query) {
-    var lines = [];
-    renderObject(lines, query, types, 'type', undefined, 1);
-    saveFile(lines.join('\n'), `schema/query`);
-  }
+    if (inputObjects.length) {
+      filesRendered[filesRendered.length] = render(
+        inputObjects,
+        types,
+        'inputobjects',
+        'type'
+      );
+    }
 
-  const mutation =
-    mutationType && types.find(type => type.name === mutationType.name);
-  if (mutation) {
-    var lines = [];
-    renderObject(lines, mutation, types, 'type', undefined, 2);
-    saveFile(lines.join('\n'), `schema/mutation`);
-  }
+    const interfaces = types.filter(type => type.kind === 'INTERFACE');
+    if (interfaces.length) {
+      filesRendered[filesRendered.length] = render(
+        interfaces,
+        types,
+        'interfaces',
+        'type',
+        'interface'
+      );
+    }
 
-  saveFile(config.frontmatters.INDEXSCHEMA, `schema/_index`);
+    const objects = types.filter(
+      type =>
+        type.kind === 'OBJECT' &&
+        type.name !== (schema.mutationType || {}).name &&
+        type.name !== (schema.queryType || {}).name
+    );
 
-  const scalars = types.filter(type => type.kind === 'SCALAR');
-  render(scalars, types, 'scalars', 'scalar');
+    if (objects.length) {
+      filesRendered[filesRendered.length] = render(
+        objects,
+        types,
+        'objects',
+        'type'
+      );
+    }
 
-  const interfaces = types.filter(type => type.kind === 'INTERFACE');
-  render(interfaces, types, 'interfaces', 'type', 'interface');
-  bar.tick();
-  if (config.frontmatters.DEPRECATED && config.LOG.length) {
-    const lines = [];
-    // disabled deprecation stuff unless all selected
-    deprecationManagement();
+    const scalars = types.filter(type => type.kind === 'SCALAR');
+    if (scalars.length) {
+      filesRendered[filesRendered.length] = render(
+        scalars,
+        types,
+        'scalars',
+        'scalar'
+      );
+    }
 
-    bar.tick();
-  }
+    Promise.all(filesRendered).then(_ => {
+      bar.tick();
+      bar.interrupt('[Rendered menu]');
+      if (config.STRUCTURE.DEPRECATED && config.LOG.length) {
+        deprecationManagement().then(resolve);
+      } else {
+        bar.tick();
+        bar.tick();
+        bar.tick();
+        resolve();
+      }
+    });
+  });
 }
 
 function render(objects, types, dirname, template, operator = template) {
-  if (objects.length) {
-    utils.sortBy(objects, 'name');
-    objects.forEach(type => {
-      var lines = [];
+  return new Promise((resolve, reject) => {
+    if (objects.length) {
+      utils.sortBy(objects, 'name');
+      objects.forEach(type => {
+        var lines = [];
 
-      renderObject(lines, type, types, template, operator);
-      saveFile(lines.join('\n'), `${dirname}/${type.name}`);
-    });
-    saveFile(
-      config.frontmatters[`INDEX${dirname.toUpperCase()}`],
-      `${dirname}/_index`
-    );
-  }
+        renderObject(lines, type, types, template, operator);
+        save
+          .saveFile(
+            lines.join('\n'),
+            `${config.currentKey}${dirname}/${type.name}`
+          )
+          .then();
+      });
+      save
+        .saveFile(
+          config.STRUCTURE[`INDEX${dirname.toUpperCase()}`],
+          `${config.currentKey}${dirname}/_index`
+        )
+        .then(resolve)
+        .catch(reject);
+    }
+  });
 }
 
 function renderObject(
@@ -148,17 +226,17 @@ function renderObject(
     utils.printer(lines, `${type.description}`);
   }
 
-  utils.printer(lines, `## ${config.SECTION1}\n`);
+  utils.printer(lines, `## ${config.STRUCTURE.SECTION1}\n`);
   utils.printer(lines, `{{% graphql-schema-${template} %}}\n`);
 
   let fields = frontMatter.fields;
   if (fields && fields.length) {
-    utils.printer(lines, `## ${config.SECTION2}\n`);
+    utils.printer(lines, `## ${config.STRUCTURE.SECTION2}\n`);
     utils.printer(lines, `{{% graphql-field %}}\n`);
   }
 
   if (frontMatter.requireby && frontMatter.requireby.length) {
-    utils.printer(lines, `## ${config.SECTION3}\n`);
+    utils.printer(lines, `## ${config.STRUCTURE.SECTION3}\n`);
     utils.printer(lines, `{{% graphql-require-by %}}\n`);
   }
 }

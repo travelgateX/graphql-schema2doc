@@ -1,5 +1,8 @@
 'use strict';
-var config = require('./config');
+var config = require('./../config');
+var utils = require('./utils');
+
+const aux = [];
 
 function renderType(type, ret) {
   if (type.kind === 'NON_NULL') {
@@ -14,7 +17,7 @@ function renderType(type, ret) {
 }
 
 function getTypeURL(type) {
-  const url = `${config.relURL}`;
+  const url = `${config.PATHS[config.currentKey].relURL}`;
   const name = type.name.toLowerCase();
   switch (type.kind) {
     case 'INPUT_OBJECT':
@@ -172,81 +175,118 @@ const functions = {
     });
     return filter.length ? filter : null;
   },
-  findSharedTypes: (coreItem, schemaTypes, foundArrayTree
-  ) => {
-    const promise = new Promise((resolve, reject) => {
-      buildTreeRecursive(coreItem, schemaTypes,foundArrayTree).then(res => {
+  findSharedTypes: (coreItem, schemaTypes, foundArrayTree) => {
+    const promise = new Promise(resolve =>
+      buildTreeRecursive(coreItem, schemaTypes, foundArrayTree).then(res => {
         resolve(res);
-      });
-    });
+      })
+    );
 
     return promise;
 
     function compareString(a, b) {
+      if (!a) {
+        return false;
+      }
       return a.localeCompare(b, undefined, { sensitivity: 'base' }) === 0;
     }
 
-    async function buildTreeRecursive(coreItem, schemaTypes,foundArrayTree) {
+    async function buildTreeRecursive(coreItem, schemaTypes, foundArrayTree) {
       await manageRecursion(coreItem.fields, schemaTypes, foundArrayTree);
 
       return foundArrayTree;
     }
 
-    function manageRecursion(item, schemaTypes, foundArrayTree) {
-      const foundTypes = getTypesOfSelectedItem(
-        item,
-        schemaTypes,
-        foundArrayTree
-      );
+    function manageRecursion(item, schemaTypes, foundArrayTree, type = 'Base') {
+      const foundTypes = getTypesOfSelectedItem(item, schemaTypes, type);
       if (foundTypes) {
         const typesOnThisCycle = [];
         for (const ft of foundTypes) {
-          const foundItem = foundArrayTree.find(
-            fa =>
-              compareString(fa.name, ft.name) &&
-              compareString(fa.description, ft.description) &&
-              compareString(fa.kind, ft.kind)
-          );
+          const foundItem = foundArrayTree.find(fat => fullComparison(fat, ft));
+
           if (!foundItem) {
             typesOnThisCycle.push(ft);
             foundArrayTree.push(ft);
           }
         }
 
-        for (const found of typesOnThisCycle) {
-          if (found.fields && found.fields.length) {
-            manageRecursion(found.fields, schemaTypes, foundArrayTree);
+        if (typesOnThisCycle.length) {
+          for (const found of typesOnThisCycle) {
+            // if (found.name === 'HotelXQuery') {
+            //   console.log(found);
+            // }
+            let fields = [];
+            if (found.fields && found.fields.length) {
+              fields = fields.concat(found.fields);
+            }
+            if (found.inputFields && found.inputFields.length) {
+              fields = fields.concat(found.inputFields);
+            }
+            if (found.interfaces && found.interfaces.length) {
+              fields = fields.concat(found.interfaces);
+            }
+
+            manageRecursion(fields, schemaTypes, foundArrayTree, found.name);
           }
         }
       }
     }
 
-    function getTypesOfSelectedItem(fields, schemaTypes, foundArrayTree) {
+    function getTypesOfSelectedItem(fields, schemaTypes, type) {
       const arr = [];
-      let auxArray = [];
+      const auxArray = [];
 
       for (const field of fields) {
         const fieldTypes = [];
-        const item = field.kind ? field : field.type;
-
-        if (item.name) {
-          fieldTypes.push(item);
-        }
-
-        if (item.ofType) {
-          const ofTypes = [];
-          checkOfTypes(item.ofType, ofTypes);
-          ofTypes.forEach(o => {
-            if (o.name) {
-              fieldTypes.push(o);
-            }
-          });
+        let item;
+        if (field.kind) {
+          item = field;
         } else {
-          fieldTypes.push(item);
+          if (field.args) {
+            for (const arg of field.args) {
+              if (arg.type) {
+                if (arg.type.kind !== 'NON_NULL' && arg.type.name) {
+                  fieldTypes.push(arg.type);
+                }
+                if (arg.type.ofType) {
+                  const ofTypes = [];
+                  checkOfTypes(arg.type.ofType, ofTypes);
+                  ofTypes.forEach(o => {
+                    if (o.kind && o.name) {
+                      fieldTypes.push(o);
+                    }
+                  });
+                }
+              }
+            }
+          }
+          item = field.type;
         }
-        auxArray = auxArray.concat(fieldTypes);
+
+        if (item) {
+          if (item.name) {
+            fieldTypes.push(item);
+          }
+
+          if (item.ofType) {
+            const ofTypes = [];
+            checkOfTypes(item.ofType, ofTypes);
+            ofTypes.forEach(o => {
+              if (o.kind && o.name) {
+                fieldTypes.push(o);
+              }
+            });
+          } else {
+            fieldTypes.push(item);
+          }
+        }
+
+        auxArray.push(fieldTypes);
       }
-      auxArray.map(au => {
+
+      const flatArray = [].concat.apply([], auxArray);
+
+      flatArray.map(au => {
         if (!arr.find(a => compareString(au.name, a.name))) {
           arr.push(au);
         }
@@ -254,8 +294,27 @@ const functions = {
 
       const typesFound = [];
       for (const a of arr) {
-        const item = schemaTypes.find(t => compareString(t.name, a.name)) || a;
-        typesFound.push(item);
+        let item;
+        if (!!a.type) {
+          item =
+            schemaTypes.find(
+              t =>
+                compareString(t.name, a.type.name) &&
+                compareString(t.kind, a.type.kind)
+            ) ||
+            schemaTypes.find(
+              t =>
+                compareString(t.name, a.name) &&
+                compareString((t.type || {}).kind, a.type.kind)
+            );
+        } else {
+          item = schemaTypes.find(
+            t => compareString(t.name, a.name) && compareString(t.kind, a.kind)
+          );
+        }
+        if (item) {
+          typesFound.push(item);
+        }
       }
 
       return typesFound;
@@ -268,6 +327,33 @@ const functions = {
         checkOfTypes(item.ofType, ofTypes);
       }
     }
+
+    function fullComparison(type1, type2) {
+      return (
+        type1.name === type2.name &&
+        type1.url === type2.url &&
+        type1.deprecationDate === type2.deprecationDate &&
+        type1.typeString === type2.typeString &&
+        type1.typeName === type2.typeName
+      );
+    }
+  },
+  removeUnused: types => {
+
+    const stringTypes = JSON.stringify(types);
+    let baseUnusedFieldsNames = [];
+    types.map(t => {
+      const regex = new RegExp(t.name, 'g');
+      const number = (stringTypes.match(regex) || []).length;
+      if (number === 1 && t.name !== '__Schema') {
+        baseUnusedFieldsNames.push(t.name);
+      }
+    });
+
+    utils.log(baseUnusedFieldsNames, 'unused-names');
+
+    var ftypes = types.filter(t => !baseUnusedFieldsNames.includes(t.name));
+    return ftypes;
   }
 };
 
