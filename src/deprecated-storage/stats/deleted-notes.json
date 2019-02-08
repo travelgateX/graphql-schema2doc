@@ -1,1 +1,174 @@
-[]
+[
+  {
+    "key": "2018-08-22",
+    "value": [
+      {
+        "type": "r",
+        "value": [
+          {
+            "typeString": "[Error!]",
+            "name": "error",
+            "url": "/stats/reference/objects/error",
+            "description": "Errors that abort services",
+            "isDeprecated": true,
+            "args": null,
+            "deprecationReason": "Sustituted by adviseMessage",
+            "descriptionSplitted": {
+              "date": "2018-08-22",
+              "first": "deprecated from",
+              "second": "Sustituted by adviseMessage"
+            },
+            "deprecationDate": "2018-08-22",
+            "typeName": "API",
+            "deletionDate": "2018-11-20",
+            "daysRemaining": "Already passed",
+            "trueDeletionDate": "2019-02-08"
+          },
+          {
+            "typeString": "[Error!]",
+            "name": "error",
+            "url": "/stats/reference/objects/error",
+            "description": "Errors that abort services",
+            "isDeprecated": true,
+            "args": null,
+            "deprecationReason": "Sustituted by adviseMessage",
+            "descriptionSplitted": {
+              "date": "2018-08-22",
+              "first": "deprecated from",
+              "second": "Sustituted by adviseMessage"
+            },
+            "deprecationDate": "2018-08-22",
+            "typeName": "Member",
+            "deletionDate": "2018-11-20",
+            "daysRemaining": "Already passed",
+            "trueDeletionDate": "2019-02-08"
+          },
+          {
+            "typeString": "[Error!]",
+            "name": "error",
+            "url": "/stats/reference/objects/error",
+            "description": "Errors that abort services",
+            "isDeprecated": true,
+            "args": null,
+            "deprecationReason": "Sustituted by adviseMessage",
+            "descriptionSplitted": {
+              "date": "2018-08-22",
+              "first": "deprecated from",
+              "second": "Sustituted by adviseMessage"
+            },
+            "deprecationDate": "2018-08-22",
+            "typeName": "Operation",
+            "deletionDate": "2018-11-20",
+            "daysRemaining": "Already passed",
+            "trueDeletionDate": "2019-02-08"
+          },
+          {
+            "typeString": "[Error!]",
+            "name": "error",
+            "url": "/stats/reference/objects/error",
+            "description": "Errors that abort services",
+            "isDeprecated": true,
+            "args": null,
+            "deprecationReason": "Sustituted by adviseMessage",
+            "descriptionSplitted": {
+              "date": "2018-08-22",
+              "first": "deprecated from",
+              "second": "Sustituted by adviseMessage"
+            },
+            "deprecationDate": "2018-08-22",
+            "typeName": "Organization",
+            "deletionDate": "2018-11-20",
+            "daysRemaining": "Already passed",
+            "trueDeletionDate": "2019-02-08"
+          },
+          {
+            "typeString": "[Error!]",
+            "name": "error",
+            "url": "/stats/reference/objects/error",
+            "description": "Errors that abort services",
+            "isDeprecated": true,
+            "args": null,
+            "deprecationReason": "Sustituted by adviseMessage",
+            "descriptionSplitted": {
+              "date": "2018-08-22",
+              "first": "deprecated from",
+              "second": "Sustituted by adviseMessage"
+            },
+            "deprecationDate": "2018-08-22",
+            "typeName": "Product",
+            "deletionDate": "2018-11-20",
+            "daysRemaining": "Already passed",
+            "trueDeletionDate": "2019-02-08"
+          },
+          {
+            "typeString": "[Error!]",
+            "name": "error",
+            "url": "/stats/reference/objects/error",
+            "description": "Errors that abort services",
+            "isDeprecated": true,
+            "args": null,
+            "deprecationReason": "Sustituted by adviseMessage",
+            "descriptionSplitted": {
+              "date": "2018-08-22",
+              "first": "deprecated from",
+              "second": "Sustituted by adviseMessage"
+            },
+            "deprecationDate": "2018-08-22",
+            "typeName": "Resource",
+            "deletionDate": "2018-11-20",
+            "daysRemaining": "Already passed",
+            "trueDeletionDate": "2019-02-08"
+          },
+          {
+            "typeString": "[Error!]",
+            "name": "error",
+            "url": "/stats/reference/objects/error",
+            "description": "Errors that abort services",
+            "isDeprecated": true,
+            "args": null,
+            "deprecationReason": "Sustituted by adviseMessage",
+            "descriptionSplitted": {
+              "date": "2018-08-22",
+              "first": "deprecated from",
+              "second": "Sustituted by adviseMessage"
+            },
+            "deprecationDate": "2018-08-22",
+            "typeName": "Role",
+            "deletionDate": "2018-11-20",
+            "daysRemaining": "Already passed",
+            "trueDeletionDate": "2019-02-08"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "key": "2018-08-01",
+    "value": [
+      {
+        "type": "r",
+        "value": [
+          {
+            "typeString": "[Error!]",
+            "name": "error",
+            "url": "/stats/reference/objects/error",
+            "description": "Errors that abort services",
+            "isDeprecated": true,
+            "args": null,
+            "deprecationReason": "Sustituted by adviseMessage",
+            "descriptionSplitted": {
+              "date": "2018-08-01",
+              "first": "deprecated from",
+              "second": "Sustituted by adviseMessage"
+            },
+            "deprecationDate": "2018-08-01",
+            "typeName": "Group",
+            "deletionDate": "2018-10-30",
+            "daysRemaining": "Already passed",
+            "trueDeletionDate": "2019-02-08"
+          }
+        ]
+      }
+    ]
+  }
+]

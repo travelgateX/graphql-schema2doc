@@ -134,7 +134,8 @@ const functions = {
         newField['deprecationDate'] = field['deprecationDate'];
       }
 
-      if (newField.isDeprecated && newField.deprecationReason) {
+      // if (newField.isDeprecated && newField.deprecationReason)
+      if (newField.isDeprecated || typeof newField.deprecationReason === 'string' || newField.deprecationDate || newField.descriptionSplitted){
         // newField.type = type;
         newField.typeName = type.name;
         config.LOG.push(newField);

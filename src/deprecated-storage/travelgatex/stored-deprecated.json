@@ -56,70 +56,6 @@
     ]
   },
   {
-    "key": "2018-08-03",
-    "value": [
-      {
-        "type": "d",
-        "value": [
-          {
-            "typeString": "String",
-            "name": "organization",
-            "url": "/travelgatex/reference/scalars/string",
-            "description": "Responsible organization of the booked property. @deprecated(reason: \"deprecated from 2018-08-03. Please use PaymentXBookingInfoCriteriaInput\")",
-            "isDeprecated": true,
-            "args": null,
-            "deprecationReason": "Please use PaymentXBookingInfoCriteriaInput",
-            "descriptionSplitted": {
-              "date": "2018-08-03",
-              "first": "Responsible organization of the booked property. @deprecated(reason: \"deprecated from",
-              "second": "Please use PaymentXBookingInfoCriteriaInput\")"
-            },
-            "deprecationDate": "2018-08-03",
-            "typeName": "PaymentXBookingInfoFilterInput",
-            "deletionDate": "2018-11-01",
-            "daysRemaining": 83
-          },
-          {
-            "typeString": "ID",
-            "name": "pointOfSaleCode",
-            "url": "/travelgatex/reference/scalars/id",
-            "description": "Indicates the code of the booked property. @deprecated(reason: \"deprecated from 2018-08-03. Please use PaymentXBookingInfoCriteriaInput\")",
-            "isDeprecated": true,
-            "args": null,
-            "deprecationReason": "Please use PaymentXBookingInfoCriteriaInput",
-            "descriptionSplitted": {
-              "date": "2018-08-03",
-              "first": "Indicates the code of the booked property. @deprecated(reason: \"deprecated from",
-              "second": "Please use PaymentXBookingInfoCriteriaInput\")"
-            },
-            "deprecationDate": "2018-08-03",
-            "typeName": "PaymentXBookingInfoFilterInput",
-            "deletionDate": "2018-11-01",
-            "daysRemaining": 83
-          },
-          {
-            "typeString": "String",
-            "name": "bookingReference",
-            "url": "/travelgatex/reference/scalars/string",
-            "description": "Indicates the referece of the booking. @deprecated(reason: \"deprecated from 2018-08-03. Please use PaymentXBookingInfoCriteriaInput\")",
-            "isDeprecated": true,
-            "args": null,
-            "deprecationReason": "Please use PaymentXBookingInfoCriteriaInput",
-            "descriptionSplitted": {
-              "date": "2018-08-03",
-              "first": "Indicates the referece of the booking. @deprecated(reason: \"deprecated from",
-              "second": "Please use PaymentXBookingInfoCriteriaInput\")"
-            },
-            "deprecationDate": "2018-08-03",
-            "typeName": "PaymentXBookingInfoFilterInput",
-            "deletionDate": "2018-11-01",
-            "daysRemaining": 83
-          }
-        ]
-      }
-    ]
-  },
-  {
     "key": "2018-05-21",
     "value": [
       {
@@ -141,35 +77,98 @@
             "deprecationDate": "2018-05-21",
             "typeName": "AddOns",
             "deletionDate": "2018-08-19",
-            "daysRemaining": 9
+            "daysRemaining": "Already passed"
           }
         ]
       }
     ]
   },
   {
-    "key": "2018-08-01",
+    "key": "2018-06-01",
     "value": [
       {
         "type": "d",
         "value": [
           {
-            "typeString": "[Error!]",
-            "name": "error",
-            "url": "/travelgatex/reference/objects/error",
-            "description": "Errors that abort services",
+            "typeString": "String!",
+            "name": "type",
+            "url": "/travelgatex/reference/scalars/string",
+            "description": "Error type: The following types are valid:",
             "isDeprecated": true,
             "args": null,
-            "deprecationReason": "Sustituted by adviseMessage",
+            "deprecationReason": "",
             "descriptionSplitted": {
-              "date": "2018-08-01",
+              "date": "2018-06-01",
               "first": "deprecated from",
-              "second": "Sustituted by adviseMessage"
+              "second": ""
             },
-            "deprecationDate": "2018-08-01",
-            "typeName": "Group",
-            "deletionDate": "2018-10-30",
-            "daysRemaining": 81
+            "deprecationDate": "2018-06-01",
+            "typeName": "AdviseMessage",
+            "deletionDate": "2018-08-30",
+            "daysRemaining": "Already passed"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "key": "2019-02-05",
+    "value": [
+      {
+        "type": "d",
+        "value": [
+          {
+            "typeString": "String!",
+            "name": "token",
+            "url": "/travelgatex/reference/scalars/string",
+            "description": "Token for Deep Link",
+            "isDeprecated": true,
+            "args": null,
+            "deprecationReason": "",
+            "descriptionSplitted": {
+              "date": "2019-02-05",
+              "first": "deprecated from",
+              "second": ""
+            },
+            "deprecationDate": "2019-02-05",
+            "typeName": "HotelOptionSearch",
+            "deletionDate": "2019-05-06",
+            "daysRemaining": 86
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "key": "2018-06-06",
+    "value": [
+      {
+        "type": "d",
+        "value": [
+          {
+            "typeString": "String!",
+            "name": "loadFile",
+            "url": "/travelgatex/reference/scalars/string",
+            "description": "",
+            "isDeprecated": true,
+            "args": [
+              {
+                "typeString": "String!",
+                "name": "input",
+                "url": "/travelgatex/reference/scalars/string",
+                "description": ""
+              }
+            ],
+            "deprecationReason": "",
+            "descriptionSplitted": {
+              "date": "2018-06-06",
+              "first": "deprecated from",
+              "second": ""
+            },
+            "deprecationDate": "2018-06-06",
+            "typeName": "HotelXMutation",
+            "deletionDate": "2018-09-04",
+            "daysRemaining": "Already passed"
           }
         ]
       }

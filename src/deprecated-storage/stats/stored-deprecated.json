@@ -1,27 +1,27 @@
 [
   {
-    "key": "2018-08-01",
+    "key": "2018-06-01",
     "value": [
       {
         "type": "d",
         "value": [
           {
-            "typeString": "[Error!]",
-            "name": "error",
-            "url": "/stats/reference/objects/error",
-            "description": "Errors that abort services",
+            "typeString": "String!",
+            "name": "type",
+            "url": "/stats/reference/scalars/string",
+            "description": "Error type: The following types are valid:",
             "isDeprecated": true,
             "args": null,
-            "deprecationReason": "Sustituted by adviseMessage",
+            "deprecationReason": "",
             "descriptionSplitted": {
-              "date": "2018-08-01",
+              "date": "2018-06-01",
               "first": "deprecated from",
-              "second": "Sustituted by adviseMessage"
+              "second": ""
             },
-            "deprecationDate": "2018-08-01",
-            "typeName": "Group",
-            "deletionDate": "2018-10-30",
-            "daysRemaining": 81
+            "deprecationDate": "2018-06-01",
+            "typeName": "AdviseMessage",
+            "deletionDate": "2018-08-30",
+            "daysRemaining": "Already passed"
           }
         ]
       }
