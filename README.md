@@ -6,7 +6,7 @@
 Follow these instructions to be able to run this project.
 
 ### Install Node.js
-In order to be able to run the scripts on this project, you need to have node installed. You can download it from [here](https://nodejs.org/es/download/). Once installed, make sure to add npm to PATH variables.   
+In order to be able to run the scripts on this project, you need to have node installed. You can download it from [here](https://nodejs.org/es/download/). If you are working with linux, you might need to also install npm independently. Once installed, make sure to add npm to PATH variables.   
 
 ### Download dependencies
 These packages should be listed in the package.json. Running ```npm i``` will install all the necessary dependencies.

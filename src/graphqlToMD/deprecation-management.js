@@ -272,24 +272,28 @@ function renderDeletedNotes(
     let newDeletedNotesArr = [];
     // In the future, the array of items should contain sub arrays of different types of changes
     for (const date of deletedNotes) {
-      for (const item of date.value[0].value) {
-        const foundDate = newDeletedNotesArr.find(
-          ndn => ndn.key === item.trueDeletionDate
-        );
-        if (!foundDate) {
-          newDeletedNotesArr.push({
-            key: item.trueDeletionDate,
-            value: [{ type: 'r', value: [item] }]
-          });
-        } else {
-          // Date register exists, but we still don't know if list type [d,c,u...] exists inside
-          const foundType = foundDate.value.find(v => v.type === 'r');
-          if (foundType) {
-            // Push another value inside array of TYPES
-            foundType.value.push(item);
+      for(const typeObj of date.value){
+        const type = typeObj.type;
+        for (const item of typeObj.value) {
+          const foundDate = newDeletedNotesArr.find(
+            ndn => ndn.key === item.trueDeletionDate
+          );
+         
+          if (!foundDate) {
+            newDeletedNotesArr.push({
+              key: item.trueDeletionDate,
+              value: [{ type: type, value: [item] }]
+            });
           } else {
-            // Push NEW type inside date
-            foundDate.value.push({ type: 'r', value: [item] });
+            // Date register exists, but we still don't know if list type [d,c,u...] exists inside
+            const foundType = foundDate.value.find(v => v.type === type);
+            if (foundType) {
+              // Push another value inside array of TYPES
+              foundType.value.push(item);
+            } else {
+              // Push NEW type inside date
+              foundDate.value.push({ type: type, value: [item] });
+            }
           }
         }
       }

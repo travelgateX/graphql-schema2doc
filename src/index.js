@@ -123,7 +123,7 @@ function fakeSchema() {
     });
     fs.writeFile(
       __dirname + '/tmp/introspection.json',
-      JSON.stringify(res),
+      JSON.stringify(res, undefined, '\t'),
       function(err) {
         if (err) return console.log(err);
         bar.tick();
@@ -184,7 +184,7 @@ function readMDs() {
 
 function writeMdJSON() {
   const promise = new Promise(finish => {
-    fs.writeFile(__dirname + '/tmp/md-data.json', JSON.stringify(mds), function(
+    fs.writeFile(__dirname + '/tmp/md-data.json', JSON.stringify(mds, undefined, '\t'), function(
       err
     ) {
       if (err) return console.log(err);
