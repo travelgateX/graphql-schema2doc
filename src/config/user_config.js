@@ -1,4 +1,4 @@
 module.exports = {
     selected: '',
-    options: ['all','travelgatex', 'hotelx', 'paymentx', 'mappea', 'stats']
+    options: ['all','travelgatex', 'hotelx', 'paymentx', 'mappea', 'stats', 'alert']
 };
