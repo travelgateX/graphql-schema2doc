@@ -34,7 +34,7 @@ module.exports = {
   '/alertsx/': {
     relURL: `/alertx/${DIRNAME}`,
     rootItems: [{ name: 'AlertQuery' }],
-    deprecatedUrl: `${__dirname}/../output/alert/breaking-changes.md`,
+    deprecatedUrl: `${__dirname}/../output/alertsx/breaking-changes.md`,
     enabled: false
   }
 };
