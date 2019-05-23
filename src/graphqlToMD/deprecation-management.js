@@ -203,9 +203,12 @@ function saveDeprecatedNotesSnapshot(deprecatedFields, deletedNotes) {
   });
 
   const deletedNotesPromise = new Promise(resolve => {
+    var deprecatedFolder = __dirname + `/../deprecated-storage${config.currentKey}`;
+    if (!fs.existsSync(deprecatedFolder)) {
+        fs.mkdirSync(deprecatedFolder);
+    }
     fs.writeFile(
-      __dirname +
-        `/../deprecated-storage${config.currentKey}deleted-notes.json`,
+      deprecatedFolder+ 'deleted-notes.json',
       JSON.stringify(deletedNotes, undefined, '  '),
       function(err) {
         if (err) return console.log(err);

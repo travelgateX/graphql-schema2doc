@@ -100,7 +100,7 @@ const functions = {
       }
 
       // Looks for '@deprecated' substring inside the description
-      if (field.description.includes('@deprecated')) {
+      if (field.description  && field.description.includes('@deprecated')) {
         field['isDeprecated'] = true;
         if (!field['deprecationReason']) {
           field['deprecationReason'] = /\"(.*?)\"/.exec(field.description)[1];
