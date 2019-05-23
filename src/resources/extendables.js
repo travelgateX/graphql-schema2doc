@@ -14,6 +14,8 @@ module.exports = {
     'TransportQuery',
     'TransportMutation',
     'PaymentXQuery',
-    'PaymentXMutation'
+    'PaymentXMutation',
+    'AlertXQuery',
+    'AlertXMutation'
   ]
 };
