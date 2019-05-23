@@ -30,5 +30,11 @@ module.exports = {
     rootItems: [{ name: 'StatsQuery' }],
     deprecatedUrl: `${__dirname}/../output/stats/breaking-changes.md`,
     enabled: false
+  },
+  '/alertx/': {
+    relURL: `/alertx/${DIRNAME}`,
+    rootItems: [{ name: 'AlertQuery' }],
+    deprecatedUrl: `${__dirname}/../output/alert/breaking-changes.md`,
+    enabled: false
   }
 };
