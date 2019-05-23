@@ -91,34 +91,6 @@
     ]
   },
   {
-    "key": "2018-05-21",
-    "value": [
-      {
-        "type": "d",
-        "value": [
-          {
-            "typeString": "JSON",
-            "name": "distribute",
-            "url": "/hotelx/reference/scalars/json",
-            "description": "Extra information from the distribution layer",
-            "isDeprecated": true,
-            "args": null,
-            "deprecationReason": "You can find it in distribution AddOn",
-            "descriptionSplitted": {
-              "date": "2018-05-21",
-              "first": "deprecated from",
-              "second": "You can find it in distribution AddOn"
-            },
-            "deprecationDate": "2018-05-21",
-            "typeName": "AddOns",
-            "deletionDate": "2018-08-19",
-            "daysRemaining": "Already passed"
-          }
-        ]
-      }
-    ]
-  },
-  {
     "key": "2018-06-01",
     "value": [
       {
@@ -147,28 +119,28 @@
     ]
   },
   {
-    "key": "2019-02-05",
+    "key": "2018-05-21",
     "value": [
       {
         "type": "d",
         "value": [
           {
-            "typeString": "String!",
-            "name": "token",
-            "url": "/hotelx/reference/scalars/string",
-            "description": "Token for Deep Link",
+            "typeString": "JSON",
+            "name": "distribute",
+            "url": "/hotelx/reference/scalars/json",
+            "description": "Extra information from the distribution layer",
             "isDeprecated": true,
             "args": null,
-            "deprecationReason": "",
+            "deprecationReason": "You can find it in distribution AddOn",
             "descriptionSplitted": {
-              "date": "2019-02-05",
+              "date": "2018-05-21",
               "first": "deprecated from",
-              "second": ""
+              "second": "You can find it in distribution AddOn"
             },
-            "deprecationDate": "2019-02-05",
-            "typeName": "HotelOptionSearch",
-            "deletionDate": "2019-05-06",
-            "daysRemaining": 86
+            "deprecationDate": "2018-05-21",
+            "typeName": "AddOns",
+            "deletionDate": "2018-08-19",
+            "daysRemaining": "Already passed"
           }
         ]
       }

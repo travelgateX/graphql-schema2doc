@@ -284,5 +284,34 @@
         ]
       }
     ]
+  },
+  {
+    "key": "2019-02-05",
+    "value": [
+      {
+        "type": "r",
+        "value": [
+          {
+            "typeString": "String!",
+            "name": "token",
+            "url": "/hotelx/reference/scalars/string",
+            "description": "Token for Deep Link",
+            "isDeprecated": true,
+            "args": null,
+            "deprecationReason": "",
+            "descriptionSplitted": {
+              "date": "2019-02-05",
+              "first": "deprecated from",
+              "second": ""
+            },
+            "deprecationDate": "2019-02-05",
+            "typeName": "HotelOptionSearch",
+            "deletionDate": "2019-05-06",
+            "daysRemaining": 86,
+            "trueDeletionDate": "2019-02-19"
+          }
+        ]
+      }
+    ]
   }
 ]

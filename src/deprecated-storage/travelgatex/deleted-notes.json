@@ -300,7 +300,7 @@
     "key": "2017-11-21",
     "value": [
       {
-        "type": "r",
+        "type": "o",
         "value": [
           {
             "typeString": "HotelBooking",
@@ -328,7 +328,7 @@
               "first": "deprecated from",
               "second": "You can find it in query at HotelX"
             },
-            "deprecationDate": "2017-11-21",
+            "deprecationDate": "2019-01-30",
             "typeName": "Booking",
             "deletionDate": "2018-02-19",
             "daysRemaining": "Already passed",
@@ -360,7 +360,7 @@
               "first": "deprecated from",
               "second": "You can find it in query at HotelX"
             },
-            "deprecationDate": "2017-11-21",
+            "deprecationDate": "2019-01-30",
             "typeName": "Quote",
             "deletionDate": "2018-02-19",
             "daysRemaining": "Already passed",
@@ -404,11 +404,40 @@
               "first": "deprecated from",
               "second": "You can find it in query at HotelX"
             },
-            "deprecationDate": "2017-11-21",
+            "deprecationDate": "2019-01-30",
             "typeName": "Search",
             "deletionDate": "2018-02-19",
             "daysRemaining": "Already passed",
             "trueDeletionDate": "2019-02-08"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "key": "2019-02-05",
+    "value": [
+      {
+        "type": "r",
+        "value": [
+          {
+            "typeString": "String!",
+            "name": "token",
+            "url": "/travelgatex/reference/scalars/string",
+            "description": "Token for Deep Link",
+            "isDeprecated": true,
+            "args": null,
+            "deprecationReason": "",
+            "descriptionSplitted": {
+              "date": "2019-02-05",
+              "first": "deprecated from",
+              "second": ""
+            },
+            "deprecationDate": "2019-02-05",
+            "typeName": "HotelOptionSearch",
+            "deletionDate": "2019-05-06",
+            "daysRemaining": 86,
+            "trueDeletionDate": "2019-02-12"
           }
         ]
       }
