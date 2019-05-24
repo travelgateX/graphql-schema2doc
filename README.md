@@ -9,7 +9,16 @@ Follow these instructions to be able to run this project.
 In order to be able to run the scripts on this project, you need to have node installed. You can download it from [here](https://nodejs.org/es/download/). If you are working with linux, you might need to also install npm independently. Once installed, make sure to add npm to PATH variables.   
 
 ### Install GraphQL Faker
-This project relies on GraphQL Faker to be able to create the schemas. You will need to install it ```npm install -g graphql-faker``` before trying to run it.
+This project relies on GraphQL Faker to be able to create the schemas. Now for use it correctly you need use a graphql-faker from our repository, this is updated to the latest version of graphql
+
+https://github.com/amian84/graphql-faker
+
+For use this, you need local clone the repository, checkout to 'distFolder' branch, and execute
+
+sudo npm link
+
+
+if you have another version installed please remove before.
 
 ### Download dependencies
 These packages should be listed in the package.json. Running ```npm i``` will install all the required dependencies.
