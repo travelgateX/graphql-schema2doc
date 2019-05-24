@@ -17,6 +17,7 @@ For use this, you need local clone the repository, checkout to 'distFolder' bran
 
 sudo npm link
 
+
 if you have another version installed please remove before.
 
 ### Download dependencies
