@@ -8,7 +8,7 @@
           {
             "typeString": "String!",
             "name": "type",
-            "url": "/mappea/reference/scalars/string",
+            "url": "/alerts-x/reference/scalars/string",
             "description": null,
             "isDeprecated": true,
             "args": null,

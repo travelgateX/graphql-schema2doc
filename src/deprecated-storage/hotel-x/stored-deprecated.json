@@ -1,5 +1,40 @@
 [
   {
+    "key": "2018-06-06",
+    "value": [
+      {
+        "type": "d",
+        "value": [
+          {
+            "typeString": "String!",
+            "name": "loadFile",
+            "url": "/hotel-x/reference/scalars/string",
+            "description": null,
+            "isDeprecated": true,
+            "args": [
+              {
+                "typeString": "String!",
+                "name": "input",
+                "url": "/hotel-x/reference/scalars/string",
+                "description": null
+              }
+            ],
+            "deprecationReason": "",
+            "descriptionSplitted": {
+              "date": "2018-06-06",
+              "first": "deprecated from",
+              "second": ""
+            },
+            "deprecationDate": "2018-06-06",
+            "typeName": "HotelXMutation",
+            "deletionDate": "2018-09-04",
+            "daysRemaining": "Already passed"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "key": "2018-05-21",
     "value": [
       {
@@ -8,7 +43,7 @@
           {
             "typeString": "JSON",
             "name": "distribute",
-            "url": "/travelgatex/reference/scalars/json",
+            "url": "/hotel-x/reference/scalars/json",
             "description": null,
             "isDeprecated": true,
             "args": null,
@@ -36,7 +71,7 @@
           {
             "typeString": "String!",
             "name": "type",
-            "url": "/travelgatex/reference/scalars/string",
+            "url": "/hotel-x/reference/scalars/string",
             "description": null,
             "isDeprecated": true,
             "args": null,
@@ -64,7 +99,7 @@
           {
             "typeString": "String",
             "name": "description",
-            "url": "/travelgatex/reference/scalars/string",
+            "url": "/hotel-x/reference/scalars/string",
             "description": null,
             "isDeprecated": true,
             "args": null,
@@ -92,7 +127,7 @@
           {
             "typeString": "[Error!]",
             "name": "error",
-            "url": "/travelgatex/reference/objects/error",
+            "url": "/hotel-x/reference/objects/error",
             "description": null,
             "isDeprecated": true,
             "args": null,
@@ -110,7 +145,7 @@
           {
             "typeString": "[Error!]",
             "name": "error",
-            "url": "/travelgatex/reference/objects/error",
+            "url": "/hotel-x/reference/objects/error",
             "description": null,
             "isDeprecated": true,
             "args": null,
@@ -128,7 +163,7 @@
           {
             "typeString": "[AdviseMessage!]",
             "name": "error",
-            "url": "/travelgatex/reference/objects/advisemessage",
+            "url": "/hotel-x/reference/objects/advisemessage",
             "description": null,
             "isDeprecated": true,
             "args": null,
@@ -146,7 +181,7 @@
           {
             "typeString": "[AdviseMessage!]",
             "name": "error",
-            "url": "/travelgatex/reference/objects/advisemessage",
+            "url": "/hotel-x/reference/objects/advisemessage",
             "description": null,
             "isDeprecated": true,
             "args": null,
@@ -164,7 +199,7 @@
           {
             "typeString": "[Error!]",
             "name": "error",
-            "url": "/travelgatex/reference/objects/error",
+            "url": "/hotel-x/reference/objects/error",
             "description": null,
             "isDeprecated": true,
             "args": null,
@@ -192,7 +227,7 @@
           {
             "typeString": "Date",
             "name": "creationDate",
-            "url": "/travelgatex/reference/scalars/date",
+            "url": "/hotel-x/reference/scalars/date",
             "description": null,
             "isDeprecated": true,
             "args": null,
@@ -210,7 +245,7 @@
           {
             "typeString": "Date",
             "name": "checkIn",
-            "url": "/travelgatex/reference/scalars/date",
+            "url": "/hotel-x/reference/scalars/date",
             "description": null,
             "isDeprecated": true,
             "args": null,
@@ -228,7 +263,7 @@
           {
             "typeString": "Date",
             "name": "checkOut",
-            "url": "/travelgatex/reference/scalars/date",
+            "url": "/hotel-x/reference/scalars/date",
             "description": null,
             "isDeprecated": true,
             "args": null,
@@ -246,7 +281,7 @@
           {
             "typeString": "Date!",
             "name": "effectiveDate",
-            "url": "/travelgatex/reference/scalars/date",
+            "url": "/hotel-x/reference/scalars/date",
             "description": null,
             "isDeprecated": true,
             "args": null,
@@ -264,7 +299,7 @@
           {
             "typeString": "Date!",
             "name": "expireDate",
-            "url": "/travelgatex/reference/scalars/date",
+            "url": "/hotel-x/reference/scalars/date",
             "description": null,
             "isDeprecated": true,
             "args": null,
@@ -282,7 +317,7 @@
           {
             "typeString": "Date",
             "name": "effectiveDate",
-            "url": "/travelgatex/reference/scalars/date",
+            "url": "/hotel-x/reference/scalars/date",
             "description": null,
             "isDeprecated": true,
             "args": null,
@@ -300,7 +335,7 @@
           {
             "typeString": "Date",
             "name": "expireDate",
-            "url": "/travelgatex/reference/scalars/date",
+            "url": "/hotel-x/reference/scalars/date",
             "description": null,
             "isDeprecated": true,
             "args": null,
@@ -318,7 +353,7 @@
           {
             "typeString": "Date",
             "name": "effectiveDate",
-            "url": "/travelgatex/reference/scalars/date",
+            "url": "/hotel-x/reference/scalars/date",
             "description": null,
             "isDeprecated": true,
             "args": null,
@@ -336,7 +371,7 @@
           {
             "typeString": "Date",
             "name": "expireDate",
-            "url": "/travelgatex/reference/scalars/date",
+            "url": "/hotel-x/reference/scalars/date",
             "description": null,
             "isDeprecated": true,
             "args": null,
@@ -354,7 +389,7 @@
           {
             "typeString": "Date",
             "name": "effectiveDate",
-            "url": "/travelgatex/reference/scalars/date",
+            "url": "/hotel-x/reference/scalars/date",
             "description": null,
             "isDeprecated": true,
             "args": null,
@@ -372,7 +407,7 @@
           {
             "typeString": "Date",
             "name": "expireDate",
-            "url": "/travelgatex/reference/scalars/date",
+            "url": "/hotel-x/reference/scalars/date",
             "description": null,
             "isDeprecated": true,
             "args": null,
@@ -400,7 +435,7 @@
           {
             "typeString": "String!",
             "name": "token",
-            "url": "/travelgatex/reference/scalars/string",
+            "url": "/hotel-x/reference/scalars/string",
             "description": null,
             "isDeprecated": true,
             "args": null,
@@ -413,104 +448,6 @@
             "deprecationDate": "2019-02-05",
             "typeName": "HotelOptionSearch",
             "deletionDate": "2019-05-06",
-            "daysRemaining": "Already passed"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "key": "2018-06-06",
-    "value": [
-      {
-        "type": "d",
-        "value": [
-          {
-            "typeString": "String!",
-            "name": "loadFile",
-            "url": "/travelgatex/reference/scalars/string",
-            "description": null,
-            "isDeprecated": true,
-            "args": [
-              {
-                "typeString": "String!",
-                "name": "input",
-                "url": "/travelgatex/reference/scalars/string",
-                "description": null
-              }
-            ],
-            "deprecationReason": "",
-            "descriptionSplitted": {
-              "date": "2018-06-06",
-              "first": "deprecated from",
-              "second": ""
-            },
-            "deprecationDate": "2018-06-06",
-            "typeName": "HotelXMutation",
-            "deletionDate": "2018-09-04",
-            "daysRemaining": "Already passed"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "key": "2019-04-03",
-    "value": [
-      {
-        "type": "d",
-        "value": [
-          {
-            "typeString": "Boolean!",
-            "name": "cache",
-            "url": "/travelgatex/reference/scalars/boolean",
-            "description": null,
-            "isDeprecated": true,
-            "args": null,
-            "deprecationReason": "Added new field trafficType.",
-            "descriptionSplitted": {
-              "date": "2019-04-03",
-              "first": "deprecated from",
-              "second": "Added new field trafficType."
-            },
-            "deprecationDate": "2019-04-03",
-            "typeName": "OperationDetailed",
-            "deletionDate": "2019-07-02",
-            "daysRemaining": "Already passed"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "key": "2019-04-08",
-    "value": [
-      {
-        "type": "d",
-        "value": [
-          {
-            "typeString": "Ratios!",
-            "name": "ratios",
-            "url": "/travelgatex/reference/objects/ratios",
-            "description": null,
-            "isDeprecated": true,
-            "args": [
-              {
-                "typeString": "TrafficType!",
-                "name": "trafficType",
-                "url": "/travelgatex/reference/enums/traffictype",
-                "description": null
-              }
-            ],
-            "deprecationReason": "Added hits fields to be able to calculate ratios at client side.",
-            "descriptionSplitted": {
-              "date": "2019-04-08",
-              "first": "deprecated from",
-              "second": "Added hits fields to be able to calculate ratios at client side."
-            },
-            "deprecationDate": "2019-04-08",
-            "typeName": "StatsData",
-            "deletionDate": "2019-07-07",
             "daysRemaining": "Already passed"
           }
         ]

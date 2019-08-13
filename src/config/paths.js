@@ -7,10 +7,10 @@ module.exports = {
     deprecatedUrl: `${__dirname}/../output/travelgatex/breaking-changes.md`,
     enabled: false
   },
-  '/hotelx/': {
-    relURL: `/hotelx/${DIRNAME}`,
+  '/hotel-x/': {
+    relURL: `/hotel-x/${DIRNAME}`,
     rootItems: [{ name: 'HotelXQuery' }, { name: 'HotelXMutation' }],
-    deprecatedUrl: `${__dirname}/../output/hotelx/breaking-changes.md`,
+    deprecatedUrl: `${__dirname}/../output/hotel-x/breaking-changes.md`,
     enabled: false
   },
   '/paymentx/': {
@@ -31,10 +31,10 @@ module.exports = {
     deprecatedUrl: `${__dirname}/../output/stats/breaking-changes.md`,
     enabled: false
   },
-  '/alertsx/': {
-    relURL: `/alertsx/${DIRNAME}`,
+  '/alerts-x/': {
+    relURL: `/alerts-x/${DIRNAME}`,
     rootItems: [{ name: 'AlertsXQuery' }, { name: 'AlertsXMutation' }],
-    deprecatedUrl: `${__dirname}/../output/alertsx/breaking-changes.md`,
+    deprecatedUrl: `${__dirname}/../output/alerts-x/breaking-changes.md`,
     enabled: false
   }
 };

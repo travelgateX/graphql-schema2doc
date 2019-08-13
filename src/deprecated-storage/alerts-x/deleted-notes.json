@@ -3,12 +3,12 @@
     "key": "2018-06-01",
     "value": [
       {
-        "type": "d",
+        "type": "r",
         "value": [
           {
             "typeString": "String!",
             "name": "type",
-            "url": "/mappea/reference/scalars/string",
+            "url": "/alertsx/reference/scalars/string",
             "description": null,
             "isDeprecated": true,
             "args": null,
@@ -21,7 +21,8 @@
             "deprecationDate": "2018-06-01",
             "typeName": "AdviseMessage",
             "deletionDate": "2018-08-30",
-            "daysRemaining": "Already passed"
+            "daysRemaining": "Already passed",
+            "trueDeletionDate": "2019-08-13"
           }
         ]
       }
